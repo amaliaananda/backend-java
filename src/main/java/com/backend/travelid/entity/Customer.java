@@ -30,7 +30,7 @@ public class Customer extends AbstractDate implements Serializable {
     private String email;
 
     @Column(name = "date_of_birth")
-    private Date dateOfBirth;
+    private String dateOfBirth;
 
     @Column(name = "gender")
     private String gender;
