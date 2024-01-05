@@ -65,11 +65,11 @@ public class UserServiceImpl implements UserService {
             String[] roleNames = {"ROLE_USER", "ROLE_READ", "ROLE_WRITE"}; // admin
             User user = new User();
 
-            user.setUsername(objModel.getName().toLowerCase());
-            user.setFullname(objModel.getName());
+            user.setUsername(objModel.getUsername().toLowerCase());
+            user.setFullname(objModel.getUsername());
 
             Customer customer = new Customer();
-            customer.setName(objModel.getName());
+            customer.setName(objModel.getRealname());
             customer.setEmail(objModel.getEmail());
             customer.setIdentityNumber(objModel.getIdentityNumber());
             customer.setDateOfBirth(objModel.getDateOfBirth());
@@ -100,11 +100,11 @@ public class UserServiceImpl implements UserService {
         try {
             String[] roleNames = {"ROLE_USER", "ROLE_READ", "ROLE_WRITE"}; // ROLE DEFAULE
             User user = new User();
-            user.setUsername(objModel.getName().toLowerCase());
-            user.setFullname(objModel.getName());
+            user.setUsername(objModel.getUsername().toLowerCase());
+            user.setFullname(objModel.getUsername());
 
             Customer customer = new Customer();
-            customer.setName(objModel.getName());
+            customer.setName(objModel.getRealname());
             customer.setEmail(objModel.getEmail());
             customer.setIdentityNumber(objModel.getIdentityNumber());
             customer.setDateOfBirth(objModel.getDateOfBirth());

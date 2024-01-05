@@ -5,14 +5,17 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 @Data
 public class RegisterUserModel {
-    @NotEmpty(message = "name is required.")
-    private String name;
+    @NotEmpty(message = "username is required.")
+    private String username;
 
     @NotEmpty(message = "password is required.")
     private String password;
 
     @NotEmpty(message = "email is required.")
     private String email;
+
+    @NotEmpty(message = "Real name is required.")
+    private String realname;
 
     @NotEmpty(message = "identity Number is required.")
     private String identityNumber;

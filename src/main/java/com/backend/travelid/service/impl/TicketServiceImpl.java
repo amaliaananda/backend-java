@@ -1,5 +1,6 @@
 package com.backend.travelid.service.impl;
 
+import com.backend.travelid.entity.Flight;
 import com.backend.travelid.entity.Ticket;
 import com.backend.travelid.repository.FlightRepository;
 import com.backend.travelid.repository.TicketRepository;
@@ -57,6 +58,13 @@ public class TicketServiceImpl implements TicketService {
             if(ticket.getIdentityNumber() == null){
                 return response.Error(Config.IDENTITY_NUMBER_REQUIRED);
             }
+            if(ticket.getFlight() == null){
+                return response.Error(Config.FLIGHT_REQUIRED);
+            }
+            Optional<Flight> chekDataDBFlight = flightRepository.findById(ticket.getFlight().getId());
+            if (chekDataDBFlight.isEmpty()) {
+                return response.Error(Config.FLIGHT_NOT_FOUND);
+            }
             return response.sukses(ticketRepository.save(ticket));
         }catch (Exception e){
             log.error("save Ticket error: "+e.getMessage());
@@ -75,7 +83,11 @@ public class TicketServiceImpl implements TicketService {
             if (chekDataDBTicket.isEmpty()) {
                 return response.Error(Config.TICKET_NOT_FOUND);
             }
-
+            Optional<Flight> chekDataDBFlight = flightRepository.findById(ticket.getFlight().getId());
+            if (chekDataDBFlight.isEmpty()) {
+                return response.Error(Config.FLIGHT_NOT_FOUND);
+            }
+            chekDataDBTicket.get().setFlight(ticket.getFlight());
             chekDataDBTicket.get().setCustomerName(ticket.getCustomerName());
             chekDataDBTicket.get().setIdentityNumber(ticket.getIdentityNumber());
             chekDataDBTicket.get().setPassengerClass(ticket.getPassengerClass());

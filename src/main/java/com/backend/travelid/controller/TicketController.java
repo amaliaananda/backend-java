@@ -72,14 +72,14 @@ public class TicketController {
     }
 
     @GetMapping(value = {"/ticketsByCustomerName","/ticketsByCustomerName/"})
-    public List<Ticket> getTicketsByCustomerName(@PathVariable("customerName") String customerName) {
+    public List<Ticket> getTicketsByCustomerName(@RequestParam String customerName) {
         return ticketService.getTicketsByCustomerName(customerName);
     }
     @GetMapping(value = {"/listTickets", "/listTickets/"})
     public ResponseEntity<Map> list(
             @RequestParam() Integer page,
             @RequestParam(required = true) Integer size,
-            @RequestParam(required = false) String customer_name,
+            @RequestParam(required = false) String customerName,
             @RequestParam(required = false) Boolean paid,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
@@ -89,8 +89,8 @@ public class TicketController {
             Specification<Ticket> spec =
                     ((root, query, criteriaBuilder) -> {
                         List<Predicate> predicates = new ArrayList<>();
-                        if (customer_name != null && !customer_name.isEmpty()) {
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("customer_name")), "%" + customer_name.toLowerCase() + "%"));
+                        if (customerName != null && !customerName.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("customerName")), "%" + customerName.toLowerCase() + "%"));
                         }
                         if (paid != null) {
                             predicates.add(criteriaBuilder.equal(root.get("paid"), paid));

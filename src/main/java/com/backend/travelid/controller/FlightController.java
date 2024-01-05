@@ -69,7 +69,7 @@ public class FlightController {
         }
     }
 
-    @GetMapping("/flightsByAirline")
+    @GetMapping(value={"/flightsByAirline/{airline}", "/flightsByAirline/{airline}/"})
     public List<Flight> getFlightsByAirline(@PathVariable("airline") String airline) {
         return flightService.getFlightsByAirline(airline);
     }
@@ -78,8 +78,9 @@ public class FlightController {
     public ResponseEntity<Map> list(
             @RequestParam() Integer page,
             @RequestParam(required = true) Integer size,
+            @RequestParam(required = false) String airport,
             @RequestParam(required = false) String airline,
-            @RequestParam(required = false) String source,
+            @RequestParam(required = false) String origin,
             @RequestParam(required = false) String destination,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
@@ -89,11 +90,14 @@ public class FlightController {
             Specification<Flight> spec =
                     ((root, query, criteriaBuilder) -> {
                         List<Predicate> predicates = new ArrayList<>();
+                        if (airport != null && !airport.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("airport")), "%" + airport.toLowerCase() + "%"));
+                        }
                         if (airline != null && !airline.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("airline")), "%" + airline.toLowerCase() + "%"));
                         }
-                        if (source != null && !source.isEmpty()) {
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("source")), "%" + source.toLowerCase() + "%"));
+                        if (origin != null && !origin.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("origin")), "%" + origin.toLowerCase() + "%"));
                         }
                         if (destination != null && !destination.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("destination")), "%" + destination.toLowerCase() + "%"));
