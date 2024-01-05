@@ -66,11 +66,11 @@ public class UserServiceImpl implements UserService {
             User user = new User();
 
             user.setUsername(objModel.getUsername().toLowerCase());
-            user.setFullname(objModel.getUsername());
+            user.setFullname(objModel.getFullname());
 
             Customer customer = new Customer();
-            customer.setName(objModel.getRealname());
-            customer.setEmail(objModel.getEmail());
+            customer.setName(objModel.getFullname());
+            customer.setEmail(objModel.getUsername());
             customer.setIdentityNumber(objModel.getIdentityNumber());
             customer.setDateOfBirth(objModel.getDateOfBirth());
             customer.setGender(objModel.getGender());
@@ -101,11 +101,11 @@ public class UserServiceImpl implements UserService {
             String[] roleNames = {"ROLE_USER", "ROLE_READ", "ROLE_WRITE"}; // ROLE DEFAULE
             User user = new User();
             user.setUsername(objModel.getUsername().toLowerCase());
-            user.setFullname(objModel.getUsername());
+            user.setFullname(objModel.getFullname());
 
             Customer customer = new Customer();
-            customer.setName(objModel.getRealname());
-            customer.setEmail(objModel.getEmail());
+            customer.setName(objModel.getFullname());
+            customer.setEmail(objModel.getUsername());
             customer.setIdentityNumber(objModel.getIdentityNumber());
             customer.setDateOfBirth(objModel.getDateOfBirth());
             customer.setGender(objModel.getGender());

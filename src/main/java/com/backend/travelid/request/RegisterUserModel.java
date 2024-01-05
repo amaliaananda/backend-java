@@ -11,11 +11,8 @@ public class RegisterUserModel {
     @NotEmpty(message = "password is required.")
     private String password;
 
-    @NotEmpty(message = "email is required.")
-    private String email;
-
-    @NotEmpty(message = "Real name is required.")
-    private String realname;
+    @NotEmpty(message = "fullname is required.")
+    private String fullname;
 
     @NotEmpty(message = "identity Number is required.")
     private String identityNumber;
