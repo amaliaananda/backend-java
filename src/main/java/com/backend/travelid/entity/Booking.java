@@ -1,6 +1,5 @@
 package com.backend.travelid.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,27 +7,28 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "ticket")
+@Table(name = "booking")
 @Where(clause = "deleted_date is null")
-public class Ticket extends AbstractDate implements Serializable {
+public class Booking extends AbstractDate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "flight_id")
-    private Flight flight;
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
-    @Column(name = "passenger_class")
-    private String passengerClass;
+    @Column(name = "total_price")
+    private Long totalPrice;
 
-    @Column(name = "price")
-    private Long price;
+    @Column(name = "paid")
+    private Boolean paid;
 
 }
 

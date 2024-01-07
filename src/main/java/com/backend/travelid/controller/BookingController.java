@@ -1,8 +1,8 @@
 package com.backend.travelid.controller;
 
-import com.backend.travelid.entity.Ticket;
-import com.backend.travelid.repository.TicketRepository;
-import com.backend.travelid.service.TicketService;
+import com.backend.travelid.entity.Booking;
+import com.backend.travelid.repository.BookingRepository;
+import com.backend.travelid.service.BookingService;
 import com.backend.travelid.utils.SimpleStringUtils;
 import com.backend.travelid.utils.TemplateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,42 +21,42 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/ticket")
-public class TicketController {
+@RequestMapping("/booking")
+public class BookingController {
 
     @Autowired
-    private TicketService ticketService;
+    private BookingService bookingService;
 
     SimpleStringUtils simpleStringUtils = new SimpleStringUtils();
 
     @Autowired
-    public TicketRepository ticketRepository;
+    public BookingRepository bookingRepository;
 
     @Autowired
     public TemplateResponse response;
 
     @PostMapping(value = {"/save","/save/"})
-    public ResponseEntity<Map> addTicket(@RequestBody Ticket ticket){
+    public ResponseEntity<Map> addBooking(@RequestBody Booking booking){
         try {
-            return new ResponseEntity<Map>(ticketService.saveTicket(ticket), HttpStatus.OK);
+            return new ResponseEntity<Map>(bookingService.saveBooking(booking), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
 
     @PutMapping(value = {"/update","/update/"})
-    public ResponseEntity<Map> updateTicket(@RequestBody Ticket ticket) {
+    public ResponseEntity<Map> updateBooking(@RequestBody Booking booking) {
         try {
-            return new ResponseEntity<Map>(ticketService.updateTicket(ticket), HttpStatus.OK);
+            return new ResponseEntity<Map>(bookingService.updateBooking(booking), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
 
     @DeleteMapping(value = {"/delete","/delete/"})
-    public ResponseEntity<Map> deleteTicket(@RequestBody Ticket ticket) {
+    public ResponseEntity<Map> deleteBooking(@RequestBody Booking booking) {
         try {
-            return new ResponseEntity<Map>(ticketService.deleteTicket(ticket), HttpStatus.OK);
+            return new ResponseEntity<Map>(bookingService.deleteBooking(booking), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
@@ -65,30 +65,43 @@ public class TicketController {
     @GetMapping(value={"/{id}", "/{id}/"})
     public ResponseEntity<Map> getById(@PathVariable("id") Long id) {
         try {
-            return new ResponseEntity<Map>(ticketService.getByID(id), HttpStatus.OK);
+            return new ResponseEntity<Map>(bookingService.getByID(id), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
-    @GetMapping(value = {"/listTickets", "/listTickets/"})
+
+    @GetMapping(value = {"/bookingsByCustomerId","/bookingsByCustomerId/"})
+    public ResponseEntity<Map> getBookingsByCustomerId(@RequestParam Long id) {
+        try {
+            return new ResponseEntity<Map>(bookingService.getByCustomerId(id), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+        }
+    }
+    @GetMapping(value = {"/listBookings", "/listBookings/"})
     public ResponseEntity<Map> list(
             @RequestParam() Integer page,
             @RequestParam(required = true) Integer size,
-            @RequestParam(required = false) String passengerClass,
+            @RequestParam(required = false) String customerName,
+            @RequestParam(required = false) Boolean paid,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
         try {
             Pageable show_data = simpleStringUtils.getShort(orderby, ordertype, page, size);
 
-            Specification<Ticket> spec =
+            Specification<Booking> spec =
                     ((root, query, criteriaBuilder) -> {
                         List<Predicate> predicates = new ArrayList<>();
-                        if (passengerClass != null && !passengerClass.isEmpty()) {
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("passengerClass")), "%" + passengerClass.toLowerCase() + "%"));
+                        if (customerName != null && !customerName.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("customerName")), "%" + customerName.toLowerCase() + "%"));
+                        }
+                        if (paid != null) {
+                            predicates.add(criteriaBuilder.equal(root.get("paid"), paid));
                         }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
                     });
-            Page<Ticket> list = ticketRepository.findAll(spec, show_data);
+            Page<Booking> list = bookingRepository.findAll(spec, show_data);
 
             Map map = new HashMap();
             map.put("data",list);

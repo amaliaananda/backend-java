@@ -7,7 +7,6 @@ import java.util.Map;
 
 public interface TicketService {
     List<Ticket> getAllTickets();
-    List<Ticket> getTicketsByCustomerName(String customerName);
     public Map getByID(Long booking);
     Map saveTicket(Ticket ticket);
     Map updateTicket(Ticket ticket);

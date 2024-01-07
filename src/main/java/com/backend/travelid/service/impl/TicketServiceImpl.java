@@ -35,11 +35,6 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Ticket> getTicketsByCustomerName(String customerName) {
-        return ticketRepository.findByCustomerName(customerName);
-    }
-
-    @Override
     public Map getByID(Long booking) {
         Optional<Ticket> getBaseOptional = ticketRepository.findById(booking);
         if(getBaseOptional.isEmpty()){
@@ -52,12 +47,6 @@ public class TicketServiceImpl implements TicketService {
     public Map saveTicket(Ticket ticket) {
         try {
             log.info("save Ticket");
-            if(ticket.getCustomerName() == null){
-                return response.Error(Config.NAME_REQUIRED);
-            }
-            if(ticket.getIdentityNumber() == null){
-                return response.Error(Config.IDENTITY_NUMBER_REQUIRED);
-            }
             if(ticket.getFlight() == null){
                 return response.Error(Config.FLIGHT_REQUIRED);
             }
@@ -88,13 +77,8 @@ public class TicketServiceImpl implements TicketService {
                 return response.Error(Config.FLIGHT_NOT_FOUND);
             }
             chekDataDBTicket.get().setFlight(ticket.getFlight());
-            chekDataDBTicket.get().setCustomerName(ticket.getCustomerName());
-            chekDataDBTicket.get().setIdentityNumber(ticket.getIdentityNumber());
             chekDataDBTicket.get().setPassengerClass(ticket.getPassengerClass());
-            chekDataDBTicket.get().setSeatNumber(ticket.getSeatNumber());
-            chekDataDBTicket.get().setLuggage(ticket.getLuggage());
             chekDataDBTicket.get().setPrice(ticket.getPrice());
-            chekDataDBTicket.get().setPaid(ticket.getPaid());
             chekDataDBTicket.get().setUpdated_date(new Date());
 
             return response.sukses(ticketRepository.save(chekDataDBTicket.get()));

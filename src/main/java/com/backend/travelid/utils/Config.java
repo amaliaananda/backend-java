@@ -45,6 +45,18 @@ public class Config {
 
     public  static  String TICKET_NOT_FOUND = "TICKET not found.";
 
+    public  static  String BOOKING_REQUIRED = "BOOKING is Required.";
+
+    public  static  String BOOKING_NOT_FOUND = "BOOKING not found.";
+
+    public  static  String BOOKING_DETAIL_REQUIRED = "BOOKING DETAIL is Required.";
+
+    public  static  String BOOKING_DETAIL_NOT_FOUND = "BOOKING DETAIL not found.";
+
+    public  static  String CUSTOMER_REQUIRED = "CUSTOMER is Required.";
+
+    public  static  String CUSTOMER_NOT_FOUND = "CUSTOMER not found.";
+
     public  static  String USER_REQUIRED = "USER is Required.";
 
     public  static  String USER_NOT_FOUND = "USER not found.";
