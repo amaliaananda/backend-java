@@ -62,7 +62,7 @@ public class EmailTemplate {
                 "\t\t\n" +
                 "\t\t<p>Semoga harimu menyenangkan!</p>\n" +
                 "\t\t\n" +
-                "\t\t<p>PT ABC,</p>\n" +
+                "\t\t<p>TRAVEL ID,</p>\n" +
                 "\t\t<p class=\"mt--15\".....</p>\n" +
                 "\n" +
                 "\t\t\n" +
