@@ -31,6 +31,8 @@ public class Config {
 
     public  static  String AIRLINE_REQUIRED = "Airline is Required.";
 
+    public  static  String AIRPORT_REQUIRED = "Airport is Required.";
+
     public  static  String ID_REQUIRED = "Id is Required.";
 
     public  static  String USERNAME_REQUIRED = "Username is Required.";

@@ -58,7 +58,7 @@ public class EmailTemplate {
                 "\t\t\n" +
                 "\t\tkode: <b>{{VERIFY_TOKEN}}</b>\n" +
                 "\t\t\n" +
-                "\t\t<p class=\"mt--15\">Jika kamu butuh bantuan atau pertanyaan, hubungi customer care kami di email berikut : kelompok3.travelid@gmail.com </p>\n" +
+                "\t\t<p class=\"mt--15\">Jika kamu butuh bantuan atau pertanyaan, hubungi customer care kami di email berikut : ferdyansahalfariz@gmail.com </p>\n" +
                 "\t\t\n" +
                 "\t\t<p>Semoga harimu menyenangkan!</p>\n" +
                 "\t\t\n" +
@@ -118,7 +118,7 @@ public class EmailTemplate {
                 "Please use the verification code below to reset your password : <br/> </p>" +
                 "<strong style=\"font-size:24px;\">{{PASS_TOKEN}}</strong> <br/>\n" +
                 "<p style=\"color:#455056; font-size:15px;line-height:24px; margin:0;\">\n" +
-                "If this action wasn’t done by you, please contact us on <b>rikialdipari@gmail.com</b>. But if it’s you, you can ignore this message. </p>" +
+                "If this action wasn’t done by you, please contact us on <b>ferdyansahalfariz@gmail.com</b>. But if it’s you, you can ignore this message. </p>" +
                 "</td>\n"+
                 "</tr>\n"+
                 "<tr>\n" +

@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
             customer.setDateOfBirth(objModel.getDateOfBirth());
             customer.setGender(objModel.getGender());
             //step 1 :
-//            user.setEnabled(false); // matikan user
+            user.setEnabled(false); // matikan user
 
             String password = encoder.encode(objModel.getPassword().replaceAll("\\s+", ""));
             List<Role> r = repoRole.findByNameIn(roleNames);

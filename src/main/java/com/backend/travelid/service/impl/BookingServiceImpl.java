@@ -35,18 +35,18 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Map getByCustomerId(Long CustomerId) {
+    public Map getByCustomerId(Long customerId) {
         try {
             log.info("get booking by user");
-            if (CustomerId == null) {
+            if (customerId == null) {
                 return response.Error(Config.ID_REQUIRED);
             }
-            Optional<Customer> chekDataDBCustomer = customerRepository.findById(CustomerId);
+            Optional<Customer> chekDataDBCustomer = customerRepository.findById(customerId);
             if (chekDataDBCustomer.isEmpty()) {
                 return response.Error(Config.USER_NOT_FOUND);
             }
-            chekDataDBCustomer.get().setId(CustomerId);
-            Optional<Booking> getBaseOptional = bookingRepository.findByCustomerId(chekDataDBCustomer.get());
+            chekDataDBCustomer.get().setId(customerId);
+            Optional<Booking> getBaseOptional = bookingRepository.getByCustomerId(customerId);
             if(getBaseOptional.isEmpty()){
                 return response.notFound(getBaseOptional);
             }

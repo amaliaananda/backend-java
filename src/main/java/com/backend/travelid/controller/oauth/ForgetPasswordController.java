@@ -89,7 +89,7 @@ public class ForgetPasswordController {
                     "@" + found.getUsername()));
             template = template.replaceAll("\\{\\{PASS_TOKEN}}", found.getOtp());
         }
-        emailSender.sendAsync(found.getUsername(), "Chute - Forget Password", template);
+        emailSender.sendAsync(found.getUsername(), "Travel Id - Forget Password", template);
 
 
         return templateCRUD.templateSukses("success");

@@ -23,26 +23,41 @@ public class Flight extends AbstractDate implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "airport", nullable = false)
-    private String airport;
+    @Column(name = "origin_airport", nullable = false)
+    private String originAirport;
+
+    @Column(name = "destination_airport", nullable = false)
+    private String destinationAirport;
 
     @Column(name = "airline", nullable = false)
     private String airline;
 
     @Column(name = "flight_number")
-    private String flight_number;
+    private String flightNumber;
 
-    @Column(name = "origin")
-    private String origin;
+    @Column(name = "origin_city")
+    private String originCity;
 
-    @Column(name = "destination")
-    private String destination;
+    @Column(name = "destination_city")
+    private String destinationCity;
 
     @Column(name = "gate")
     private String gate;
 
     @Column(name = "flight_time")
     private String flightTime;
+
+    @Column(name = "arrived_time")
+    private String arrivedTime;
+
+    @Column(name = "duration")
+    private String duration;
+
+    @Column(name = "luggage")
+    private String luggage;
+
+    @Column(name = "free_meal")
+    private Boolean freeMeal;
 
 }
 

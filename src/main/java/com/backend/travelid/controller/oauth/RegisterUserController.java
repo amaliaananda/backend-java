@@ -53,8 +53,9 @@ public class RegisterUserController {
             return new ResponseEntity<Map>(templateCRUD.Error("Username sudah ada"), HttpStatus.OK);
         }
         map = serviceReq.registerManual(objModel);
-
-        return new ResponseEntity<Map>(map, HttpStatus.OK);
+        //gunanya send email : otomatis send email
+        Map mapRegister = sendEmailegister(objModel);
+        return new ResponseEntity<Map>(mapRegister, HttpStatus.OK);
     }
 
 

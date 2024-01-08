@@ -1,6 +1,7 @@
 package com.backend.travelid.controller;
 
 import com.backend.travelid.entity.Booking;
+import com.backend.travelid.entity.Customer;
 import com.backend.travelid.repository.BookingRepository;
 import com.backend.travelid.service.BookingService;
 import com.backend.travelid.utils.SimpleStringUtils;
@@ -72,9 +73,9 @@ public class BookingController {
     }
 
     @GetMapping(value = {"/bookingsByCustomerId","/bookingsByCustomerId/"})
-    public ResponseEntity<Map> getBookingsByCustomerId(@RequestParam Long id) {
+    public ResponseEntity<Map> getBookingsByCustomerId(@RequestParam Long customerId) {
         try {
-            return new ResponseEntity<Map>(bookingService.getByCustomerId(id), HttpStatus.OK);
+            return new ResponseEntity<Map>(bookingService.getByCustomerId(customerId), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }

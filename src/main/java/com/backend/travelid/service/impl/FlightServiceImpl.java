@@ -47,6 +47,12 @@ public class FlightServiceImpl implements FlightService {
             if(flight.getAirline() == null){
                 return response.Error(Config.AIRLINE_REQUIRED);
             }
+            if(flight.getOriginAirport() == null){
+                return response.Error(Config.AIRPORT_REQUIRED);
+            }
+            if(flight.getDestinationAirport() == null){
+                return response.Error(Config.AIRPORT_REQUIRED);
+            }
             return response.sukses(flightRepository.save(flight));
         }catch (Exception e){
             log.error("save flight error: "+e.getMessage());
@@ -65,13 +71,18 @@ public class FlightServiceImpl implements FlightService {
             if (chekDataDBFlight.isEmpty()) {
                 return response.Error(Config.FLIGHT_NOT_FOUND);
             }
-            chekDataDBFlight.get().setAirport(flight.getAirport());
+            chekDataDBFlight.get().setOriginAirport(flight.getOriginAirport());
+            chekDataDBFlight.get().setDestinationAirport(flight.getDestinationAirport());
             chekDataDBFlight.get().setAirline(flight.getAirline());
-            chekDataDBFlight.get().setFlight_number(flight.getFlight_number());
-            chekDataDBFlight.get().setOrigin(flight.getOrigin());
-            chekDataDBFlight.get().setDestination(flight.getDestination());
+            chekDataDBFlight.get().setFlightNumber(flight.getFlightNumber());
+            chekDataDBFlight.get().setOriginCity(flight.getOriginCity());
+            chekDataDBFlight.get().setDestinationCity(flight.getDestinationCity());
             chekDataDBFlight.get().setGate(flight.getGate());
             chekDataDBFlight.get().setFlightTime(flight.getFlightTime());
+            chekDataDBFlight.get().setArrivedTime(flight.getArrivedTime());
+            chekDataDBFlight.get().setDuration(flight.getDuration());
+            chekDataDBFlight.get().setLuggage(flight.getLuggage());
+            chekDataDBFlight.get().setFreeMeal(flight.getFreeMeal());
             chekDataDBFlight.get().setUpdated_date(new Date());
 
             return response.sukses(flightRepository.save(chekDataDBFlight.get()));
