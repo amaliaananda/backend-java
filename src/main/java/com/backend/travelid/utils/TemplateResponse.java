@@ -12,7 +12,7 @@ public class TemplateResponse {
     public Map sukses(Object obj){
         Map map = new HashMap();
         map.put("data", obj);
-        map.put("status", 200);// jadiin patokan succrss
+        map.put("status", 201);// jadiin patokan succrss
         map.put("message", "Success");
         return map;
     }
@@ -20,7 +20,7 @@ public class TemplateResponse {
     public Map Sukses(Object objek){
         Map map = new HashMap();
         map.put("message", "Success");
-        map.put("status", 200);
+        map.put("status", 201);
         map.put("data", objek);
 
         return map;
@@ -101,7 +101,7 @@ public class TemplateResponse {
         Map map = new HashMap();
         map.put("data", objek);
         map.put("message", "sukses");
-        map.put("status", 200);
+        map.put("status", 201);
         return map;
     }
     public Map templateSukses(Object objek, Object objek2){
@@ -109,7 +109,7 @@ public class TemplateResponse {
         map.put("data 1", objek);
         map.put("data 2", objek2);
         map.put("message", "sukses");
-        map.put("status", 200);
+        map.put("status", 201);
         return map;
     }
 

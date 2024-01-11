@@ -48,10 +48,37 @@ public class FlightServiceImpl implements FlightService {
                 return response.Error(Config.AIRLINE_REQUIRED);
             }
             if(flight.getOriginAirport() == null){
-                return response.Error(Config.AIRPORT_REQUIRED);
+                return response.Error(Config.ORIGIN_AIRPORT_REQUIRED);
             }
             if(flight.getDestinationAirport() == null){
-                return response.Error(Config.AIRPORT_REQUIRED);
+                return response.Error(Config.DESTINATION_AIRPORT_REQUIRED);
+            }
+            if(flight.getFlightNumber() == null){
+                return response.Error(Config.FLIGHT_NUMBER_REQUIRED);
+            }
+            if(flight.getOriginCity() == null){
+                return response.Error(Config.ORIGIN_CITY_REQUIRED);
+            }
+            if(flight.getDestinationCity() == null){
+                return response.Error(Config.DESTINATION_CITY_REQUIRED);
+            }
+            if(flight.getFlightTime() == null){
+                return response.Error(Config.FLIGHT_TIME_REQUIRED);
+            }
+            if(flight.getArrivedTime() == null){
+                return response.Error(Config.ARRIVED_TIME_REQUIRED);
+            }
+            if(flight.getDuration() == null){
+                return response.Error(Config.DURATION_REQUIRED);
+            }
+            if(flight.getTransit() == null){
+                return response.Error(Config.TRANSIT_REQUIRED);
+            }
+            if(flight.getLuggage() == null){
+                return response.Error(Config.LUGGAGE_REQUIRED);
+            }
+            if(flight.getFreeMeal() == null){
+                return response.Error(Config.FREEMEAL_REQUIRED);
             }
             return response.sukses(flightRepository.save(flight));
         }catch (Exception e){
@@ -81,6 +108,7 @@ public class FlightServiceImpl implements FlightService {
             chekDataDBFlight.get().setFlightTime(flight.getFlightTime());
             chekDataDBFlight.get().setArrivedTime(flight.getArrivedTime());
             chekDataDBFlight.get().setDuration(flight.getDuration());
+            chekDataDBFlight.get().setTransit(flight.getTransit());
             chekDataDBFlight.get().setLuggage(flight.getLuggage());
             chekDataDBFlight.get().setFreeMeal(flight.getFreeMeal());
             chekDataDBFlight.get().setUpdated_date(new Date());

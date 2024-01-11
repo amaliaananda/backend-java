@@ -73,8 +73,12 @@ public class LoginUserController {
     @PostMapping("/login")
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map> login(@Valid @RequestBody LoginModel objModel) {
-        Map map = serviceReq.login(objModel);
-        return new ResponseEntity<Map>(map, HttpStatus.OK);
+        try {
+            Map map = serviceReq.login(objModel);
+            return new ResponseEntity<Map>(map, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+        }
     }
 
     @PostMapping("/signin_google")

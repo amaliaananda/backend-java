@@ -24,10 +24,10 @@ public class Booking extends AbstractDate implements Serializable {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(name = "total_price")
+    @Column(name = "total_price", nullable = false)
     private Long totalPrice;
 
-    @Column(name = "paid")
+    @Column(name = "paid", nullable = false)
     private Boolean paid;
 
 }

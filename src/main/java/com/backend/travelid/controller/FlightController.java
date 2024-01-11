@@ -82,6 +82,7 @@ public class FlightController {
             @RequestParam(required = false) String airline,
             @RequestParam(required = false) String origin,
             @RequestParam(required = false) String destination,
+            @RequestParam(required = false) String transit,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
         try {
@@ -101,6 +102,9 @@ public class FlightController {
                         }
                         if (destination != null && !destination.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("destination")), "%" + destination.toLowerCase() + "%"));
+                        }
+                        if (transit != null && !transit.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("transit")), "%" + transit.toLowerCase() + "%"));
                         }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
                     });

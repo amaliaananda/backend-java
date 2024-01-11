@@ -73,6 +73,12 @@ public class BookingServiceImpl implements BookingService {
             if(booking.getCustomer() == null){
                 return response.Error(Config.CUSTOMER_REQUIRED);
             }
+            if(booking.getTotalPrice() == null){
+                return response.Error(Config.TOTAL_PRICE_REQUIRED);
+            }
+            if(booking.getPaid() == null){
+                return response.Error(Config.PAID_REQUIRED);
+            }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(booking.getCustomer().getId());
             if (chekDataDBCustomer.isEmpty()) {
                 return response.Error(Config.CUSTOMER_NOT_FOUND);

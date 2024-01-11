@@ -24,10 +24,10 @@ public class Ticket extends AbstractDate implements Serializable {
     @JoinColumn(name = "flight_id")
     private Flight flight;
 
-    @Column(name = "passenger_class")
+    @Column(name = "passenger_class", nullable = false)
     private String passengerClass;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private Long price;
 
 }

@@ -58,14 +58,25 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TemplateResponse response;
+
     @Override
     public Map registerManual(RegisterUserModel objModel) {
         Map map = new HashMap();
         try {
             String[] roleNames = {"ROLE_USER", "ROLE_READ", "ROLE_WRITE"}; // admin
             User user = new User();
+            String emailBeforeCheck = objModel.getUsername().toLowerCase();
+            String passBeforeCheck = objModel.getPassword();
 
-            user.setUsername(objModel.getUsername().toLowerCase());
+            if (!config.isValidEmail(emailBeforeCheck)){
+                return response.Error(Config.EMAIL_NOT_VALID);
+            }
+            if (!config.isValidPassword(passBeforeCheck)){
+                return response.Error(Config.PASSWORD_NOT_VALID);
+            }
+            user.setUsername(emailBeforeCheck);
             user.setFullname(objModel.getFullname());
 
             Customer customer = new Customer();
@@ -77,7 +88,7 @@ public class UserServiceImpl implements UserService {
             //step 1 :
             user.setEnabled(false); // matikan user
 
-            String password = encoder.encode(objModel.getPassword().replaceAll("\\s+", ""));
+            String password = encoder.encode(passBeforeCheck.replaceAll("\\s+", ""));
             List<Role> r = repoRole.findByNameIn(roleNames);
 
             user.setRoles(r);

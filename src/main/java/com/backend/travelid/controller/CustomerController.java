@@ -1,6 +1,7 @@
 package com.backend.travelid.controller;
 
 import com.backend.travelid.entity.Customer;
+import com.backend.travelid.entity.oauth.User;
 import com.backend.travelid.repository.CustomerRepository;
 import com.backend.travelid.service.CustomerService;
 import com.backend.travelid.utils.SimpleStringUtils;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.Predicate;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,8 +38,12 @@ public class CustomerController {
     public TemplateResponse response;
 
     @PostMapping(value ={"/add","/add/"})
-    public ResponseEntity<Map> addCustomer(@RequestBody Customer customer) {
+    public ResponseEntity<Map> addCustomer(@Valid @RequestBody Customer customer) {
         try {
+            Customer customers = customerRepository.checkExistingIdentityNumber(customer.getIdentityNumber());
+            if (null != customers) {
+                return new ResponseEntity<Map>(response.Error("Identity Number already used"), HttpStatus.OK);
+            }
             return new ResponseEntity<Map>(customerService.addCustomer(customer), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
@@ -46,6 +52,10 @@ public class CustomerController {
     @PutMapping(value={"/update", "/update/"})
     public ResponseEntity<Map> updateCustomer(@RequestBody Customer customer) {
         try {
+            Customer customers = customerRepository.checkExistingIdentityNumber(customer.getIdentityNumber());
+            if (null != customers) {
+                return new ResponseEntity<Map>(response.Error("Identity Number already used"), HttpStatus.OK);
+            }
             return new ResponseEntity<Map>(customerService.updateCustomer(customer), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
@@ -72,7 +82,7 @@ public class CustomerController {
     public ResponseEntity<Map> list(
             @RequestParam() Integer page,
             @RequestParam(required = true) Integer size,
-            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String name,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
         try {
@@ -81,8 +91,8 @@ public class CustomerController {
             Specification<Customer> spec =
                     ((root, query, criteriaBuilder) -> {
                         List<Predicate> predicates = new ArrayList<>();
-                        if (username != null && !username.isEmpty()) {
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("username")), "%" + username.toLowerCase() + "%"));
+                        if (name != null && !name.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
                         }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
                     });

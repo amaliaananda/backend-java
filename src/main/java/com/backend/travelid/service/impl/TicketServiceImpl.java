@@ -54,6 +54,12 @@ public class TicketServiceImpl implements TicketService {
             if (chekDataDBFlight.isEmpty()) {
                 return response.Error(Config.FLIGHT_NOT_FOUND);
             }
+            if(ticket.getPassengerClass() == null){
+                return response.Error(Config.PASSENGER_CLASS_REQUIRED);
+            }
+            if(ticket.getPrice() == null){
+                return response.Error(Config.PRICE_REQUIRED);
+            }
             return response.sukses(ticketRepository.save(ticket));
         }catch (Exception e){
             log.error("save Ticket error: "+e.getMessage());

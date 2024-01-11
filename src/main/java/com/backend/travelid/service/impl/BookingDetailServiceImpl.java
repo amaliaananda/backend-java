@@ -69,6 +69,9 @@ public class BookingDetailServiceImpl implements BookingDetailService {
             if(bookingDetail.getIdentityNumber() == null){
                 return response.Error(Config.IDENTITY_NUMBER_REQUIRED);
             }
+            if(bookingDetail.getSeatNumber() == null){
+                return response.Error(Config.SEAT_NUMBER_REQUIRED);
+            }
             if(bookingDetail.getBooking() == null){
                 return response.Error(Config.BOOKING_REQUIRED);
             }

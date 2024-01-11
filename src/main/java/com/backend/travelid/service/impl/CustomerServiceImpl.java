@@ -27,6 +27,21 @@ public class CustomerServiceImpl implements CustomerService {
     public Map addCustomer(Customer customer) {
         try {
             log.info("add User");
+            if (customer.getName() == null) {
+                return response.Error(Config.NAME_REQUIRED);
+            }
+            if (!response.nameNotSimbol(customer.getName())) {
+                return response.Error(Config.NAME_MUST_NOT_BE_SYMBOL);
+            }
+            if (customer.getIdentityNumber() == null) {
+                return response.Error(Config.IDENTITY_NUMBER_REQUIRED);
+            }
+            if (customer.getEmail() == null) {
+                return response.Error(Config.EMAIL_REQUIRED);
+            }
+            if (customer.getDateOfBirth() == null) {
+                return response.Error(Config.DOB_REQUIRED);
+            }
             return response.sukses(customerRepository.save(customer));
         }catch (Exception e){
             log.error("add user error: "+e.getMessage());
