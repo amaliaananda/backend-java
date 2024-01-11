@@ -48,9 +48,16 @@ public class RegisterUserController {
     public ResponseEntity<Map> saveRegisterManual(@Valid @RequestBody RegisterUserModel objModel) throws RuntimeException {
         Map map = new HashMap();
 
+        if (!config.isValidEmail(objModel.getUsername().toLowerCase())){
+            return new ResponseEntity<Map>(templateCRUD.Error("email not valid"), HttpStatus.NOT_FOUND);
+        }
+        if (!config.isValidPassword(objModel.getPassword())){
+            return new ResponseEntity<Map>(templateCRUD.Error("password not valid"), HttpStatus.NOT_FOUND);
+        }
+
         User user = userRepository.checkExistingEmail(objModel.getUsername());
         if (null != user) {
-            return new ResponseEntity<Map>(templateCRUD.Error("Username sudah ada"), HttpStatus.OK);
+            return new ResponseEntity<Map>(templateCRUD.Error("Username sudah ada"), HttpStatus.NOT_FOUND);
         }
         map = serviceReq.registerManual(objModel);
         //gunanya send email : otomatis send email
@@ -82,7 +89,7 @@ public class RegisterUserController {
             @RequestBody RegisterUserModel user) {
         String message = "Thanks, please check your email for activation.";
 
-        if (user.getUsername() == null) return templateCRUD.Sukses("No email provided");
+        if (user.getUsername() == null) return templateCRUD.Error("No email provided");
         User found = userRepository.findOneByUsername(user.getUsername());
         if (found == null) return templateCRUD.Error("Email not found"); //throw new BadRequest("Email not found");
 

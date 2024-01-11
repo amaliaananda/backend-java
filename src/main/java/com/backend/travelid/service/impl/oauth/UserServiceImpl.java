@@ -67,16 +67,8 @@ public class UserServiceImpl implements UserService {
         try {
             String[] roleNames = {"ROLE_USER", "ROLE_READ", "ROLE_WRITE"}; // admin
             User user = new User();
-            String emailBeforeCheck = objModel.getUsername().toLowerCase();
-            String passBeforeCheck = objModel.getPassword();
 
-            if (!config.isValidEmail(emailBeforeCheck)){
-                return response.Error(Config.EMAIL_NOT_VALID);
-            }
-            if (!config.isValidPassword(passBeforeCheck)){
-                return response.Error(Config.PASSWORD_NOT_VALID);
-            }
-            user.setUsername(emailBeforeCheck);
+            user.setUsername(objModel.getUsername().toLowerCase());
             user.setFullname(objModel.getFullname());
 
             Customer customer = new Customer();
@@ -88,7 +80,7 @@ public class UserServiceImpl implements UserService {
             //step 1 :
             user.setEnabled(false); // matikan user
 
-            String password = encoder.encode(passBeforeCheck.replaceAll("\\s+", ""));
+            String password = encoder.encode(objModel.getPassword().replaceAll("\\s+", ""));
             List<Role> r = repoRole.findByNameIn(roleNames);
 
             user.setRoles(r);
@@ -100,7 +92,7 @@ public class UserServiceImpl implements UserService {
             return templateResponse.templateSukses(objUser, objCustomer);
 
         } catch (Exception e) {
-            logger.error("Eror registerManual=", e);
+            logger.error("Error registerManual=", e);
             return templateResponse.templateEror("eror:"+e);
         }
 
