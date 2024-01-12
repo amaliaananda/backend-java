@@ -8,6 +8,7 @@ import com.backend.travelid.repository.oauth.RoleRepository;
 import com.backend.travelid.repository.oauth.UserRepository;
 import com.backend.travelid.request.LoginModel;
 import com.backend.travelid.request.RegisterUserModel;
+import com.backend.travelid.service.oauth.Oauth2UserDetailsService;
 import com.backend.travelid.service.oauth.UserService;
 import com.backend.travelid.utils.Config;
 import com.backend.travelid.utils.TemplateResponse;
@@ -20,14 +21,15 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.security.Principal;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -60,6 +62,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TemplateResponse response;
+
+    @Autowired
+    private Oauth2UserDetailsService userDetailsService;
 
     @Override
     public Map registerManual(RegisterUserModel objModel) {
@@ -193,5 +198,43 @@ public class UserServiceImpl implements UserService {
 
             return templateResponse.templateEror(e);
         }
+    }
+
+    @Override
+    public Map getDetailProfile(Principal principal) {
+        User idUser = getUserIdToken(principal, userDetailsService);
+        Optional<Customer> idCustomer = getCustomerByEmail(idUser);
+        try {
+            User obj = userRepository.save(idUser);
+            return response.templateSukses(obj, idCustomer);
+        } catch (Exception e){
+            return response.error(e,"500");
+        }
+    }
+
+    private User getUserIdToken(Principal principal, Oauth2UserDetailsService userDetailsService) {
+        UserDetails user = null;
+        String username = principal.getName();
+        if (!StringUtils.isEmpty(username)) {
+            user = userDetailsService.loadUserByUsername(username);
+        }
+
+        if (null == user) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        User idUser = userRepository.findOneByUsername(user.getUsername());
+        if (null == idUser) {
+            throw new UsernameNotFoundException("User name not found");
+        }
+        return idUser;
+    }
+    private Optional<Customer> getCustomerByEmail(User idUser) {
+        String email = idUser.getUsername();
+
+        Optional<Customer> idCustomer = repoCustomer.findByEmail(email);
+        if(idCustomer.isEmpty()){
+            throw new UsernameNotFoundException("email not found");
+        }
+        return idCustomer;
     }
 }

@@ -1,7 +1,9 @@
 package com.backend.travelid.service.impl;
 
 import com.backend.travelid.entity.Customer;
+import com.backend.travelid.entity.oauth.User;
 import com.backend.travelid.repository.CustomerRepository;
+import com.backend.travelid.repository.oauth.UserRepository;
 import com.backend.travelid.service.CustomerService;
 import com.backend.travelid.utils.Config;
 import com.backend.travelid.utils.TemplateResponse;
@@ -19,6 +21,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private TemplateResponse response;
@@ -56,18 +61,30 @@ public class CustomerServiceImpl implements CustomerService {
             if (customer.getId() == null) {
                 return response.Error(Config.ID_REQUIRED);
             }
-            Optional<Customer> chekDataDBUser = customerRepository.findById(customer.getId());
+            if (customer.getEmail() == null) {
+                return response.Error(Config.EMAIL_REQUIRED);
+            }
+            Optional<Customer> chekDataDBCustomer = customerRepository.findById(customer.getId());
+            if (chekDataDBCustomer.isEmpty()) {
+                return response.Error(Config.CUSTOMER_NOT_FOUND);
+            }
+            Optional<User> chekDataDBUser = userRepository.findByEmail(customer.getEmail());
             if (chekDataDBUser.isEmpty()) {
                 return response.Error(Config.USER_NOT_FOUND);
             }
-            chekDataDBUser.get().setName(customer.getName());
-            chekDataDBUser.get().setIdentityNumber(customer.getIdentityNumber());
-            chekDataDBUser.get().setEmail(customer.getEmail());
-            chekDataDBUser.get().setDateOfBirth(customer.getDateOfBirth());
-            chekDataDBUser.get().setGender(customer.getGender());
-            chekDataDBUser.get().setUpdated_date(new Date());
 
-            return response.sukses(customerRepository.save(chekDataDBUser.get()));
+            chekDataDBCustomer.get().setName(customer.getName());
+            chekDataDBCustomer.get().setIdentityNumber(customer.getIdentityNumber());
+            chekDataDBCustomer.get().setDateOfBirth(customer.getDateOfBirth());
+            chekDataDBCustomer.get().setGender(customer.getGender());
+            chekDataDBCustomer.get().setUpdated_date(new Date());
+
+            chekDataDBUser.get().setFullname(customer.getName());
+
+            User objUser = userRepository.save(chekDataDBUser.get());
+            Customer objCustomer = customerRepository.save(chekDataDBCustomer.get());
+
+            return response.templateSukses(objUser, objCustomer);
         }catch (Exception e){
             log.error("Update User error: "+e.getMessage());
             return response.Error("Update User="+e.getMessage());

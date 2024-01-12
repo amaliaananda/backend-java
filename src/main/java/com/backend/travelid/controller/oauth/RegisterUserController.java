@@ -1,6 +1,8 @@
 package com.backend.travelid.controller.oauth;
 
+import com.backend.travelid.entity.Customer;
 import com.backend.travelid.entity.oauth.User;
+import com.backend.travelid.repository.CustomerRepository;
 import com.backend.travelid.repository.oauth.UserRepository;
 import com.backend.travelid.request.RegisterUserModel;
 import com.backend.travelid.service.email.EmailSender;
@@ -27,6 +29,9 @@ import java.util.Map;
 public class RegisterUserController {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     Config config = new Config();
 
@@ -57,7 +62,11 @@ public class RegisterUserController {
 
         User user = userRepository.checkExistingEmail(objModel.getUsername());
         if (null != user) {
-            return new ResponseEntity<Map>(templateCRUD.Error("Username sudah ada"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Map>(templateCRUD.Error("Username already used"), HttpStatus.NOT_FOUND);
+        }
+        Customer customers = customerRepository.checkExistingIdentityNumber(objModel.getIdentityNumber());
+        if (null != customers) {
+            return new ResponseEntity<Map>(templateCRUD.Error("Identity Number already used"), HttpStatus.NOT_FOUND);
         }
         map = serviceReq.registerManual(objModel);
         //gunanya send email : otomatis send email

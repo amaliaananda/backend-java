@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.Predicate;
@@ -36,6 +37,7 @@ public class BookingDetailController {
     public TemplateResponse response;
 
     @PostMapping(value = {"/save","/save/"})
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<Map> addBookingDetail(@RequestBody BookingDetail bookingDetail){
         try {
             return new ResponseEntity<Map>(bookingDetailService.saveBookingDetail(bookingDetail), HttpStatus.OK);
@@ -45,6 +47,7 @@ public class BookingDetailController {
     }
 
     @PutMapping(value = {"/update","/update/"})
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> updateBookingDetail(@RequestBody BookingDetail bookingDetail) {
         try {
             return new ResponseEntity<Map>(bookingDetailService.updateBookingDetail(bookingDetail), HttpStatus.OK);
@@ -54,6 +57,7 @@ public class BookingDetailController {
     }
 
     @DeleteMapping(value = {"/delete","/delete/"})
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> deleteBookingDetail(@RequestBody BookingDetail bookingDetail) {
         try {
             return new ResponseEntity<Map>(bookingDetailService.deleteBookingDetail(bookingDetail), HttpStatus.OK);
@@ -63,6 +67,7 @@ public class BookingDetailController {
     }
 
     @GetMapping(value={"/{id}", "/{id}/"})
+    @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Map> getById(@PathVariable("id") Long id) {
         try {
             return new ResponseEntity<Map>(bookingDetailService.getByID(id), HttpStatus.OK);
@@ -72,6 +77,7 @@ public class BookingDetailController {
     }
 
     @GetMapping(value = {"/getByCustomerName","/bookingsByCustomerName/"})
+    @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Map> getByCustomerName(@RequestParam String customerName) {
         try {
             return new ResponseEntity<Map>(bookingDetailService.getByCustomerName(customerName), HttpStatus.OK);
@@ -80,6 +86,7 @@ public class BookingDetailController {
         }
     }
     @GetMapping(value = {"/listBookingDetails", "/listBookingDetails/"})
+    @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Map> list(
             @RequestParam() Integer page,
             @RequestParam(required = true) Integer size,

@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.Predicate;
@@ -35,6 +36,8 @@ public class FlightController {
     public TemplateResponse response;
 
     @PostMapping(value ={"/save","/save/"})
+    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('ADMIN')")
     public ResponseEntity<Map> saveFlight(@RequestBody Flight flight) {
         try {
             return new ResponseEntity<Map>(flightService.saveFlight(flight), HttpStatus.OK);
@@ -44,6 +47,7 @@ public class FlightController {
     }
 
     @PutMapping(value={"/update", "/update/"})
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> updateFlight(@RequestBody Flight flight) {
         try {
             return new ResponseEntity<Map>(flightService.updateFlight(flight), HttpStatus.OK);
@@ -53,6 +57,7 @@ public class FlightController {
     }
 
     @DeleteMapping(value={"/delete", "/delete/"})
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> deleteFlight(@RequestBody Flight flight) {
         try {
             return new ResponseEntity<Map>(flightService.deleteFlight(flight), HttpStatus.OK);

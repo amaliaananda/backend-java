@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.Predicate;
@@ -36,6 +37,7 @@ public class TicketController {
     public TemplateResponse response;
 
     @PostMapping(value = {"/save","/save/"})
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> addTicket(@RequestBody Ticket ticket){
         try {
             return new ResponseEntity<Map>(ticketService.saveTicket(ticket), HttpStatus.OK);
@@ -45,6 +47,7 @@ public class TicketController {
     }
 
     @PutMapping(value = {"/update","/update/"})
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> updateTicket(@RequestBody Ticket ticket) {
         try {
             return new ResponseEntity<Map>(ticketService.updateTicket(ticket), HttpStatus.OK);
@@ -54,6 +57,7 @@ public class TicketController {
     }
 
     @DeleteMapping(value = {"/delete","/delete/"})
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> deleteTicket(@RequestBody Ticket ticket) {
         try {
             return new ResponseEntity<Map>(ticketService.deleteTicket(ticket), HttpStatus.OK);

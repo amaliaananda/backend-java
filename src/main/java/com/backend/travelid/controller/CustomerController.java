@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.Predicate;
@@ -50,6 +51,7 @@ public class CustomerController {
         }
     }
     @PutMapping(value={"/update", "/update/"})
+    @PreAuthorize("hasRole('WRITE')")
     public ResponseEntity<Map> updateCustomer(@RequestBody Customer customer) {
         try {
             Customer customers = customerRepository.checkExistingIdentityNumber(customer.getIdentityNumber());
@@ -63,6 +65,7 @@ public class CustomerController {
     }
 
     @DeleteMapping(value={"/delete", "/delete/"})
+    @PreAuthorize("hasRole('WRITE')")
     public ResponseEntity<Map> deleteCustomer(@RequestBody Customer customer) {
         try {
             return new ResponseEntity<Map>(customerService.deleteCustomer(customer), HttpStatus.OK);
@@ -71,6 +74,7 @@ public class CustomerController {
         }
     }
     @GetMapping(value={"/{id}", "/{id}/"})
+    @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Map> getById(@PathVariable("id") Long id) {
         try {
             return new ResponseEntity<Map>(customerService.getByID(id), HttpStatus.OK);
@@ -79,6 +83,7 @@ public class CustomerController {
         }
     }
     @GetMapping(value = {"/listCustomers", "/listCustomers/"})
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> list(
             @RequestParam() Integer page,
             @RequestParam(required = true) Integer size,
