@@ -37,7 +37,6 @@ public class FlightController {
 
     @PostMapping(value ={"/save","/save/"})
     @PreAuthorize("hasRole('ADMIN')")
-//    @PreAuthorize("hasRole('ADMIN') or hasRole('ADMIN')")
     public ResponseEntity<Map> saveFlight(@RequestBody Flight flight) {
         try {
             return new ResponseEntity<Map>(flightService.saveFlight(flight), HttpStatus.OK);
@@ -78,15 +77,21 @@ public class FlightController {
     public List<Flight> getFlightsByAirline(@PathVariable("airline") String airline) {
         return flightService.getFlightsByAirline(airline);
     }
+    @GetMapping(value={"/flightsByPassengerClass/{passengerClass}", "/flightsByPassengerClass/{passengerClass}/"})
+    public List<Flight> getFlightsByPassengerClass(@PathVariable("passengerClass") String passengerClass) {
+        return flightService.getFlightsByPassengerClass(passengerClass);
+    }
 
     @GetMapping(value = {"/listFlights", "/listFlights/"})
     public ResponseEntity<Map> list(
             @RequestParam() Integer page,
             @RequestParam(required = true) Integer size,
-            @RequestParam(required = false) String airport,
+            @RequestParam(required = false) String passengerClass,
+            @RequestParam(required = false) String originAirport,
+            @RequestParam(required = false) String destinationAirport,
             @RequestParam(required = false) String airline,
-            @RequestParam(required = false) String origin,
-            @RequestParam(required = false) String destination,
+            @RequestParam(required = false) String originCity,
+            @RequestParam(required = false) String destinationCity,
             @RequestParam(required = false) String transit,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
@@ -96,17 +101,26 @@ public class FlightController {
             Specification<Flight> spec =
                     ((root, query, criteriaBuilder) -> {
                         List<Predicate> predicates = new ArrayList<>();
-                        if (airport != null && !airport.isEmpty()) {
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("airport")), "%" + airport.toLowerCase() + "%"));
+                        if (passengerClass != null && !passengerClass.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("passengerClass")), "%" + passengerClass.toLowerCase() + "%"));
+                        }
+                        if (originAirport != null && !originAirport.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("originAirport")), "%" + originAirport.toLowerCase() + "%"));
+                        }
+                        if (destinationAirport != null && !destinationAirport.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("destinationAirport")), "%" + destinationAirport.toLowerCase() + "%"));
                         }
                         if (airline != null && !airline.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("airline")), "%" + airline.toLowerCase() + "%"));
                         }
-                        if (origin != null && !origin.isEmpty()) {
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("origin")), "%" + origin.toLowerCase() + "%"));
+                        if (originCity != null && !originCity.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("originCity")), "%" + originCity.toLowerCase() + "%"));
                         }
-                        if (destination != null && !destination.isEmpty()) {
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("destination")), "%" + destination.toLowerCase() + "%"));
+                        if (originCity != null && !originCity.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("originCity")), "%" + originCity.toLowerCase() + "%"));
+                        }
+                        if (destinationCity != null && !destinationCity.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("destinationCity")), "%" + destinationCity.toLowerCase() + "%"));
                         }
                         if (transit != null && !transit.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("transit")), "%" + transit.toLowerCase() + "%"));

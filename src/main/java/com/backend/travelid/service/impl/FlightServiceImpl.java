@@ -32,6 +32,11 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
+    public List<Flight> getFlightsByPassengerClass(String passengerClass) {
+        return flightRepository.findByPassengerClass(passengerClass);
+    }
+
+    @Override
     public Map getByID(Long flight) {
         Optional<Flight> getBaseOptional = flightRepository.findById(flight);
         if(getBaseOptional.isEmpty()){
@@ -44,6 +49,12 @@ public class FlightServiceImpl implements FlightService {
     public Map saveFlight(Flight flight) {
         try {
             log.info("save flight");
+            if(flight.getPassengerClass() == null){
+                return response.Error(Config.PASSENGER_CLASS_REQUIRED);
+            }
+            if(flight.getPrice() == null){
+                return response.Error(Config.PRICE_REQUIRED);
+            }
             if(flight.getAirline() == null){
                 return response.Error(Config.AIRLINE_REQUIRED);
             }
@@ -80,7 +91,11 @@ public class FlightServiceImpl implements FlightService {
             if(flight.getFreeMeal() == null){
                 return response.Error(Config.FREEMEAL_REQUIRED);
             }
-            return response.sukses(flightRepository.save(flight));
+            if ("economy".equals(flight.getPassengerClass())) flight.setLuggage("20 kg");
+            else if ("business".equals(flight.getPassengerClass())) flight.setLuggage("30 kg");
+            else throw new RuntimeException(Config.PASSWORD_NOT_VALID);
+
+            return response.templateSaveSukses(flightRepository.save(flight));
         }catch (Exception e){
             log.error("save flight error: "+e.getMessage());
             return response.Error("save flight ="+e.getMessage());
@@ -98,6 +113,8 @@ public class FlightServiceImpl implements FlightService {
             if (chekDataDBFlight.isEmpty()) {
                 return response.Error(Config.FLIGHT_NOT_FOUND);
             }
+            chekDataDBFlight.get().setPassengerClass(flight.getPassengerClass());
+            chekDataDBFlight.get().setPrice(flight.getPrice());
             chekDataDBFlight.get().setOriginAirport(flight.getOriginAirport());
             chekDataDBFlight.get().setDestinationAirport(flight.getDestinationAirport());
             chekDataDBFlight.get().setAirline(flight.getAirline());

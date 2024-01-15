@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface FlightService {
     List<Flight> getFlightsByAirline(String airline);
+    List<Flight> getFlightsByPassengerClass(String passengerClass);
     Map getByID(Long booking);
     Map saveFlight(Flight flight);
     Map updateFlight(Flight flight);

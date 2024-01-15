@@ -33,6 +33,8 @@ public class Config {
 
     public  static  String IDENTITY_NUMBER_REQUIRED = "Identity Number is Required.";
 
+    public  static  String LIST_BOOKING_DETAIL_REQUIRED = "List Booking Detail is Required.";
+
     public  static  String AIRLINE_REQUIRED = "Airline is Required.";
 
     public  static  String ORIGIN_AIRPORT_REQUIRED = "Origin Airport is Required.";
@@ -60,6 +62,8 @@ public class Config {
     public  static  String FREEMEAL_REQUIRED = "FREEMEAL is Required.";
 
     public  static  String PASSENGER_CLASS_REQUIRED = "passenger class is Required.";
+
+    public  static  String PASSENGER_CLASS_NOT_FOUND = "passenger class not found.";
 
     public  static  String PRICE_REQUIRED = "Price is Required.";
 

@@ -1,5 +1,6 @@
 package com.backend.travelid.controller;
 
+import com.backend.travelid.dto.BookingRequestDTO;
 import com.backend.travelid.entity.Booking;
 import com.backend.travelid.entity.Customer;
 import com.backend.travelid.repository.BookingRepository;
@@ -42,6 +43,15 @@ public class BookingController {
     public ResponseEntity<Map> addBooking(@RequestBody Booking booking){
         try {
             return new ResponseEntity<Map>(bookingService.saveBooking(booking), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+        }
+    }
+    @PostMapping(value = {"/saveWithDetails","/saveWithDetails/"})
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Map> saveBookingWithDetails(@RequestBody BookingRequestDTO bookingRequestDTO) {
+        try {
+            return new ResponseEntity<Map>(bookingService.saveBookingWithDetails(bookingRequestDTO), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }

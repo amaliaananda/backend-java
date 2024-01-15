@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
             User objUser = repoUser.save(user);
             Customer objCustomer = repoCustomer.save(customer);
 
-            return templateResponse.templateSukses(objUser, objCustomer);
+            return templateResponse.templateSaveSukses(objUser, objCustomer);
 
         } catch (Exception e) {
             logger.error("Error registerManual=", e);
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(password);
             User obj = repoUser.save(user);
             Customer objCustomer = repoCustomer.save(customer);
-            return templateResponse.templateSukses(obj, objCustomer);
+            return templateResponse.templateSaveSukses(obj, objCustomer);
 
         } catch (Exception e) {
             logger.error("Eror registerManual=", e);

@@ -47,7 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
             if (customer.getDateOfBirth() == null) {
                 return response.Error(Config.DOB_REQUIRED);
             }
-            return response.sukses(customerRepository.save(customer));
+            return response.templateSaveSukses(customerRepository.save(customer));
         }catch (Exception e){
             log.error("add user error: "+e.getMessage());
             return response.Error("add user ="+e.getMessage());

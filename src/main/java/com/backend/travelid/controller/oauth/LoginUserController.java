@@ -99,7 +99,7 @@ public class LoginUserController {
         // step 2 : get informasi akn dikonversi bentuk objek
         Oauth2 oauth2 = new Oauth2.Builder(new NetHttpTransport(), new JacksonFactory(), credential).setApplicationName(
                 "Oauth2").build();
-        // step 3 : oauth2 akan diolah oleh Userinfoplus : goodle (DTO)
+        // step 3 : oauth2 akan diolah oleh Userinfoplus : goodle (dto)
         Userinfoplus profile = null;
         try {
             // get information dari token si Google
@@ -108,7 +108,7 @@ public class LoginUserController {
             return new ResponseEntity<Map>(response.Error(e.getDetails()), HttpStatus.BAD_GATEWAY);
         }
         profile.toPrettyString();
-        // step 4 : kita hanya email, full name  dari DTO Userinfoplus dan kita chek ke db, untuk validasi
+        // step 4 : kita hanya email, full name  dari dto Userinfoplus dan kita chek ke db, untuk validasi
         User user = userRepository.findOneByUsername(profile.getEmail());
         if (null != user) {
             if (!user.isEnabled()) {

@@ -2,10 +2,10 @@ package com.backend.travelid.service.impl;
 
 import com.backend.travelid.entity.Booking;
 import com.backend.travelid.entity.BookingDetail;
-import com.backend.travelid.entity.Ticket;
+import com.backend.travelid.entity.Flight;
 import com.backend.travelid.repository.BookingDetailRepository;
 import com.backend.travelid.repository.BookingRepository;
-import com.backend.travelid.repository.TicketRepository;
+import com.backend.travelid.repository.FlightRepository;
 import com.backend.travelid.service.BookingDetailService;
 import com.backend.travelid.utils.Config;
 import com.backend.travelid.utils.TemplateResponse;
@@ -26,7 +26,7 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     private BookingDetailRepository bookingDetailRepository;
 
     @Autowired
-    private TicketRepository ticketRepository;
+    private FlightRepository flightRepository;
 
     @Autowired
     private BookingRepository bookingRepository;
@@ -75,18 +75,18 @@ public class BookingDetailServiceImpl implements BookingDetailService {
             if(bookingDetail.getBooking() == null){
                 return response.Error(Config.BOOKING_REQUIRED);
             }
-            if(bookingDetail.getTicket() == null){
-                return response.Error(Config.TICKET_REQUIRED);
+            if(bookingDetail.getFlight() == null){
+                return response.Error(Config.FLIGHT_REQUIRED);
             }
             Optional<Booking> chekDataDBBooking = bookingRepository.findById(bookingDetail.getBooking().getId());
             if (chekDataDBBooking.isEmpty()) {
                 return response.Error(Config.BOOKING_NOT_FOUND);
             }
-            Optional<Ticket> chekDataDBTicket = ticketRepository.findById(bookingDetail.getTicket().getId());
-            if (chekDataDBTicket.isEmpty()) {
-                return response.Error(Config.TICKET_NOT_FOUND);
+            Optional<Flight> chekDataDBFlight = flightRepository.findById(bookingDetail.getFlight().getId());
+            if (chekDataDBFlight.isEmpty()) {
+                return response.Error(Config.FLIGHT_NOT_FOUND);
             }
-            return response.sukses(bookingDetailRepository.save(bookingDetail));
+            return response.templateSaveSukses(bookingDetailRepository.save(bookingDetail));
         }catch (Exception e){
             log.error("save booking Detail error: "+e.getMessage());
             return response.Error("save booking Detail ="+e.getMessage());
@@ -104,15 +104,15 @@ public class BookingDetailServiceImpl implements BookingDetailService {
             if (chekDataDBbookingDetail.isEmpty()) {
                 return response.Error(Config.BOOKING_DETAIL_NOT_FOUND);
             }
-            Optional<Ticket> chekDataDBTicket = ticketRepository.findById(bookingDetail.getTicket().getId());
-            if (chekDataDBTicket.isEmpty()) {
-                return response.Error(Config.TICKET_NOT_FOUND);
+            Optional<Flight> chekDataDBFlight = flightRepository.findById(bookingDetail.getFlight().getId());
+            if (chekDataDBFlight.isEmpty()) {
+                return response.Error(Config.FLIGHT_NOT_FOUND);
             }
             Optional<Booking> chekDataDBBooking = bookingRepository.findById(bookingDetail.getBooking().getId());
             if (chekDataDBBooking.isEmpty()) {
                 return response.Error(Config.BOOKING_NOT_FOUND);
             }
-            chekDataDBbookingDetail.get().setTicket(bookingDetail.getTicket());
+            chekDataDBbookingDetail.get().setFlight(bookingDetail.getFlight());
             chekDataDBbookingDetail.get().setCustomerName(bookingDetail.getCustomerName());
             chekDataDBbookingDetail.get().setIdentityNumber(bookingDetail.getIdentityNumber());
             chekDataDBbookingDetail.get().setSeatNumber(bookingDetail.getSeatNumber());

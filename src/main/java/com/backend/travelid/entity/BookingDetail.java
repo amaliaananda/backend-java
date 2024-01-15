@@ -1,5 +1,6 @@
 package com.backend.travelid.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,9 +22,10 @@ public class BookingDetail extends AbstractDate implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_id")
-    private Ticket ticket;
+    @JoinColumn(name = "flight_id")
+    private Flight flight;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "booking_id")
     private Booking booking;
@@ -34,11 +36,17 @@ public class BookingDetail extends AbstractDate implements Serializable {
     @Column(name = "identity_number", nullable = false)
     private String identityNumber;
 
-    @Column(name = "seat_number", nullable = false)
+    @Column(name = "seat_number")
     private String seatNumber;
 
     @Column(name = "luggage")
     private String luggage;
+
+    @Column(name = "price")
+    private Long price;
+
+    @Column(name = "category", nullable = false)
+    private String category;
 
 }
 
