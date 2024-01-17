@@ -92,6 +92,7 @@ public class CustomerServiceImpl implements CustomerService {
             chekDataDBCustomer.get().setDateOfBirth(customer.getDateOfBirth());
             chekDataDBCustomer.get().setGender(customer.getGender());
             chekDataDBCustomer.get().setPhoneNumber(customer.getPhoneNumber());
+            chekDataDBCustomer.get().setProfilePicture(customer.getProfilePicture());
             chekDataDBCustomer.get().setUpdated_date(new Date());
 
             chekDataDBUser.get().setFullname(customer.getName());
