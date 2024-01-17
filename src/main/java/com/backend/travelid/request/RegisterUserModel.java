@@ -20,7 +20,11 @@ public class RegisterUserModel {
     @NotEmpty(message = "date of birth is required.")
     private String dateOfBirth;
 
+    @NotEmpty(message = "gender is required.")
     private String gender;
+
+    @NotEmpty(message = "phone Number is required.")
+    private String PhoneNumber;
 }
 
 

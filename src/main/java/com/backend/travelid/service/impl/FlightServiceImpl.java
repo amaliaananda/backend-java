@@ -1,6 +1,8 @@
 package com.backend.travelid.service.impl;
 
+import com.backend.travelid.entity.Airline;
 import com.backend.travelid.entity.Flight;
+import com.backend.travelid.repository.AirlineRepository;
 import com.backend.travelid.repository.FlightRepository;
 import com.backend.travelid.utils.Config;
 import com.backend.travelid.utils.TemplateResponse;
@@ -24,11 +26,14 @@ public class FlightServiceImpl implements FlightService {
     private FlightRepository flightRepository;
 
     @Autowired
+    private AirlineRepository airlineRepository;
+
+    @Autowired
     private TemplateResponse response;
 
     @Override
     public List<Flight> getFlightsByAirline(String airline) {
-        return flightRepository.findByAirline(airline);
+        return flightRepository.getByAirline(airline);
     }
 
     @Override
@@ -91,6 +96,10 @@ public class FlightServiceImpl implements FlightService {
             if(flight.getFreeMeal() == null){
                 return response.Error(Config.FREEMEAL_REQUIRED);
             }
+            Optional<Airline> chekDataDBAirline = airlineRepository.findByAirline(flight.getAirline().getAirline());
+            if (chekDataDBAirline.isEmpty()) {
+                return response.Error(Config.AIRLINE_NOT_FOUND);
+            }
             if ("economy".equals(flight.getPassengerClass())) flight.setLuggage("20 kg");
             else if ("business".equals(flight.getPassengerClass())) flight.setLuggage("30 kg");
             else throw new RuntimeException(Config.PASSWORD_NOT_VALID);
@@ -113,11 +122,15 @@ public class FlightServiceImpl implements FlightService {
             if (chekDataDBFlight.isEmpty()) {
                 return response.Error(Config.FLIGHT_NOT_FOUND);
             }
+            Optional<Airline> chekDataDBAirline = airlineRepository.findByAirline(flight.getAirline().getAirline());
+            if (chekDataDBAirline.isEmpty()) {
+                return response.Error(Config.AIRLINE_NOT_FOUND);
+            }
+            chekDataDBFlight.get().setAirline(flight.getAirline());
             chekDataDBFlight.get().setPassengerClass(flight.getPassengerClass());
             chekDataDBFlight.get().setPrice(flight.getPrice());
             chekDataDBFlight.get().setOriginAirport(flight.getOriginAirport());
             chekDataDBFlight.get().setDestinationAirport(flight.getDestinationAirport());
-            chekDataDBFlight.get().setAirline(flight.getAirline());
             chekDataDBFlight.get().setFlightNumber(flight.getFlightNumber());
             chekDataDBFlight.get().setOriginCity(flight.getOriginCity());
             chekDataDBFlight.get().setDestinationCity(flight.getDestinationCity());

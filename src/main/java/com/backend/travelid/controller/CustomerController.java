@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.Predicate;
 import javax.validation.Valid;
@@ -50,8 +51,8 @@ public class CustomerController {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
-    @PutMapping(value={"/update", "/update/"})
-    @PreAuthorize("hasRole('WRITE')")
+    @PutMapping(value={"/update", "/update/"}, consumes = "application/json")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Map> updateCustomer(@RequestBody Customer customer) {
         try {
             Customer customers = customerRepository.checkExistingIdentityNumber(customer.getIdentityNumber());
@@ -64,8 +65,18 @@ public class CustomerController {
         }
     }
 
+    @PutMapping(value={"/updateProfilePicture", "/updateProfilePicture/"}, consumes = {"multipart/form-data", "application/json"})
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Map> updateCustomer(@RequestParam("profilePicture") MultipartFile profilePicture,@RequestParam("idCustomer") Long idCustomer) {
+        try {
+            return new ResponseEntity<Map>(customerService.updateProfilePicture(profilePicture,idCustomer), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+        }
+    }
+
     @DeleteMapping(value={"/delete", "/delete/"})
-    @PreAuthorize("hasRole('WRITE')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Map> deleteCustomer(@RequestBody Customer customer) {
         try {
             return new ResponseEntity<Map>(customerService.deleteCustomer(customer), HttpStatus.OK);
@@ -74,7 +85,7 @@ public class CustomerController {
         }
     }
     @GetMapping(value={"/{id}", "/{id}/"})
-    @PreAuthorize("hasRole('READ')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Map> getById(@PathVariable("id") Long id) {
         try {
             return new ResponseEntity<Map>(customerService.getByID(id), HttpStatus.OK);

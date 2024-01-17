@@ -32,8 +32,14 @@ public class Customer extends AbstractDate implements Serializable {
     @Column(name = "date_of_birth", nullable = false)
     private String dateOfBirth;
 
-    @Column(name = "gender")
+    @Column(name = "gender", nullable = false)
     private String gender;
+
+    @Column(name = "phone_number")
+    private String PhoneNumber;
+
+    @Column(name = "profile_picture")
+    private String profilePicture;
 
 }
 
