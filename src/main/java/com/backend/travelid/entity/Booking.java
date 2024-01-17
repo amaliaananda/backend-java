@@ -54,7 +54,7 @@ public class Booking extends AbstractDate implements Serializable {
     @Column(name = "masa_berlaku")
     private String masaBerlaku;
 
-    @Column(name = "cvv/cvn")
+    @Column(name = "cvvcvn")
     private String cvvCvn;
 
     @JsonManagedReference
