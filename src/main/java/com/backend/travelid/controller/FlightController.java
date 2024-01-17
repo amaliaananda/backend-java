@@ -93,6 +93,8 @@ public class FlightController {
             @RequestParam(required = false) String originCity,
             @RequestParam(required = false) String destinationCity,
             @RequestParam(required = false) String transit,
+            @RequestParam(required = false) Boolean isDiscount,
+            @RequestParam(required = false) Boolean freeMeal,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
         try {
@@ -124,6 +126,12 @@ public class FlightController {
                         }
                         if (transit != null && !transit.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("transit")), "%" + transit.toLowerCase() + "%"));
+                        }
+                        if (isDiscount != null) {
+                            predicates.add(criteriaBuilder.isTrue(root.get("isDiscount")));
+                        }
+                        if (freeMeal != null) {
+                            predicates.add(criteriaBuilder.isTrue(root.get("freeMeal")));
                         }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
                     });

@@ -12,6 +12,7 @@ public class BookingDetailDTO {
     private String customerName;
     private String identityNumber;
     private String seatNumber;
+    private Long totalSeatPrice;
     private String category; // adult, child, infant
 }
 

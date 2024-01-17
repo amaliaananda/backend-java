@@ -1,5 +1,6 @@
 package com.backend.travelid.service.impl;
 
+import com.backend.travelid.controller.fileupload.FileStorageService;
 import com.backend.travelid.entity.Customer;
 import com.backend.travelid.entity.oauth.User;
 import com.backend.travelid.repository.CustomerRepository;
@@ -9,8 +10,18 @@ import com.backend.travelid.utils.Config;
 import com.backend.travelid.utils.TemplateResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -26,12 +37,15 @@ public class CustomerServiceImpl implements CustomerService {
     private UserRepository userRepository;
 
     @Autowired
+    private FileStorageService fileStorageService;
+
+    @Autowired
     private TemplateResponse response;
 
     @Override
     public Map addCustomer(Customer customer) {
         try {
-            log.info("add User");
+            log.info("add Customer");
             if (customer.getName() == null) {
                 return response.Error(Config.NAME_REQUIRED);
             }
@@ -49,15 +63,15 @@ public class CustomerServiceImpl implements CustomerService {
             }
             return response.templateSaveSukses(customerRepository.save(customer));
         }catch (Exception e){
-            log.error("add user error: "+e.getMessage());
-            return response.Error("add user ="+e.getMessage());
+            log.error("add Customer error: "+e.getMessage());
+            return response.Error("add Customer ="+e.getMessage());
         }
     }
 
     @Override
     public Map updateCustomer(Customer customer) {
         try {
-            log.info("Update User");
+            log.info("Update Customer");
             if (customer.getId() == null) {
                 return response.Error(Config.ID_REQUIRED);
             }
@@ -74,9 +88,9 @@ public class CustomerServiceImpl implements CustomerService {
             }
 
             chekDataDBCustomer.get().setName(customer.getName());
-            chekDataDBCustomer.get().setIdentityNumber(customer.getIdentityNumber());
             chekDataDBCustomer.get().setDateOfBirth(customer.getDateOfBirth());
             chekDataDBCustomer.get().setGender(customer.getGender());
+            chekDataDBCustomer.get().setPhoneNumber(customer.getPhoneNumber());
             chekDataDBCustomer.get().setUpdated_date(new Date());
 
             chekDataDBUser.get().setFullname(customer.getName());
@@ -86,15 +100,45 @@ public class CustomerServiceImpl implements CustomerService {
 
             return response.templateSukses(objUser, objCustomer);
         }catch (Exception e){
-            log.error("Update User error: "+e.getMessage());
-            return response.Error("Update User="+e.getMessage());
+            log.error("Update Customer error: "+e.getMessage());
+            return response.Error("Update Customer="+e.getMessage());
+        }
+    }
+    @Override
+    public Map updateProfilePicture(MultipartFile profilePictureFile, Long IdCustomer) {
+        try {
+            log.info("Update Profile Picture");
+            if (IdCustomer == null) {
+                return response.Error(Config.ID_REQUIRED);
+            }
+            Optional<Customer> chekDataDBCustomer = customerRepository.findById(IdCustomer);
+            if (chekDataDBCustomer.isEmpty()) {
+                return response.Error(Config.CUSTOMER_NOT_FOUND);
+            }
+
+            // Update data customer
+            Customer customerToUpdate = chekDataDBCustomer.get();
+            customerToUpdate.setUpdated_date(new Date());
+
+            // Handle profil picture
+            if (profilePictureFile != null) {
+                String profilePictureFileName = fileStorageService.storeFile(profilePictureFile);
+                customerToUpdate.setProfilePicture(profilePictureFileName);
+            }
+
+            Customer updatedCustomer = customerRepository.save(customerToUpdate);
+
+            return response.templateSukses(updatedCustomer);
+        } catch (Exception e) {
+            log.error("Update Profile Picture error: " + e.getMessage());
+            return response.Error("Update Profile Picture=" + e.getMessage());
         }
     }
 
     @Override
     public Map deleteCustomer(Customer customer) {
         try {
-            log.info("Delete user");
+            log.info("Delete Customer");
             if (customer.getId() == null) {
                 return response.Error(Config.ID_REQUIRED);
             }
@@ -107,8 +151,8 @@ public class CustomerServiceImpl implements CustomerService {
             customerRepository.save(chekDataDBUser.get());
             return response.sukses(Config.SUCCESS);
         }catch (Exception e){
-            log.error("Delete User error: "+e.getMessage());
-            return response.Error("Delete User ="+e.getMessage());
+            log.error("Delete Customer error: "+e.getMessage());
+            return response.Error("Delete Customer ="+e.getMessage());
         }
     }
 
@@ -119,6 +163,36 @@ public class CustomerServiceImpl implements CustomerService {
             return response.notFound(getBaseOptional);
         }
         return response.templateSukses(getBaseOptional);
+    }
+
+    @Value("${app.uploadto.cdn}")//FILE_SHOW_RUL
+    private String UPLOADED_FOLDER;
+
+    public String uploadProfilePicture(MultipartFile profilePictureFile) {
+        try {
+            Date date = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("ddMyyyyhhmmss");
+            String strDate = formatter.format(date);
+
+            String fileExtension = StringUtils.getFilenameExtension(profilePictureFile.getOriginalFilename());
+            String nameFormat = "." + (fileExtension.isEmpty() ? "png" : fileExtension);
+
+            String fileName = UPLOADED_FOLDER + strDate + nameFormat;
+            Path targetPath = Paths.get(fileName);
+
+            Files.copy(profilePictureFile.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+            String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/v1/showFile/")
+                    .path(targetPath.getFileName().toString())
+                    .toUriString();
+
+            return targetPath.getFileName().toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception appropriately, e.g., throw a custom exception
+            return null;
+        }
     }
 }
 

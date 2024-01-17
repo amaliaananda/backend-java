@@ -114,6 +114,14 @@ public class BookingServiceImpl implements BookingService {
             chekDataDBbooking.get().setCustomer(booking.getCustomer());
             chekDataDBbooking.get().setTotalPrice(booking.getTotalPrice());
             chekDataDBbooking.get().setPaid(booking.getPaid());
+            chekDataDBbooking.get().setAddOnSelectingSeat(booking.getAddOnSelectingSeat());
+            chekDataDBbooking.get().setAddOnLuggagePrice(booking.getAddOnLuggagePrice());
+            chekDataDBbooking.get().setAddOnLuggage(booking.getAddOnLuggage());
+            chekDataDBbooking.get().setBankPembayaran(booking.getBankPembayaran());
+            chekDataDBbooking.get().setNamaRekening(booking.getNamaRekening());
+            chekDataDBbooking.get().setMasaBerlaku(booking.getMasaBerlaku());
+            chekDataDBbooking.get().setCvvCvn(booking.getCvvCvn());
+            chekDataDBbooking.get().setNomorRekening(booking.getNomorRekening());
             chekDataDBbooking.get().setUpdated_date(new Date());
 
             return response.sukses(bookingRepository.save(chekDataDBbooking.get()));
@@ -166,6 +174,11 @@ public class BookingServiceImpl implements BookingService {
             Booking booking = new Booking();
             booking.setCustomer(chekDataDBCustomer.get());
             booking.setAddOnLuggage(bookingRequestDTO.getAddOnLuggage());
+            booking.setBankPembayaran(bookingRequestDTO.getBankPembayaran());
+            booking.setNamaRekening(bookingRequestDTO.getNamaRekening());
+            booking.setNomorRekening(bookingRequestDTO.getNomorRekening());
+            booking.setMasaBerlaku(bookingRequestDTO.getMasaBerlaku());
+            booking.setCvvCvn(bookingRequestDTO.getCvvCvn());
 
             booking.setPaid(false);
             booking.setTotalPrice(0L);// Harga awal
@@ -175,8 +188,9 @@ public class BookingServiceImpl implements BookingService {
             for (BookingDetailDTO bookingDetailDTO : bookingRequestDTO.getListBookingDetail()) {
                 Optional<Flight> chekDataDBFlight = flightRepository.findById(bookingDetailDTO.getFlight().getId());
                 if (chekDataDBFlight.isEmpty()) {
-                    return response.Error(Config.FLIGHT_NOT_FOUND);
+                    throw new RuntimeException(Config.FLIGHT_NOT_FOUND);
                 }
+                Flight flight = chekDataDBFlight.get();
 
                 BookingDetail bookingDetail = createBookingDetail(bookingDetailDTO);
                 bookingDetail.setBooking(booking);
@@ -185,10 +199,9 @@ public class BookingServiceImpl implements BookingService {
                 // Tambahan biaya untuk pemilihan kursi
                 if (bookingDetailDTO.getSeatNumber() != null) {
                     // Hitung total harga
-                    booking.setTotalPrice(booking.getTotalPrice() + calculateTotalPrice(bookingDetailDTO)
-                            + calculateSeatSelectionFee(bookingDetailDTO.getSeatNumber()));
-                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat()
-                            + calculateSeatSelectionFee(bookingDetailDTO.getSeatNumber()));
+                    booking.setTotalPrice(booking.getTotalPrice() + bookingDetailDTO.getTotalSeatPrice());
+                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() +
+                            (bookingDetailDTO.getTotalSeatPrice() - flight.getPrice()));
                 } else {
                     // Hitung total harga
                     booking.setTotalPrice(booking.getTotalPrice() + calculateTotalPrice(bookingDetailDTO));
@@ -208,17 +221,22 @@ public class BookingServiceImpl implements BookingService {
         BookingDetail bookingDetail = new BookingDetail();
         bookingDetail.setFlight(flightRepository.findById(bookingDetailDTO.getFlight().getId())
                 .orElseThrow(() -> new RuntimeException(Config.FLIGHT_NOT_FOUND)));
+
         bookingDetail.setCustomerName(bookingDetailDTO.getCustomerName());
         bookingDetail.setIdentityNumber(bookingDetailDTO.getIdentityNumber());
-        bookingDetail.setPrice(calculateTotalPrice(bookingDetailDTO));
+
+        if (bookingDetailDTO.getSeatNumber() != null)
+            bookingDetail.setPrice(bookingDetailDTO.getTotalSeatPrice());
+        else bookingDetail.setPrice(calculateTotalPrice(bookingDetailDTO));
+
         bookingDetail.setCategory(bookingDetailDTO.getCategory());
-        if (bookingDetailDTO.getSeatNumber() != null) {
+
+        if (bookingDetailDTO.getSeatNumber() != null)
             bookingDetail.setSeatNumber(bookingDetailDTO.getSeatNumber());
-        } else {
+         else {
             // Jika seat tidak dipilih, atur seat sesuai ketersediaan dalam flight
             String availableSeat = findAvailableSeat();
             bookingDetail.setSeatNumber(availableSeat);
-            // Atur tambahan biaya untuk pemilihan kursi
         }
         // Set seat, jika kategori bukan "infant" maka menggunakan seat dari DTO,
         if ("business".equals(bookingDetail.getFlight().getPassengerClass()) && !"infant".equals(bookingDetailDTO.getCategory())){
@@ -252,21 +270,6 @@ public class BookingServiceImpl implements BookingService {
     }
     private String findAvailableSeat() {
         return "Choose When Checkin";
-    }
-
-    private Long calculateSeatSelectionFee(String seatNumber) {
-        // Contoh: Biaya tambahan berdasarkan baris kursi
-        char row = seatNumber.charAt(0); // Mengambil huruf baris (A, B, C, ...)
-        Long additionalFee = 0L;
-
-        if (row == 'A') {
-            additionalFee = 250000L;
-        } else if (row == 'B') {
-            additionalFee = 125000L;
-        } else {
-            additionalFee = 75000L; // Biaya default untuk seat lainnya
-        }
-        return additionalFee;
     }
 
 }

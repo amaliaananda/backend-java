@@ -82,6 +82,7 @@ public class UserServiceImpl implements UserService {
             customer.setIdentityNumber(objModel.getIdentityNumber());
             customer.setDateOfBirth(objModel.getDateOfBirth());
             customer.setGender(objModel.getGender());
+            customer.setPhoneNumber(objModel.getPhoneNumber());
             //step 1 :
             user.setEnabled(false); // matikan user
 
@@ -117,6 +118,7 @@ public class UserServiceImpl implements UserService {
             customer.setIdentityNumber(objModel.getIdentityNumber());
             customer.setDateOfBirth(objModel.getDateOfBirth());
             customer.setGender(objModel.getGender());
+            customer.setPhoneNumber(objModel.getPhoneNumber());
             //step 1 :
             user.setEnabled(false); // matikan user : tujuan kita inactifan
             String password = encoder.encode(objModel.getPassword().replaceAll("\\s+", ""));

@@ -37,6 +37,8 @@ public class Config {
 
     public  static  String AIRLINE_REQUIRED = "Airline is Required.";
 
+    public  static  String AIRLINE_NOT_FOUND = "Airline NOT FOUND.";
+
     public  static  String ORIGIN_AIRPORT_REQUIRED = "Origin Airport is Required.";
 
     public  static  String DESTINATION_AIRPORT_REQUIRED = "Destination Airport is Required.";

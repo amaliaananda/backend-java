@@ -23,6 +23,10 @@ public class Flight extends AbstractDate implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "airline_id")
+    private Airline airline;
+
     @Column(name = "passenger_class", nullable = false)
     private String passengerClass;
 
@@ -31,9 +35,6 @@ public class Flight extends AbstractDate implements Serializable {
 
     @Column(name = "destination_airport", nullable = false)
     private String destinationAirport;
-
-    @Column(name = "airline", nullable = false)
-    private String airline;
 
     @Column(name = "flight_number", nullable = false)
     private String flightNumber;
@@ -67,6 +68,12 @@ public class Flight extends AbstractDate implements Serializable {
 
     @Column(name = "price", nullable = false)
     private Long price;
+
+    @Column(name = "discount_price")
+    private Long discountPrice;
+
+    @Column(name = "is_discount")
+    private Boolean isDiscount;
 
 }
 

@@ -1,10 +1,12 @@
 package com.backend.travelid.service.oauth;
 
 
+import com.backend.travelid.entity.Airline;
 import com.backend.travelid.entity.oauth.Client;
 import com.backend.travelid.entity.oauth.Role;
 import com.backend.travelid.entity.oauth.RolePath;
 import com.backend.travelid.entity.oauth.User;
+import com.backend.travelid.repository.AirlineRepository;
 import com.backend.travelid.repository.oauth.ClientRepository;
 import com.backend.travelid.repository.oauth.RolePathRepository;
 import com.backend.travelid.repository.oauth.RoleRepository;
@@ -43,6 +45,9 @@ public class DatabaseSeeder implements ApplicationRunner {
     private UserRepository userRepository;
 
     @Autowired
+    private AirlineRepository airlineRepository;
+
+    @Autowired
     private RolePathRepository rolePathRepository;
 
     private String defaultPassword = "password";
@@ -65,6 +70,14 @@ public class DatabaseSeeder implements ApplicationRunner {
             "ROLE_WRITE:oauth_role:^/.*:GET|PUT|POST|PATCH|DELETE|OPTIONS"
     };
 
+    private String[] airlines = new String[]{
+            "Garuda Indonesia:Garuda Indonesia.png",
+            "Citilink:citilink.png",
+            "Batik Air Indonesia:Batik Air.png",
+            "Lion Airlines:Lion Air.png",
+            "Sriwijaya Air:Sriwijaya Air.png"
+    };
+
 
     @Override
     @Transactional
@@ -74,6 +87,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         this.insertRoles();
         this.insertClients(password);
         this.insertUser(password);
+        this.insertAirline();
     }
 
     @Transactional
@@ -153,6 +167,23 @@ public class DatabaseSeeder implements ApplicationRunner {
             }
 
             userRepository.save(oldUser);
+        }
+    }
+
+    @Transactional
+    public void insertAirline() {
+        for (String airlines: airlines) {
+            String[] str = airlines.split(":");
+            String airline = str[0];
+            String pathLogo = str[1];
+
+            Airline oldAirline = airlineRepository.findOneByAirline(airline);
+            if (null == oldAirline) {
+                oldAirline = new Airline();
+                oldAirline.setAirline(airline);
+                oldAirline.setPathLogo(pathLogo);
+            }
+            airlineRepository.save(oldAirline);
         }
     }
 }

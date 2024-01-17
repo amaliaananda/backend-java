@@ -115,7 +115,7 @@ public class BookingController {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("customerName")), "%" + customerName.toLowerCase() + "%"));
                         }
                         if (paid != null) {
-                            predicates.add(criteriaBuilder.equal(root.get("paid"), paid));
+                            predicates.add(criteriaBuilder.isTrue(root.get("paid")));
                         }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
                     });
