@@ -150,124 +150,124 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    @Override
-    @Transactional
-    public Map saveBookingWithDetails(BookingRequestDTO bookingRequestDTO) {
-        try {
-            log.info("save booking with details");
-
-            // Validasi input
-            if (bookingRequestDTO.getCustomer() == null) {
-                throw new RuntimeException(Config.CUSTOMER_REQUIRED);
-            }
-            if (bookingRequestDTO.getListBookingDetail() == null) {
-                throw new RuntimeException(Config.LIST_BOOKING_DETAIL_REQUIRED);
-            }
-            Optional<Customer> chekDataDBCustomer = customerRepository.findById(bookingRequestDTO.getCustomer().getId());
-            if (chekDataDBCustomer.isEmpty()) {
-                throw new RuntimeException(Config.CUSTOMER_NOT_FOUND);
-            }
-
-            // Buat booking
-            Booking booking = new Booking();
-            booking.setCustomer(chekDataDBCustomer.get());
-            booking.setAddOnLuggage(bookingRequestDTO.getAddOnLuggage());
-            booking.setBankPembayaran(bookingRequestDTO.getBankPembayaran());
-            booking.setNamaRekening(bookingRequestDTO.getNamaRekening());
-            booking.setNomorRekening(bookingRequestDTO.getNomorRekening());
-            booking.setMasaBerlaku(bookingRequestDTO.getMasaBerlaku());
-            booking.setCvvCvn(bookingRequestDTO.getCvvCvn());
-
-            booking.setPaid(false);
-            booking.setTotalPrice(0L);// Harga awal
-            booking.setAddOnSelectingSeat(0L);
-
-            // Proses tiap booking detail
-            for (BookingDetailDTO bookingDetailDTO : bookingRequestDTO.getListBookingDetail()) {
-                Optional<Flight> chekDataDBFlight = flightRepository.findById(bookingDetailDTO.getFlight().getId());
-                if (chekDataDBFlight.isEmpty()) {
-                    throw new RuntimeException(Config.FLIGHT_NOT_FOUND);
-                }
-                Flight flight = chekDataDBFlight.get();
-
-                BookingDetail bookingDetail = createBookingDetail(bookingDetailDTO);
-                bookingDetail.setBooking(booking);
-                booking.getBookingDetails().add(bookingDetail);
-
-                // Tambahan biaya untuk pemilihan kursi
-                if (bookingDetailDTO.getSeatNumber() != null) {
-                    // Hitung total harga
-                    booking.setTotalPrice(booking.getTotalPrice() + bookingDetailDTO.getTotalSeatPrice());
-                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() +
-                            (bookingDetailDTO.getTotalSeatPrice() - flight.getPrice()));
-                } else {
-                    // Hitung total harga
-                    booking.setTotalPrice(booking.getTotalPrice() + calculateTotalPrice(bookingDetailDTO));
-                }
-
-            }
-            // Simpan booking
-            Booking savedBooking = bookingRepository.save(booking);
-            return response.templateSaveSukses(savedBooking);
-        } catch (Exception e) {
-            log.error("save booking with details error: " + e.getMessage());
-            throw new RuntimeException("save booking with details =" + e.getMessage());
-        }
-    }
-
-    private BookingDetail createBookingDetail(BookingDetailDTO bookingDetailDTO) {
-        BookingDetail bookingDetail = new BookingDetail();
-        bookingDetail.setFlight(flightRepository.findById(bookingDetailDTO.getFlight().getId())
-                .orElseThrow(() -> new RuntimeException(Config.FLIGHT_NOT_FOUND)));
-
-        bookingDetail.setCustomerName(bookingDetailDTO.getCustomerName());
-        bookingDetail.setIdentityNumber(bookingDetailDTO.getIdentityNumber());
-
-        if (bookingDetailDTO.getSeatNumber() != null)
-            bookingDetail.setPrice(bookingDetailDTO.getTotalSeatPrice());
-        else bookingDetail.setPrice(calculateTotalPrice(bookingDetailDTO));
-
-        bookingDetail.setCategory(bookingDetailDTO.getCategory());
-
-        if (bookingDetailDTO.getSeatNumber() != null)
-            bookingDetail.setSeatNumber(bookingDetailDTO.getSeatNumber());
-         else {
-            // Jika seat tidak dipilih, atur seat sesuai ketersediaan dalam flight
-            String availableSeat = findAvailableSeat();
-            bookingDetail.setSeatNumber(availableSeat);
-        }
-        // Set seat, jika kategori bukan "infant" maka menggunakan seat dari DTO,
-        if ("business".equals(bookingDetail.getFlight().getPassengerClass()) && !"infant".equals(bookingDetailDTO.getCategory())){
-            bookingDetail.setLuggage("30 kg");
-            bookingDetail.setSeatNumber(bookingDetailDTO.getSeatNumber());
-        } else if ("economy".equals(bookingDetail.getFlight().getPassengerClass())&& !"infant".equals(bookingDetailDTO.getCategory())){
-            bookingDetail.setLuggage("20 kg");
-            bookingDetail.setSeatNumber(bookingDetailDTO.getSeatNumber());
-        } else if ("infant".equals(bookingDetailDTO.getCategory())){
-            // jika "infant", maka menggunakan nilai default
-            bookingDetail.setSeatNumber(null);
-            bookingDetail.setLuggage("10 kg");
-        } else throw new RuntimeException(Config.PASSENGER_CLASS_NOT_FOUND);
-        return bookingDetail;
-    }
-
-    private Long calculateTotalPrice(BookingDetailDTO bookingDetailDTO) {
-        Long idFlight = bookingDetailDTO.getFlight().getId();
-        Optional<Flight> chekDataDBFlight = flightRepository.findById(idFlight);
-        if (chekDataDBFlight.isEmpty()) {
-            throw new RuntimeException(Config.FLIGHT_NOT_FOUND);
-        }
-        Flight flight = chekDataDBFlight.get();
-        // Implementasi perhitungan harga sesuai kategori
-        // Contoh: 10% dari harga untuk kategori infant
-        if ("infant".equals(bookingDetailDTO.getCategory())) {
-            return (long) (0.1 * flight.getPrice());
-        }
-        // Kategori lainnya
-        return flight.getPrice();
-    }
-    private String findAvailableSeat() {
-        return "Choose When Checkin";
-    }
-
+//    @Override
+//    @Transactional
+//    public Map saveBookingWithDetails(BookingRequestDTO bookingRequestDTO) {
+//        try {
+//            log.info("save booking with details");
+//
+//            // Validasi input
+//            if (bookingRequestDTO.getCustomer() == null) {
+//                throw new RuntimeException(Config.CUSTOMER_REQUIRED);
+//            }
+//            if (bookingRequestDTO.getListBookingDetail() == null) {
+//                throw new RuntimeException(Config.LIST_BOOKING_DETAIL_REQUIRED);
+//            }
+//            Optional<Customer> chekDataDBCustomer = customerRepository.findById(bookingRequestDTO.getCustomer().getId());
+//            if (chekDataDBCustomer.isEmpty()) {
+//                throw new RuntimeException(Config.CUSTOMER_NOT_FOUND);
+//            }
+//
+//            // Buat booking
+//            Booking booking = new Booking();
+//            booking.setCustomer(chekDataDBCustomer.get());
+//            booking.setAddOnLuggage(bookingRequestDTO.getAddOnLuggage());
+//            booking.setBankPembayaran(bookingRequestDTO.getBankPembayaran());
+//            booking.setNamaRekening(bookingRequestDTO.getNamaRekening());
+//            booking.setNomorRekening(bookingRequestDTO.getNomorRekening());
+//            booking.setMasaBerlaku(bookingRequestDTO.getMasaBerlaku());
+//            booking.setCvvCvn(bookingRequestDTO.getCvvCvn());
+//
+//            booking.setPaid(false);
+//            booking.setTotalPrice(0L);// Harga awal
+//            booking.setAddOnSelectingSeat(0L);
+//
+//            // Proses tiap booking detail
+//            for (BookingDetailDTO bookingDetailDTO : bookingRequestDTO.getListBookingDetail()) {
+//                Optional<Flight> chekDataDBFlight = flightRepository.findById(bookingDetailDTO.getFlight().getId());
+//                if (chekDataDBFlight.isEmpty()) {
+//                    throw new RuntimeException(Config.FLIGHT_NOT_FOUND);
+//                }
+//                Flight flight = chekDataDBFlight.get();
+//
+//                BookingDetail bookingDetail = createBookingDetail(bookingDetailDTO);
+//                bookingDetail.setBooking(booking);
+//                booking.getBookingDetail().add(bookingDetail);
+//
+//                // Tambahan biaya untuk pemilihan kursi
+//                if (bookingDetailDTO.getSeatNumber() != null) {
+//                    // Hitung total harga
+//                    booking.setTotalPrice(booking.getTotalPrice() + bookingDetailDTO.getTotalSeatPrice());
+//                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() +
+//                            (bookingDetailDTO.getTotalSeatPrice() - flight.getPrice()));
+//                } else {
+//                    // Hitung total harga
+//                    booking.setTotalPrice(booking.getTotalPrice() + calculateTotalPrice(bookingDetailDTO));
+//                }
+//
+//            }
+//            // Simpan booking
+//            Booking savedBooking = bookingRepository.save(booking);
+//            return response.templateSaveSukses(savedBooking);
+//        } catch (Exception e) {
+//            log.error("save booking with details error: " + e.getMessage());
+//            throw new RuntimeException("save booking with details =" + e.getMessage());
+//        }
+//    }
+//
+//    private BookingDetail createBookingDetail(BookingDetailDTO bookingDetailDTO) {
+//        BookingDetail bookingDetail = new BookingDetail();
+//        bookingDetail.setFlight(flightRepository.findById(bookingDetailDTO.getFlight().getId())
+//                .orElseThrow(() -> new RuntimeException(Config.FLIGHT_NOT_FOUND)));
+//
+//        bookingDetail.setCustomerName(bookingDetailDTO.getCustomerName());
+//        bookingDetail.setIdentityNumber(bookingDetailDTO.getIdentityNumber());
+//
+//        if (bookingDetailDTO.getSeatNumber() != null)
+//            bookingDetail.setPrice(bookingDetailDTO.getTotalSeatPrice());
+//        else bookingDetail.setPrice(calculateTotalPrice(bookingDetailDTO));
+//
+//        bookingDetail.setCategory(bookingDetailDTO.getCategory());
+//
+//        if (bookingDetailDTO.getSeatNumber() != null)
+//            bookingDetail.setSeatNumber(bookingDetailDTO.getSeatNumber());
+//         else {
+//            // Jika seat tidak dipilih, atur seat sesuai ketersediaan dalam flight
+//            String availableSeat = findAvailableSeat();
+//            bookingDetail.setSeatNumber(availableSeat);
+//        }
+//        // Set seat, jika kategori bukan "infant" maka menggunakan seat dari DTO,
+//        if ("business".equals(bookingDetail.getFlight().getPassengerClass()) && !"infant".equals(bookingDetailDTO.getCategory())){
+//            bookingDetail.setLuggage("30 kg");
+//            bookingDetail.setSeatNumber(bookingDetailDTO.getSeatNumber());
+//        } else if ("economy".equals(bookingDetail.getFlight().getPassengerClass())&& !"infant".equals(bookingDetailDTO.getCategory())){
+//            bookingDetail.setLuggage("20 kg");
+//            bookingDetail.setSeatNumber(bookingDetailDTO.getSeatNumber());
+//        } else if ("infant".equals(bookingDetailDTO.getCategory())){
+//            // jika "infant", maka menggunakan nilai default
+//            bookingDetail.setSeatNumber(null);
+//            bookingDetail.setLuggage("10 kg");
+//        } else throw new RuntimeException(Config.PASSENGER_CLASS_NOT_FOUND);
+//        return bookingDetail;
+//    }
+//
+//    private Long calculateTotalPrice(BookingDetailDTO bookingDetailDTO) {
+//        Long idFlight = bookingDetailDTO.getFlight().getId();
+//        Optional<Flight> chekDataDBFlight = flightRepository.findById(idFlight);
+//        if (chekDataDBFlight.isEmpty()) {
+//            throw new RuntimeException(Config.FLIGHT_NOT_FOUND);
+//        }
+//        Flight flight = chekDataDBFlight.get();
+//        // Implementasi perhitungan harga sesuai kategori
+//        // Contoh: 10% dari harga untuk kategori infant
+//        if ("infant".equals(bookingDetailDTO.getCategory())) {
+//            return (long) (0.1 * flight.getPrice());
+//        }
+//        // Kategori lainnya
+//        return flight.getPrice();
+//    }
+//    private String findAvailableSeat() {
+//        return "Choose When Checkin";
+//    }
+//
 }

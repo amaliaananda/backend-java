@@ -47,15 +47,15 @@ public class BookingController {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
-    @PostMapping(value = {"/saveWithDetails","/saveWithDetails/"})
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Map> saveBookingWithDetails(@RequestBody BookingRequestDTO bookingRequestDTO) {
-        try {
-            return new ResponseEntity<Map>(bookingService.saveBookingWithDetails(bookingRequestDTO), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
-        }
-    }
+//    @PostMapping(value = {"/saveWithDetails","/saveWithDetails/"})
+//    @PreAuthorize("hasRole('USER')")
+//    public ResponseEntity<Map> saveBookingWithDetails(@RequestBody BookingRequestDTO bookingRequestDTO) {
+//        try {
+//            return new ResponseEntity<Map>(bookingService.saveBookingWithDetails(bookingRequestDTO), HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+//        }
+//    }
 
     @PutMapping(value = {"/update","/update/"})
     @PreAuthorize("hasRole('ADMIN')")

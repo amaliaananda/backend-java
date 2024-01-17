@@ -16,5 +16,5 @@ public interface BookingService {
     Map updateBooking(Booking booking);
     Map deleteBooking(Booking booking);
 
-    Map saveBookingWithDetails(BookingRequestDTO bookingRequestDTO);
+//    Map saveBookingWithDetails(BookingRequestDTO bookingRequestDTO);
 }
