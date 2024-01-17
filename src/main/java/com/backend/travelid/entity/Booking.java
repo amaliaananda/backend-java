@@ -45,7 +45,7 @@ public class Booking extends AbstractDate implements Serializable {
     @Column(name = "bank_pembayaran")
     private String bankPembayaran;
 
-    @Column(name = "nama rekening")
+    @Column(name = "nama_rekening")
     private String namaRekening;
 
     @Column(name = "nomor_rekening")
