@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService {
                 throw new UsernameNotFoundException("user not found");
             }
             if (!(encoder.matches(loginModel.getPassword(), checkUser.getPassword()))) {
-                throw new RuntimeException("wrong password");
+                throw new InternalError("500: wrong password");
             }
             String url = baseUrl + "/oauth/token?username=" + loginModel.getUsername() +
                     "&password=" + loginModel.getPassword() +
