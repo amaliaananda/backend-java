@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder encoder;
 
     @Autowired
-    public TemplateResponse templateResponse;
+    public TemplateResponse response;
 
     @Value("${BASEURL}")
     private String baseUrl;
@@ -59,9 +59,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private TemplateResponse response;
 
     @Autowired
     private Oauth2UserDetailsService userDetailsService;
@@ -95,11 +92,11 @@ public class UserServiceImpl implements UserService {
             User objUser = repoUser.save(user);
             Customer objCustomer = repoCustomer.save(customer);
 
-            return templateResponse.templateSaveSukses(objUser, objCustomer);
+            return response.templateSaveSukses(objUser, objCustomer);
 
         } catch (Exception e) {
             logger.error("Error registerManual=", e);
-            return templateResponse.templateEror("eror:"+e);
+            throw new RuntimeException("eror:"+e);
         }
 
     }
@@ -127,11 +124,11 @@ public class UserServiceImpl implements UserService {
             user.setPassword(password);
             User obj = repoUser.save(user);
             Customer objCustomer = repoCustomer.save(customer);
-            return templateResponse.templateSaveSukses(obj, objCustomer);
+            return response.templateSaveSukses(obj, objCustomer);
 
         } catch (Exception e) {
             logger.error("Eror registerManual=", e);
-            return templateResponse.Error("eror:"+e);
+            throw new RuntimeException("eror:"+e);
         }
     }
 
@@ -148,14 +145,14 @@ public class UserServiceImpl implements UserService {
             if ((checkUser != null) && (encoder.matches(loginModel.getPassword(), checkUser.getPassword()))) {
                 if (!checkUser.isEnabled()) {
                     map.put("is_enabled", checkUser.isEnabled());
-                    return templateResponse.templateEror(map);
+                    throw new RuntimeException("account_is_enabled");
                 }
             }
             if (checkUser == null) {
-                return templateResponse.notFound("user not found");
+                throw new UsernameNotFoundException("user not found");
             }
             if (!(encoder.matches(loginModel.getPassword(), checkUser.getPassword()))) {
-                return templateResponse.templateEror("wrong password");
+                throw new RuntimeException("wrong password");
             }
             String url = baseUrl + "/oauth/token?username=" + loginModel.getUsername() +
                     "&password=" + loginModel.getPassword() +
@@ -187,18 +184,18 @@ public class UserServiceImpl implements UserService {
 
                 return map;
             } else {
-                return templateResponse.notFound("user not found");
+                throw new RuntimeException("user not found");
             }
         } catch (HttpStatusCodeException e) {
             e.printStackTrace();
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                return templateResponse.templateEror("invalid login:"+e);
+                throw new RuntimeException("invalid login:"+e);
             }
-            return templateResponse.templateEror(e);
+            throw new RuntimeException(e);
         } catch (Exception e) {
             e.printStackTrace();
 
-            return templateResponse.templateEror(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -210,7 +207,7 @@ public class UserServiceImpl implements UserService {
             User obj = userRepository.save(idUser);
             return response.templateSukses(obj, idCustomer);
         } catch (Exception e){
-            return response.error(e,"500");
+            throw new InternalError("500");
         }
     }
 

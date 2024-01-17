@@ -45,11 +45,11 @@ public class BookingServiceImpl implements BookingService {
         try {
             log.info("get booking by user");
             if (customerId == null) {
-                return response.Error(Config.ID_REQUIRED);
+                throw new RuntimeException(Config.ID_REQUIRED);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(customerId);
             if (chekDataDBCustomer.isEmpty()) {
-                return response.Error(Config.USER_NOT_FOUND);
+                throw new RuntimeException(Config.USER_NOT_FOUND);
             }
             chekDataDBCustomer.get().setId(customerId);
             Optional<Booking> getBaseOptional = bookingRepository.getByCustomerId(customerId);
@@ -59,7 +59,7 @@ public class BookingServiceImpl implements BookingService {
             return response.templateSukses(getBaseOptional);
         }catch (Exception e){
             log.error("get booking by Customer error: "+e.getMessage());
-            return response.Error("get booking by Customer ="+e.getMessage());
+            throw new RuntimeException("get booking by Customer ="+e.getMessage());
         }
     }
 
@@ -77,20 +77,20 @@ public class BookingServiceImpl implements BookingService {
         try {
             log.info("save booking");
             if(booking.getCustomer() == null){
-                return response.Error(Config.CUSTOMER_REQUIRED);
+                throw new RuntimeException(Config.CUSTOMER_REQUIRED);
             }
             if(booking.getTotalPrice() == null){
-                return response.Error(Config.TOTAL_PRICE_REQUIRED);
+                throw new RuntimeException(Config.TOTAL_PRICE_REQUIRED);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(booking.getCustomer().getId());
             if (chekDataDBCustomer.isEmpty()) {
-                return response.Error(Config.CUSTOMER_NOT_FOUND);
+                throw new RuntimeException(Config.CUSTOMER_NOT_FOUND);
             }
             booking.setPaid(false);
             return response.templateSaveSukses(bookingRepository.save(booking));
         }catch (Exception e){
             log.error("save booking error: "+e.getMessage());
-            return response.Error("save booking ="+e.getMessage());
+            throw new RuntimeException("save booking ="+e.getMessage());
         }
     }
 
@@ -99,15 +99,15 @@ public class BookingServiceImpl implements BookingService {
         try {
             log.info("Update booking");
             if (booking.getId() == null) {
-                return response.Error(Config.ID_REQUIRED);
+                throw new RuntimeException(Config.ID_REQUIRED);
             }
             Optional<Booking> chekDataDBbooking = bookingRepository.findById(booking.getId());
             if (chekDataDBbooking.isEmpty()) {
-                return response.Error(Config.BOOKING_NOT_FOUND);
+                throw new RuntimeException(Config.BOOKING_NOT_FOUND);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(booking.getCustomer().getId());
             if (chekDataDBCustomer.isEmpty()) {
-                return response.Error(Config.CUSTOMER_NOT_FOUND);
+                throw new RuntimeException(Config.CUSTOMER_NOT_FOUND);
             }
             chekDataDBbooking.get().setCustomer(booking.getCustomer());
             chekDataDBbooking.get().setTotalPrice(booking.getTotalPrice());
@@ -125,7 +125,7 @@ public class BookingServiceImpl implements BookingService {
             return response.sukses(bookingRepository.save(chekDataDBbooking.get()));
         }catch (Exception e){
             log.error("Update booking error: "+e.getMessage());
-            return response.Error("Update booking ="+e.getMessage());
+            throw new RuntimeException("Update booking ="+e.getMessage());
         }
     }
 
@@ -134,11 +134,11 @@ public class BookingServiceImpl implements BookingService {
         try {
             log.info("Delete booking");
             if (booking.getId() == null) {
-                return response.Error(Config.ID_REQUIRED);
+                throw new RuntimeException(Config.ID_REQUIRED);
             }
             Optional<Booking> chekDataDBbooking = bookingRepository.findById(booking.getId());
             if (chekDataDBbooking.isEmpty()) {
-                return response.Error(Config.BOOKING_NOT_FOUND);
+                throw new RuntimeException(Config.BOOKING_NOT_FOUND);
             }
 
             chekDataDBbooking.get().setDeleted_date(new Date());
@@ -146,7 +146,7 @@ public class BookingServiceImpl implements BookingService {
             return response.sukses(Config.SUCCESS);
         }catch (Exception e){
             log.error("Delete booking error: "+e.getMessage());
-            return response.Error("Delete booking ="+e.getMessage());
+            throw new RuntimeException("Delete booking ="+e.getMessage());
         }
     }
 
@@ -158,14 +158,14 @@ public class BookingServiceImpl implements BookingService {
 
             // Validasi input
             if (bookingRequestDTO.getCustomer() == null) {
-                return response.Error(Config.CUSTOMER_REQUIRED);
+                throw new RuntimeException(Config.CUSTOMER_REQUIRED);
             }
             if (bookingRequestDTO.getListBookingDetail() == null) {
-                return response.Error(Config.LIST_BOOKING_DETAIL_REQUIRED);
+                throw new RuntimeException(Config.LIST_BOOKING_DETAIL_REQUIRED);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(bookingRequestDTO.getCustomer().getId());
             if (chekDataDBCustomer.isEmpty()) {
-                return response.Error(Config.CUSTOMER_NOT_FOUND);
+                throw new RuntimeException(Config.CUSTOMER_NOT_FOUND);
             }
 
             // Buat booking
@@ -211,7 +211,7 @@ public class BookingServiceImpl implements BookingService {
             return response.templateSaveSukses(savedBooking);
         } catch (Exception e) {
             log.error("save booking with details error: " + e.getMessage());
-            return response.Error("save booking with details =" + e.getMessage());
+            throw new RuntimeException("save booking with details =" + e.getMessage());
         }
     }
 
