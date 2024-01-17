@@ -25,7 +25,7 @@ public class BookingDetail extends AbstractDate implements Serializable {
     @JoinColumn(name = "flight_id")
     private Flight flight;
 
-//    @JsonBackReference
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "booking_id")
     private Booking booking;
