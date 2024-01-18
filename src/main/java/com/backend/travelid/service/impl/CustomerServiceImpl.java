@@ -53,14 +53,8 @@ public class CustomerServiceImpl implements CustomerService {
             if (!response.nameNotSimbol(customer.getName())) {
                 throw new RuntimeException(Config.NAME_MUST_NOT_BE_SYMBOL);
             }
-            if (customer.getIdentityNumber() == null) {
-                throw new RuntimeException(Config.IDENTITY_NUMBER_REQUIRED);
-            }
             if (customer.getEmail() == null) {
                 throw new RuntimeException(Config.EMAIL_REQUIRED);
-            }
-            if (customer.getDateOfBirth() == null) {
-                throw new RuntimeException(Config.DOB_REQUIRED);
             }
             return response.templateSaveSukses(customerRepository.save(customer));
         }catch (Exception e){

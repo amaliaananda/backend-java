@@ -1,5 +1,6 @@
 package com.backend.travelid.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,8 +8,6 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Data
@@ -24,8 +23,8 @@ public class Flight extends AbstractDate implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "airline_id")
-    private Airline airline;
+    @JoinColumn(name = "airlines_id")
+    private Airlines airlines;
 
     @Column(name = "passenger_class", nullable = false)
     private String passengerClass;
@@ -48,11 +47,15 @@ public class Flight extends AbstractDate implements Serializable {
     @Column(name = "gate", nullable = false)
     private String gate;
 
-    @Column(name = "flight_time", nullable = false)
-    private String flightTime;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "flight_time")
+    private Date flightTime;
 
-    @Column(name = "arrived_time", nullable = false)
-    private String arrivedTime;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "arrived_time")
+    private Date arrivedTime;
 
     @Column(name = "duration", nullable = false)
     private String duration;
@@ -64,7 +67,7 @@ public class Flight extends AbstractDate implements Serializable {
     private String luggage;
 
     @Column(name = "free_meal", nullable = false)
-    private Boolean freeMeal;
+    private String freeMeal;
 
     @Column(name = "price", nullable = false)
     private Long price;
@@ -73,7 +76,7 @@ public class Flight extends AbstractDate implements Serializable {
     private Long discountPrice;
 
     @Column(name = "is_discount")
-    private Boolean isDiscount;
+    private String isDiscount;
 
 }
 

@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.webjars.NotFoundException;
 
 import javax.validation.Valid;
 import java.util.Calendar;
@@ -81,7 +83,7 @@ public class RegisterUserController {
 
         User user = userRepository.checkExistingEmail(objModel.getUsername());
         if (null != user) {
-            return new ResponseEntity<Map>(templateCRUD.Error("Username sudah ada"), HttpStatus.OK);
+            return new ResponseEntity<Map>(templateCRUD.internalServer("Username sudah ada"), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
         map = serviceReq.registerByGoogle(objModel);
@@ -100,7 +102,7 @@ public class RegisterUserController {
 
         if (user.getUsername() == null) return templateCRUD.Error("No email provided");
         User found = userRepository.findOneByUsername(user.getUsername());
-        if (found == null) return templateCRUD.Error("Email not found"); //throw new BadRequest("Email not found");
+        if (found == null) throw new NotFoundException("Email not found");
 
         String template = emailTemplate.getRegisterTemplate();
         if (StringUtils.isEmpty(found.getOtp())) {
@@ -135,7 +137,7 @@ public class RegisterUserController {
 
         User user = userRepository.findOneByOTP(tokenOtp);
         if (null == user) {
-            return new ResponseEntity<Map>(templateCRUD.templateEror("OTP tidak ditemukan"), HttpStatus.OK);
+            return new ResponseEntity<Map>(templateCRUD.internalServer("OTP tidak ditemukan"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 //validasi jika sebelumnya sudah melakukan aktifasi
 
@@ -146,7 +148,7 @@ public class RegisterUserController {
 
         String dateToken = config.convertDateToString(user.getOtpExpiredDate());
         if (Long.parseLong(today) > Long.parseLong(dateToken)) {
-            return new ResponseEntity<Map>(templateCRUD.templateEror("Your token is expired. Please Get token again."), HttpStatus.OK);
+            return new ResponseEntity<Map>(templateCRUD.internalServer("Your token is expired. Please Get token again."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         //update user : ini yang berubah
         user.setEnabled(true);
