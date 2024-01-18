@@ -42,7 +42,7 @@ public class BookingDetail extends AbstractDate implements Serializable {
     @Column(name = "luggage")
     private String luggage;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private Long price;
 
     @Column(name = "category", nullable = false)

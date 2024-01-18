@@ -1,12 +1,12 @@
 package com.backend.travelid.service.oauth;
 
 
-import com.backend.travelid.entity.Airline;
+import com.backend.travelid.entity.Airlines;
 import com.backend.travelid.entity.oauth.Client;
 import com.backend.travelid.entity.oauth.Role;
 import com.backend.travelid.entity.oauth.RolePath;
 import com.backend.travelid.entity.oauth.User;
-import com.backend.travelid.repository.AirlineRepository;
+import com.backend.travelid.repository.AirlinesRepository;
 import com.backend.travelid.repository.oauth.ClientRepository;
 import com.backend.travelid.repository.oauth.RolePathRepository;
 import com.backend.travelid.repository.oauth.RoleRepository;
@@ -45,7 +45,7 @@ public class DatabaseSeeder implements ApplicationRunner {
     private UserRepository userRepository;
 
     @Autowired
-    private AirlineRepository airlineRepository;
+    private AirlinesRepository airlinesRepository;
 
     @Autowired
     private RolePathRepository rolePathRepository;
@@ -177,13 +177,13 @@ public class DatabaseSeeder implements ApplicationRunner {
             String airline = str[0];
             String pathLogo = str[1];
 
-            Airline oldAirline = airlineRepository.findOneByAirline(airline);
+            Airlines oldAirline = airlinesRepository.findOneByAirline(airline);
             if (null == oldAirline) {
-                oldAirline = new Airline();
+                oldAirline = new Airlines();
                 oldAirline.setAirline(airline);
                 oldAirline.setPathLogo(pathLogo);
             }
-            airlineRepository.save(oldAirline);
+            airlinesRepository.save(oldAirline);
         }
     }
 }
