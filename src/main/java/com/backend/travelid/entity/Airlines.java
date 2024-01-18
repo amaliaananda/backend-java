@@ -12,17 +12,17 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "airline")
-public class Airline implements Serializable {
+@Table(name = "airlines")
+public class Airlines implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(length = 50)
+    @Column(name = "airline")
     private String airline;
 
-    @JsonIgnore
+    @Column(name = "pathLogo")
     private String pathLogo;
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.Predicate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/flight")
@@ -89,12 +98,14 @@ public class FlightController {
             @RequestParam(required = false) String passengerClass,
             @RequestParam(required = false) String originAirport,
             @RequestParam(required = false) String destinationAirport,
-            @RequestParam(required = false) String airline,
+            @RequestParam(required = false) String airlines,
             @RequestParam(required = false) String originCity,
             @RequestParam(required = false) String destinationCity,
             @RequestParam(required = false) String transit,
-            @RequestParam(required = false) Boolean isDiscount,
-            @RequestParam(required = false) Boolean freeMeal,
+            @RequestParam(required = false) String endDateStr,
+            @RequestParam(required = false) String startDateStr,
+            @RequestParam(required = false) String isDiscount,
+            @RequestParam(required = false) String freeMeal,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
         try {
@@ -112,8 +123,8 @@ public class FlightController {
                         if (destinationAirport != null && !destinationAirport.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("destinationAirport")), "%" + destinationAirport.toLowerCase() + "%"));
                         }
-                        if (airline != null && !airline.isEmpty()) {
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("airline")), "%" + airline.toLowerCase() + "%"));
+                        if (airlines != null && !airlines.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("airlines")), "%" + airlines.toLowerCase() + "%"));
                         }
                         if (originCity != null && !originCity.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("originCity")), "%" + originCity.toLowerCase() + "%"));
@@ -127,11 +138,25 @@ public class FlightController {
                         if (transit != null && !transit.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("transit")), "%" + transit.toLowerCase() + "%"));
                         }
-                        if (isDiscount != null) {
-                            predicates.add(criteriaBuilder.isTrue(root.get("isDiscount")));
+                        if (startDateStr != null && endDateStr != null && !startDateStr.isEmpty() && !endDateStr.isEmpty()) {
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+                            LocalDateTime startDateTime = LocalDateTime.parse(startDateStr, formatter);
+                            LocalDateTime endDateTime = LocalDateTime.parse(endDateStr, formatter);
+
+                            ZonedDateTime startZonedDateTime = startDateTime.atZone(ZoneId.systemDefault());
+                            ZonedDateTime endZonedDateTime = endDateTime.atZone(ZoneId.systemDefault());
+
+                            Date startDate = Date.from(startZonedDateTime.toInstant());
+                            Date endDate = Date.from(endZonedDateTime.toInstant());
+
+                            predicates.add(criteriaBuilder.between(root.get("flightTime"), startDate, endDate));
                         }
-                        if (freeMeal != null) {
-                            predicates.add(criteriaBuilder.isTrue(root.get("freeMeal")));
+                        if (isDiscount != null && !isDiscount.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("isDiscount")), "%" + isDiscount.toLowerCase() + "%"));
+                        }
+                        if (freeMeal != null && !freeMeal.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("freeMeal")), "%" + freeMeal.toLowerCase() + "%"));
                         }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
                     });

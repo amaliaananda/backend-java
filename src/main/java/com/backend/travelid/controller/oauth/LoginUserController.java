@@ -89,7 +89,7 @@ public class LoginUserController {
         Map<String, Object> map123 = new HashMap<>();
 //        Map<String, String> map = parameters.toSingleValueMap();
         if(StringUtils.isEmpty(parameters.getAccessToken())){
-            return new ResponseEntity<Map>(response.templateEror("Token is required."), HttpStatus.OK);
+            return new ResponseEntity<Map>(response.templateEror("Token is required."), HttpStatus.BAD_REQUEST);
         }
         String accessToken = parameters.getAccessToken();
 

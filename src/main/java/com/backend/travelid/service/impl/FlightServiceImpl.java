@@ -1,8 +1,8 @@
 package com.backend.travelid.service.impl;
 
-import com.backend.travelid.entity.Airline;
+import com.backend.travelid.entity.Airlines;
 import com.backend.travelid.entity.Flight;
-import com.backend.travelid.repository.AirlineRepository;
+import com.backend.travelid.repository.AirlinesRepository;
 import com.backend.travelid.repository.FlightRepository;
 import com.backend.travelid.utils.Config;
 import com.backend.travelid.utils.TemplateResponse;
@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +25,7 @@ public class FlightServiceImpl implements FlightService {
     private FlightRepository flightRepository;
 
     @Autowired
-    private AirlineRepository airlineRepository;
+    private AirlinesRepository airlinesRepository;
 
     @Autowired
     private TemplateResponse response;
@@ -61,7 +59,7 @@ public class FlightServiceImpl implements FlightService {
             if(flight.getPrice() == null){
                 throw new RuntimeException(Config.PRICE_REQUIRED);
             }
-            if(flight.getAirline() == null){
+            if(flight.getAirlines() == null){
                 throw new RuntimeException(Config.AIRLINE_REQUIRED);
             }
             if(flight.getOriginAirport() == null){
@@ -94,7 +92,7 @@ public class FlightServiceImpl implements FlightService {
             if(flight.getFreeMeal() == null){
                 throw new RuntimeException(Config.FREEMEAL_REQUIRED);
             }
-            Optional<Airline> chekDataDBAirline = airlineRepository.findByAirline(flight.getAirline().getAirline());
+            Optional<Airlines> chekDataDBAirline = airlinesRepository.findById(flight.getAirlines().getId());
             if (chekDataDBAirline.isEmpty()) {
                 throw new NotFoundException(Config.AIRLINE_NOT_FOUND);
             }
@@ -120,11 +118,11 @@ public class FlightServiceImpl implements FlightService {
             if (chekDataDBFlight.isEmpty()) {
                 throw new NotFoundException(Config.FLIGHT_NOT_FOUND);
             }
-            Optional<Airline> chekDataDBAirline = airlineRepository.findByAirline(flight.getAirline().getAirline());
+            Optional<Airlines> chekDataDBAirline = airlinesRepository.findByAirline(flight.getAirlines().getAirline());
             if (chekDataDBAirline.isEmpty()) {
                 throw new NotFoundException(Config.AIRLINE_NOT_FOUND);
             }
-            chekDataDBFlight.get().setAirline(flight.getAirline());
+            chekDataDBFlight.get().setAirlines(flight.getAirlines());
             chekDataDBFlight.get().setPassengerClass(flight.getPassengerClass());
             chekDataDBFlight.get().setPrice(flight.getPrice());
             chekDataDBFlight.get().setOriginAirport(flight.getOriginAirport());

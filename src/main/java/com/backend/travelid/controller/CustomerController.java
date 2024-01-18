@@ -52,7 +52,7 @@ public class CustomerController {
         }
     }
     @PutMapping(value={"/update", "/update/"}, consumes = "application/json")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('WRITE')")
     public ResponseEntity<Map> updateCustomer(@RequestBody Customer customer) {
         try {
             Customer customers = customerRepository.checkExistingIdentityNumber(customer.getIdentityNumber());
@@ -66,7 +66,7 @@ public class CustomerController {
     }
 
     @PutMapping(value={"/updateProfilePicture", "/updateProfilePicture/"}, consumes = {"multipart/form-data", "application/json"})
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('WRITE')")
     public ResponseEntity<Map> updateCustomer(@RequestParam("profilePicture") MultipartFile profilePicture,@RequestParam("idCustomer") Long idCustomer) {
         try {
             return new ResponseEntity<Map>(customerService.updateProfilePicture(profilePicture,idCustomer), HttpStatus.OK);
@@ -76,7 +76,7 @@ public class CustomerController {
     }
 
     @DeleteMapping(value={"/delete", "/delete/"})
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('WRITE')")
     public ResponseEntity<Map> deleteCustomer(@RequestBody Customer customer) {
         try {
             return new ResponseEntity<Map>(customerService.deleteCustomer(customer), HttpStatus.OK);
@@ -85,7 +85,7 @@ public class CustomerController {
         }
     }
     @GetMapping(value={"/{id}", "/{id}/"})
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Map> getById(@PathVariable("id") Long id) {
         try {
             return new ResponseEntity<Map>(customerService.getByID(id), HttpStatus.OK);

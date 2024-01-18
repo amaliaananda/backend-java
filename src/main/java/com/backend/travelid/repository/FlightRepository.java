@@ -14,11 +14,10 @@ import java.util.Optional;
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, Long> , JpaSpecificationExecutor<Flight> {
 
-    List<Flight> findByAirline(String airline);
     List<Flight> findByPassengerClass(String passengerClass);
     Optional<Flight> findById(Long id);
 
-    @Query("SELECT f FROM Flight f JOIN f.airline a WHERE a.airline = :airline")
+    @Query("SELECT f FROM Flight f JOIN f.airlines a WHERE a.airline = :airline")
     public List<Flight> getByAirline(@Param("airline") String airline);
 }
 

@@ -102,7 +102,7 @@ public class BookingController {
             @RequestParam() Integer page,
             @RequestParam(required = true) Integer size,
             @RequestParam(required = false) String customerName,
-            @RequestParam(required = false) Boolean paid,
+            @RequestParam(required = false) String paid,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
         try {
@@ -114,8 +114,8 @@ public class BookingController {
                         if (customerName != null && !customerName.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("customerName")), "%" + customerName.toLowerCase() + "%"));
                         }
-                        if (paid != null) {
-                            predicates.add(criteriaBuilder.isTrue(root.get("paid")));
+                        if (paid != null && !paid.isEmpty()) {
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("paid")), "%" + paid.toLowerCase() + "%"));
                         }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
                     });

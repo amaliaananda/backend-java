@@ -86,7 +86,7 @@ public class BookingServiceImpl implements BookingService {
             if (chekDataDBCustomer.isEmpty()) {
                 throw new RuntimeException(Config.CUSTOMER_NOT_FOUND);
             }
-            booking.setPaid(false);
+            booking.setPaid("false");
             return response.templateSaveSukses(bookingRepository.save(booking));
         }catch (Exception e){
             log.error("save booking error: "+e.getMessage());
@@ -178,7 +178,7 @@ public class BookingServiceImpl implements BookingService {
             booking.setMasaBerlaku(bookingRequestDTO.getMasaBerlaku());
             booking.setCvvCvn(bookingRequestDTO.getCvvCvn());
 
-            booking.setPaid(false);
+            booking.setPaid("false");
             booking.setTotalPrice(0L);// Harga awal
             booking.setAddOnSelectingSeat(0L);
 
