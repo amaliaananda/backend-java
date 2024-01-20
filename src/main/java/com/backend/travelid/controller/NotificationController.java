@@ -78,7 +78,7 @@ public class NotificationController {
                             if (chekDataDBCustomer.isEmpty()) {
                                 throw new RuntimeException(Config.USER_NOT_FOUND);
                             }
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("customer_id")), "%" + customerId + "%"));
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("customerId")), "%" + customerId + "%"));
                         }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
                     });
