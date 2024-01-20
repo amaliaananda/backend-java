@@ -16,6 +16,5 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class TravelidApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TravelidApplication.class, args);
-		
 	}
 }
