@@ -14,10 +14,7 @@ import com.backend.travelid.entity.Customer;
 import com.backend.travelid.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -78,23 +75,30 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = new Notification();
         notification.setCustomer(customer);
         notification.setMessage(message);
-        notification.setTimestamp(LocalDateTime.now());
+        notification.setTimestamp(new Date());
         notificationRepository.save(notification);
     }
     @Scheduled(fixedRate = 60 * 1000) // setiap 1 menit
     public void sendPaymentReminder() {
-        LocalDateTime twoHoursAgo = LocalDateTime.now().minusHours(2);
-
+        String paid = "false";
+        Date dateNow = new Date();
+        Calendar calNow = Calendar.getInstance();
+        calNow.setTime(dateNow);
         // Ambil daftar booking yang belum dibayar setelah 2 jam
-        List<Booking> unpaidBookings = bookingRepository.findByPaidIsNullAndCreatedDateBeforeAndNotificationSentFalse(twoHoursAgo);
-
+        List<Booking> unpaidBookings = bookingRepository.findUnpaidBookings(paid);
         for (Booking booking : unpaidBookings) {
-            // Kirim notifikasi ke pelanggan
-            notificationService.sendNotification(booking.getCustomer(), "booking tiket anda kadaluarsa karena melebihi batas waktu pembayaran.");
-
-            // Tandai bahwa notifikasi telah dikirim
-            booking.setNotificationSent(true);
-            bookingRepository.save(booking);
+            Date dateBooking = booking.getCreated_date();
+            Calendar calBooking = Calendar.getInstance();
+            calBooking.setTime(dateBooking);
+            long hourDiff = (calNow.getTimeInMillis() - calBooking.getTimeInMillis()) / (60 * 60 * 1000);
+            // Periksa apakah selisih waktu lebih dari 2 jam
+            if (hourDiff >= 2) {
+                // Kirim notifikasi ke pelanggan
+                notificationService.sendNotification(booking.getCustomer(), "booking tiket anda kadaluarsa karena melebihi batas waktu pembayaran.");
+                // Tandai bahwa notifikasi telah dikirim
+                booking.setNotificationSent(true);
+                bookingRepository.save(booking);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.backend.travelid.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -27,6 +29,8 @@ public class Notification implements Serializable {
     @Column(nullable = false)
     private String message;
 
-    @Column(nullable = false)
-    private LocalDateTime timestamp;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Asia/Jakarta")
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "timestamp",nullable = false)
+    private Date timestamp;
 }

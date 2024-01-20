@@ -18,7 +18,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
     @Query("SELECT b FROM Booking b JOIN b.customer c WHERE c.id = :customerId")
     public Optional<Booking> getByCustomerId(@Param("customerId") Long customerId);
 
-    List<Booking> findByPaidIsNullAndCreatedDateBeforeAndNotificationSentFalse(LocalDateTime createdDate);
+    @Query("SELECT b FROM Booking b WHERE b.paid = :paid AND b.notificationSent = false")
+    List<Booking> findUnpaidBookings(@Param("paid") String paid);
 
 }
 
