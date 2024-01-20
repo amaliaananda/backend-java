@@ -51,8 +51,7 @@ public class NotificationServiceImpl implements NotificationService {
             if (chekDataDBCustomer.isEmpty()) {
                 throw new RuntimeException(Config.USER_NOT_FOUND);
             }
-            chekDataDBCustomer.get().setId(customerId);
-            Optional<Notification> getBaseOptional = notificationRepository.getByCustomerId(customerId);
+            Optional<Notification> getBaseOptional = notificationRepository.getByCustomer(chekDataDBCustomer);
             if(getBaseOptional.isEmpty()){
                 return response.notFound(getBaseOptional);
             }

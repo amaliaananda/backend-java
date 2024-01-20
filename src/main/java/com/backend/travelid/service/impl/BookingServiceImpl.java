@@ -58,7 +58,7 @@ public class BookingServiceImpl implements BookingService {
                 throw new RuntimeException(Config.USER_NOT_FOUND);
             }
             chekDataDBCustomer.get().setId(customerId);
-            Optional<Booking> getBaseOptional = bookingRepository.getByCustomerId(customerId);
+            Optional<Booking> getBaseOptional = bookingRepository.getByCustomer(chekDataDBCustomer);
             if(getBaseOptional.isEmpty()){
                 return response.notFound(getBaseOptional);
             }
