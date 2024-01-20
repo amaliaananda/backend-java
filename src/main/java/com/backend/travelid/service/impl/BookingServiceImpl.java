@@ -212,7 +212,7 @@ public class BookingServiceImpl implements BookingService {
             Booking savedBooking = bookingRepository.save(booking);
 
             // Kirim notifikasi booking berhasil
-            notificationService.sendNotification(chekDataDBCustomer.get(), "Booking berhasil! Silakan segera lakukan pembayaran sebelum "+ LocalDateTime.now().plusHours(2) );
+            notificationService.sendNotification(chekDataDBCustomer.get(), "Booking berhasil! Segera lakukan pembayaran sebelum 2 jam dari waktu booking!" );
 
             return response.templateSaveSukses(savedBooking);
         } catch (Exception e) {

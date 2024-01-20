@@ -46,9 +46,9 @@ public class NotificationController {
         }
     }
 
-    @GetMapping(value = {"/notificationsByCustomerId","/notificationsByCustomerId/"})
+    @GetMapping(value = {"/notificationsByCustomerId/{customerId}","/notificationsByCustomerId/{customerId}/"})
     @PreAuthorize("hasRole('READ')")
-    public ResponseEntity<Map> getBookingsByCustomerId(@RequestParam Long customerId) {
+    public ResponseEntity<Map> getBookingsByCustomerId(@PathVariable("customerId") Long customerId) {
         try {
             return new ResponseEntity<Map>(notificationService.getByCustomerId(customerId), HttpStatus.OK);
         } catch (Exception e) {
