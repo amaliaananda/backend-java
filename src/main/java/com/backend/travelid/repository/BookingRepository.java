@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,5 +17,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
 
     @Query("SELECT b FROM Booking b JOIN b.customer c WHERE c.id = :customerId")
     public Optional<Booking> getByCustomerId(@Param("customerId") Long customerId);
+
+    List<Booking> findByPaidIsNullAndCreatedDateBeforeAndNotificationSentFalse(LocalDateTime createdDate);
+
 }
 

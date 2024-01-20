@@ -1,6 +1,7 @@
 package com.backend.travelid.controller;
 
 import com.backend.travelid.dto.BookingRequestDTO;
+import com.backend.travelid.dto.PaymentRequestDTO;
 import com.backend.travelid.entity.Booking;
 import com.backend.travelid.entity.Customer;
 import com.backend.travelid.repository.BookingRepository;
@@ -56,7 +57,15 @@ public class BookingController {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
-
+    @PutMapping(value = {"/processPayment","/processPayment/"})
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Map> processPayment(@RequestBody PaymentRequestDTO paymentRequestDTO) {
+        try {
+            return new ResponseEntity<Map>(bookingService.processPayment(paymentRequestDTO), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+        }
+    }
     @PutMapping(value = {"/update","/update/"})
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> updateBooking(@RequestBody Booking booking) {

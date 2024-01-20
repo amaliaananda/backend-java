@@ -57,6 +57,9 @@ public class Booking extends AbstractDate implements Serializable {
     @Column(name = "cvvcvn")
     private String cvvCvn;
 
+    @Column(name = "notification_sent")
+    private boolean notificationSent;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<BookingDetail> bookingDetail = new ArrayList<>();

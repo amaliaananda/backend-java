@@ -2,6 +2,7 @@ package com.backend.travelid.service.impl;
 
 import com.backend.travelid.dto.BookingDetailDTO;
 import com.backend.travelid.dto.BookingRequestDTO;
+import com.backend.travelid.dto.PaymentRequestDTO;
 import com.backend.travelid.entity.Booking;
 import com.backend.travelid.entity.BookingDetail;
 import com.backend.travelid.entity.Customer;
@@ -10,6 +11,7 @@ import com.backend.travelid.repository.CustomerRepository;
 import com.backend.travelid.repository.BookingRepository;
 import com.backend.travelid.repository.FlightRepository;
 import com.backend.travelid.service.BookingService;
+import com.backend.travelid.service.NotificationService;
 import com.backend.travelid.utils.Config;
 import com.backend.travelid.utils.TemplateResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -34,6 +37,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     public TemplateResponse response;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public List<Booking> getAllBookings() {
@@ -87,6 +93,8 @@ public class BookingServiceImpl implements BookingService {
                 throw new RuntimeException(Config.CUSTOMER_NOT_FOUND);
             }
             booking.setPaid("false");
+            // Kirim notifikasi booking berhasil
+            notificationService.sendNotification(chekDataDBCustomer.get(), "Booking berhasil! Silakan segera lakukan pembayaran sebelum "+ LocalDateTime.now().plusHours(2) );
             return response.templateSaveSukses(bookingRepository.save(booking));
         }catch (Exception e){
             log.error("save booking error: "+e.getMessage());
@@ -172,11 +180,6 @@ public class BookingServiceImpl implements BookingService {
             Booking booking = new Booking();
             booking.setCustomer(chekDataDBCustomer.get());
             booking.setAddOnLuggage(bookingRequestDTO.getAddOnLuggage());
-            booking.setBankPembayaran(bookingRequestDTO.getBankPembayaran());
-            booking.setNamaRekening(bookingRequestDTO.getNamaRekening());
-            booking.setNomorRekening(bookingRequestDTO.getNomorRekening());
-            booking.setMasaBerlaku(bookingRequestDTO.getMasaBerlaku());
-            booking.setCvvCvn(bookingRequestDTO.getCvvCvn());
 
             booking.setPaid("false");
             booking.setTotalPrice(0L);// Harga awal
@@ -204,10 +207,13 @@ public class BookingServiceImpl implements BookingService {
                     // Hitung total harga
                     booking.setTotalPrice(booking.getTotalPrice() + calculateTotalPrice(bookingDetailDTO));
                 }
-
             }
             // Simpan booking
             Booking savedBooking = bookingRepository.save(booking);
+
+            // Kirim notifikasi booking berhasil
+            notificationService.sendNotification(chekDataDBCustomer.get(), "Booking berhasil! Silakan segera lakukan pembayaran sebelum "+ LocalDateTime.now().plusHours(2) );
+
             return response.templateSaveSukses(savedBooking);
         } catch (Exception e) {
             log.error("save booking with details error: " + e.getMessage());
@@ -268,6 +274,55 @@ public class BookingServiceImpl implements BookingService {
     }
     private String findAvailableSeat() {
         return "Choose When Checkin";
+    }
+
+
+    public Map processPayment(PaymentRequestDTO paymentRequestDTO) {
+        try {
+            log.info("process Payment");
+            // Validasi input
+            if (paymentRequestDTO.getBooking() == null) {
+                throw new RuntimeException(Config.BOOKING_REQUIRED);
+            }
+            Optional<Booking> chekDataDBBooking = bookingRepository.findById(paymentRequestDTO.getBooking().getId());
+            if (chekDataDBBooking.isEmpty()) {
+                throw new RuntimeException(Config.BOOKING_NOT_FOUND);
+            }
+            if (paymentRequestDTO.getBankPembayaran() == null) {
+                throw new RuntimeException("Bank pembayaran is required");
+            }
+            if (paymentRequestDTO.getNomorRekening() == null) {
+                throw new RuntimeException("Nomor Rekening is required");
+            }
+            if (paymentRequestDTO.getNamaRekening() == null) {
+                throw new RuntimeException("Nama Rekening is required");
+            }
+            if (paymentRequestDTO.getMasaBerlaku() == null) {
+                throw new RuntimeException("Masa Berlaku is required");
+            }
+            if (paymentRequestDTO.getCvvCvn() == null) {
+                throw new RuntimeException("Cvv Cvn is required");
+            }
+            // Update status pembayaran
+            chekDataDBBooking.get().setPaid("true");
+            chekDataDBBooking.get().setBankPembayaran(paymentRequestDTO.getBankPembayaran());
+            chekDataDBBooking.get().setNamaRekening(paymentRequestDTO.getNamaRekening());
+            chekDataDBBooking.get().setMasaBerlaku(paymentRequestDTO.getMasaBerlaku());
+            chekDataDBBooking.get().setCvvCvn(paymentRequestDTO.getCvvCvn());
+            chekDataDBBooking.get().setNomorRekening(paymentRequestDTO.getNomorRekening());
+            chekDataDBBooking.get().setUpdated_date(new Date());
+
+            // Simpan perubahan
+            Booking savedBooking = bookingRepository.save(chekDataDBBooking.get());
+
+            // Kirim notifikasi pembayaran berhasil
+            notificationService.sendNotification(chekDataDBBooking.get().getCustomer(), "Pembayaran berhasil! Tiket Anda sudah dikonfirmasi.");
+
+            return response.templateSaveSukses(savedBooking);
+        } catch (Exception e) {
+            log.error("process Payment error: " + e.getMessage());
+            throw new RuntimeException("process Payment =" + e.getMessage());
+        }
     }
 
 }
