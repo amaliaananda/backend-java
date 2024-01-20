@@ -1,8 +1,11 @@
 package com.backend.travelid.controller;
 
+import com.backend.travelid.entity.Customer;
 import com.backend.travelid.entity.Notification;
+import com.backend.travelid.repository.CustomerRepository;
 import com.backend.travelid.repository.NotificationRepository;
 import com.backend.travelid.service.NotificationService;
+import com.backend.travelid.utils.Config;
 import com.backend.travelid.utils.SimpleStringUtils;
 import com.backend.travelid.utils.TemplateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/notification")
@@ -32,6 +32,9 @@ public class NotificationController {
 
     @Autowired
     public NotificationRepository notificationRepository;
+
+    @Autowired
+    public CustomerRepository customerRepository;
 
     @Autowired
     public TemplateResponse response;
@@ -60,6 +63,7 @@ public class NotificationController {
     public ResponseEntity<Map> list(
             @RequestParam() Integer page,
             @RequestParam(required = true) Integer size,
+            @RequestParam(required = false) String customerId,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
         try {
@@ -68,6 +72,14 @@ public class NotificationController {
             Specification<Notification> spec =
                     ((root, query, criteriaBuilder) -> {
                         List<Predicate> predicates = new ArrayList<>();
+                        if (customerId != null && !customerId.isEmpty()) {
+                            long custId = Long.parseLong(customerId);
+                            Optional<Customer> chekDataDBCustomer = customerRepository.findById(custId);
+                            if (chekDataDBCustomer.isEmpty()) {
+                                throw new RuntimeException(Config.USER_NOT_FOUND);
+                            }
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("customer_id")), "%" + customerId + "%"));
+                        }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
                     });
             Page<Notification> list = notificationRepository.findAll(spec, show_data);
