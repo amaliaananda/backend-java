@@ -1,6 +1,7 @@
 package com.backend.travelid.service.impl;
 
 import com.backend.travelid.entity.Booking;
+import com.backend.travelid.entity.Flight;
 import com.backend.travelid.repository.BookingRepository;
 import com.backend.travelid.repository.CustomerRepository;
 import com.backend.travelid.service.NotificationService;
@@ -41,9 +42,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Map getByCustomerId(Long customerId) {
-        try {
-            log.info("get Notification by user");
+    public List<Notification> getByCustomerId(Long customerId) {
             if (customerId == null) {
                 throw new RuntimeException(Config.ID_REQUIRED);
             }
@@ -51,15 +50,18 @@ public class NotificationServiceImpl implements NotificationService {
             if (chekDataDBCustomer.isEmpty()) {
                 throw new RuntimeException(Config.USER_NOT_FOUND);
             }
-            Optional<Notification> getBaseOptional = notificationRepository.getByCustomer(chekDataDBCustomer);
-            if(getBaseOptional.isEmpty()){
-                return response.notFound(getBaseOptional);
-            }
-            return response.templateSukses(getBaseOptional);
-        }catch (Exception e){
-            log.error("get Notification by Customer error: "+e.getMessage());
-            throw new RuntimeException("get Notification by Customer ="+e.getMessage());
+            return notificationRepository.getByCustomerId(customerId);
+    }
+    @Override
+    public List<Notification> getByCustomerEmail(String email) {
+        if (email == null) {
+            throw new RuntimeException(Config.EMAIL_REQUIRED);
         }
+        Optional<Customer> chekDataDBCustomer = customerRepository.findByEmail(email);
+        if (chekDataDBCustomer.isEmpty()) {
+            throw new RuntimeException(Config.USER_NOT_FOUND);
+        }
+        return notificationRepository.getByCustomerEmail(email);
     }
     @Override
     public Map getByID(Long notificationId) {

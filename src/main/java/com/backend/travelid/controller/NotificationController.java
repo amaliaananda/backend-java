@@ -1,6 +1,7 @@
 package com.backend.travelid.controller;
 
 import com.backend.travelid.entity.Customer;
+import com.backend.travelid.entity.Flight;
 import com.backend.travelid.entity.Notification;
 import com.backend.travelid.repository.CustomerRepository;
 import com.backend.travelid.repository.NotificationRepository;
@@ -48,22 +49,21 @@ public class NotificationController {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
-
-    @GetMapping(value = {"/notificationsByCustomerId/{customerId}","/notificationsByCustomerId/{customerId}/"})
+    @GetMapping(value={"/getByCustomerId/{customerId}", "/getByCustomerId/{customerId}/"})
     @PreAuthorize("hasRole('READ')")
-    public ResponseEntity<Map> getBookingsByCustomerId(@PathVariable("customerId") Long customerId) {
-        try {
-            return new ResponseEntity<Map>(notificationService.getByCustomerId(customerId), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
-        }
+    public List<Notification> getByCustomerId(@PathVariable("customerId") Long customerId) {
+        return notificationService.getByCustomerId(customerId);
+    }
+    @GetMapping(value={"/getByCustomerEmail/{email}", "/getByCustomerEmail/{email}/"})
+    @PreAuthorize("hasRole('READ')")
+    public List<Notification> getByCustomerEmail(@PathVariable("email") String email) {
+        return notificationService.getByCustomerEmail(email);
     }
     @GetMapping(value = {"/listNotifications", "/listNotifications/"})
     @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Map> list(
             @RequestParam() Integer page,
             @RequestParam(required = true) Integer size,
-            @RequestParam(required = false) String customerId,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
         try {
@@ -72,14 +72,6 @@ public class NotificationController {
             Specification<Notification> spec =
                     ((root, query, criteriaBuilder) -> {
                         List<Predicate> predicates = new ArrayList<>();
-                        if (customerId != null && !customerId.isEmpty()) {
-                            long custId = Long.parseLong(customerId);
-                            Optional<Customer> chekDataDBCustomer = customerRepository.findById(custId);
-                            if (chekDataDBCustomer.isEmpty()) {
-                                throw new RuntimeException(Config.USER_NOT_FOUND);
-                            }
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("customerId")), "%" + customerId + "%"));
-                        }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
                     });
             Page<Notification> list = notificationRepository.findAll(spec, show_data);
