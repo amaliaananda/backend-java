@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
         } catch (Exception e) {
             logger.error("Eror registerManual=", e);
-            throw new RuntimeException("eror:"+e);
+            return response.Error("eror:"+e);
         }
     }
 
@@ -145,25 +145,25 @@ public class UserServiceImpl implements UserService {
             if ((checkUser != null) && (encoder.matches(loginModel.getPassword(), checkUser.getPassword()))) {
                 if (!checkUser.isEnabled()) {
                     map.put("is_enabled", checkUser.isEnabled());
-                    throw new RuntimeException("account_is_enabled");
+                    return response.Error("account_is_enabled");
                 }
             }
             if (checkUser == null) {
-                throw new UsernameNotFoundException("user not found");
+                return response.notFound("user not found");
             }
             if (!(encoder.matches(loginModel.getPassword(), checkUser.getPassword()))) {
-                throw new InternalError("500: wrong password");
+                return response.internalServer("wrong password");
             }
             String url = baseUrl + "/oauth/token?username=" + loginModel.getUsername() +
                     "&password=" + loginModel.getPassword() +
                     "&grant_type=password" +
                     "&client_id=my-client-web" +
                     "&client_secret=password";
-            ResponseEntity<Map> response = restTemplateBuilder.build().exchange(url, HttpMethod.POST, null, new
+            ResponseEntity<Map> responses = restTemplateBuilder.build().exchange(url, HttpMethod.POST, null, new
                     ParameterizedTypeReference<Map>() {
                     });
 
-            if (response.getStatusCode() == HttpStatus.OK) {
+            if (responses.getStatusCode() == HttpStatus.OK) {
                 User user = userRepository.findOneByUsername(loginModel.getUsername());
                 List<String> roles = new ArrayList<>();
 
@@ -175,16 +175,16 @@ public class UserServiceImpl implements UserService {
 //                checkUser.setRefreshToken(response.getBody().get("refresh_token").toString());
 //                userRepository.save(checkUser);
 
-                map.put("access_token", response.getBody().get("access_token"));
-                map.put("token_type", response.getBody().get("token_type"));
-                map.put("refresh_token", response.getBody().get("refresh_token"));
-                map.put("expires_in", response.getBody().get("expires_in"));
-                map.put("scope", response.getBody().get("scope"));
-                map.put("jti", response.getBody().get("jti"));
+                map.put("access_token", responses.getBody().get("access_token"));
+                map.put("token_type", responses.getBody().get("token_type"));
+                map.put("refresh_token", responses.getBody().get("refresh_token"));
+                map.put("expires_in", responses.getBody().get("expires_in"));
+                map.put("scope", responses.getBody().get("scope"));
+                map.put("jti", responses.getBody().get("jti"));
 
                 return map;
             } else {
-                throw new RuntimeException("user not found");
+                return response.notFound("user not found");
             }
         } catch (HttpStatusCodeException e) {
             e.printStackTrace();
@@ -207,7 +207,7 @@ public class UserServiceImpl implements UserService {
             User obj = userRepository.save(idUser);
             return response.templateSukses(obj, idCustomer);
         } catch (Exception e){
-            throw new InternalError("500");
+            return response.internalServer("500");
         }
     }
 
@@ -219,11 +219,11 @@ public class UserServiceImpl implements UserService {
         }
 
         if (null == user) {
-            throw new UsernameNotFoundException("User not found");
+            throw new InternalError("User not found");
         }
         User idUser = userRepository.findOneByUsername(user.getUsername());
         if (null == idUser) {
-            throw new UsernameNotFoundException("User name not found");
+            throw new InternalError("User name not found");
         }
         return idUser;
     }
@@ -232,7 +232,7 @@ public class UserServiceImpl implements UserService {
 
         Optional<Customer> idCustomer = repoCustomer.findByEmail(email);
         if(idCustomer.isEmpty()){
-            throw new UsernameNotFoundException("email not found");
+            throw new InternalError("email not found");
         }
         return idCustomer;
     }

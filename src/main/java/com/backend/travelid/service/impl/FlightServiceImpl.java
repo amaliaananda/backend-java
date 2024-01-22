@@ -54,47 +54,47 @@ public class FlightServiceImpl implements FlightService {
         try {
             log.info("save flight");
             if(flight.getPassengerClass() == null){
-                throw new RuntimeException(Config.PASSENGER_CLASS_REQUIRED);
+                return response.Error(Config.PASSENGER_CLASS_REQUIRED);
             }
             if(flight.getPrice() == null){
-                throw new RuntimeException(Config.PRICE_REQUIRED);
+                return response.Error(Config.PRICE_REQUIRED);
             }
             if(flight.getAirlines() == null){
-                throw new RuntimeException(Config.AIRLINE_REQUIRED);
+                return response.Error(Config.AIRLINE_REQUIRED);
             }
             if(flight.getOriginAirport() == null){
-                throw new RuntimeException(Config.ORIGIN_AIRPORT_REQUIRED);
+                return response.Error(Config.ORIGIN_AIRPORT_REQUIRED);
             }
             if(flight.getDestinationAirport() == null){
-                throw new RuntimeException(Config.DESTINATION_AIRPORT_REQUIRED);
+                return response.Error(Config.DESTINATION_AIRPORT_REQUIRED);
             }
             if(flight.getFlightNumber() == null){
-                throw new RuntimeException(Config.FLIGHT_NUMBER_REQUIRED);
+                return response.Error(Config.FLIGHT_NUMBER_REQUIRED);
             }
             if(flight.getOriginCity() == null){
-                throw new RuntimeException(Config.ORIGIN_CITY_REQUIRED);
+                return response.Error(Config.ORIGIN_CITY_REQUIRED);
             }
             if(flight.getDestinationCity() == null){
-                throw new RuntimeException(Config.DESTINATION_CITY_REQUIRED);
+                return response.Error(Config.DESTINATION_CITY_REQUIRED);
             }
             if(flight.getFlightTime() == null){
-                throw new RuntimeException(Config.FLIGHT_TIME_REQUIRED);
+                return response.Error(Config.FLIGHT_TIME_REQUIRED);
             }
             if(flight.getArrivedTime() == null){
-                throw new RuntimeException(Config.ARRIVED_TIME_REQUIRED);
+                return response.Error(Config.ARRIVED_TIME_REQUIRED);
             }
             if(flight.getDuration() == null){
-                throw new RuntimeException(Config.DURATION_REQUIRED);
+                return response.Error(Config.DURATION_REQUIRED);
             }
             if(flight.getTransit() == null){
-                throw new RuntimeException(Config.TRANSIT_REQUIRED);
+                return response.Error(Config.TRANSIT_REQUIRED);
             }
             if(flight.getFreeMeal() == null){
-                throw new RuntimeException(Config.FREEMEAL_REQUIRED);
+                return response.Error(Config.FREEMEAL_REQUIRED);
             }
             Optional<Airlines> chekDataDBAirline = airlinesRepository.findById(flight.getAirlines().getId());
             if (chekDataDBAirline.isEmpty()) {
-                throw new NotFoundException(Config.AIRLINE_NOT_FOUND);
+                return response.Error(Config.AIRLINE_NOT_FOUND);
             }
             if ("economy".equals(flight.getPassengerClass())) flight.setLuggage("20 kg");
             else if ("business".equals(flight.getPassengerClass())) flight.setLuggage("30 kg");
@@ -112,15 +112,15 @@ public class FlightServiceImpl implements FlightService {
         try {
             log.info("Update flight");
             if (flight.getId() == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             Optional<Flight> chekDataDBFlight = flightRepository.findById(flight.getId());
             if (chekDataDBFlight.isEmpty()) {
-                throw new NotFoundException(Config.FLIGHT_NOT_FOUND);
+                return response.Error(Config.FLIGHT_NOT_FOUND);
             }
             Optional<Airlines> chekDataDBAirline = airlinesRepository.findByAirline(flight.getAirlines().getAirline());
             if (chekDataDBAirline.isEmpty()) {
-                throw new NotFoundException(Config.AIRLINE_NOT_FOUND);
+                return response.Error(Config.AIRLINE_NOT_FOUND);
             }
             chekDataDBFlight.get().setAirlines(flight.getAirlines());
             chekDataDBFlight.get().setPassengerClass(flight.getPassengerClass());
@@ -151,11 +151,11 @@ public class FlightServiceImpl implements FlightService {
         try {
             log.info("Delete flight");
             if (flight.getId() == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             Optional<Flight> chekDataDBFlight = flightRepository.findById(flight.getId());
             if (chekDataDBFlight.isEmpty()) {
-                throw new NotFoundException(Config.FLIGHT_NOT_FOUND);
+                return response.Error(Config.FLIGHT_NOT_FOUND);
             }
 
             chekDataDBFlight.get().setDeleted_date(new Date());

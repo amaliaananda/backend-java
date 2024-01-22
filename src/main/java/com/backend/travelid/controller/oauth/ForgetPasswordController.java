@@ -114,10 +114,13 @@ public class ForgetPasswordController {
     public Map resetPassword(@RequestBody ResetPasswordModel model) {
         if (model.getOtp() == null) return templateCRUD.notFound("Token is required");
         if (model.getNewPassword() == null) return templateCRUD.notFound("New Password is required");
+        if (model.getConfirmNewPassword() == null) return templateCRUD.notFound("Confirm New Password is required");
+        if (!model.getNewPassword().equals(model.getConfirmNewPassword())) return templateCRUD.Error("new password & confirm new password not match");
         User user = userRepository.findOneByOTP(model.getOtp());
         String success;
         if (user == null) return templateCRUD.notFound("Token not valid");
 
+        if (user.getPassword().equals(passwordEncoder.encode(model.getNewPassword().replaceAll("\\s+", "")))) return templateCRUD.Error("old password & new password match");
         user.setPassword(passwordEncoder.encode(model.getNewPassword().replaceAll("\\s+", "")));
         user.setOtpExpiredDate(null);
         user.setOtp(null);

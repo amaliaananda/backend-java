@@ -48,13 +48,13 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             log.info("add Customer");
             if (customer.getName() == null) {
-                throw new RuntimeException(Config.NAME_REQUIRED);
+                return response.Error(Config.NAME_REQUIRED);
             }
             if (!response.nameNotSimbol(customer.getName())) {
-                throw new RuntimeException(Config.NAME_MUST_NOT_BE_SYMBOL);
+                return response.Error(Config.NAME_MUST_NOT_BE_SYMBOL);
             }
             if (customer.getEmail() == null) {
-                throw new RuntimeException(Config.EMAIL_REQUIRED);
+                return response.Error(Config.EMAIL_REQUIRED);
             }
             return response.templateSaveSukses(customerRepository.save(customer));
         }catch (Exception e){
@@ -68,18 +68,18 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             log.info("Update Customer");
             if (customer.getId() == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             if (customer.getEmail() == null) {
-                throw new RuntimeException(Config.EMAIL_REQUIRED);
+                return response.Error(Config.EMAIL_REQUIRED);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(customer.getId());
             if (chekDataDBCustomer.isEmpty()) {
-                throw new NotFoundException(Config.CUSTOMER_NOT_FOUND);
+                return response.Error(Config.CUSTOMER_NOT_FOUND);
             }
             Optional<User> chekDataDBUser = userRepository.findByEmail(customer.getEmail());
             if (chekDataDBUser.isEmpty()) {
-                throw new NotFoundException(Config.USER_NOT_FOUND);
+                return response.Error(Config.USER_NOT_FOUND);
             }
 
             chekDataDBCustomer.get().setName(customer.getName());
@@ -105,11 +105,11 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             log.info("Update Profile Picture");
             if (IdCustomer == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(IdCustomer);
             if (chekDataDBCustomer.isEmpty()) {
-                throw new NotFoundException(Config.CUSTOMER_NOT_FOUND);
+                return response.Error(Config.CUSTOMER_NOT_FOUND);
             }
 
             // Update data customer
@@ -136,11 +136,11 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             log.info("Delete Customer");
             if (customer.getId() == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             Optional<Customer> chekDataDBUser = customerRepository.findById(customer.getId());
             if (chekDataDBUser.isEmpty()) {
-                throw new NotFoundException(Config.USER_NOT_FOUND);
+                return response.Error(Config.USER_NOT_FOUND);
             }
 
             chekDataDBUser.get().setDeleted_date(new Date());
@@ -156,7 +156,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Map getByID(Long user) {
         Optional<Customer> getBaseOptional = customerRepository.findById(user);
         if(getBaseOptional.isEmpty()){
-            throw new NotFoundException(Config.CUSTOMER_NOT_FOUND);
+            return response.Error(Config.CUSTOMER_NOT_FOUND);
         }
         return response.templateSukses(getBaseOptional);
     }

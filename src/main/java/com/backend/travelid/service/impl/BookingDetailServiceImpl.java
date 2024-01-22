@@ -55,7 +55,7 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     public Map getByID(Long bookingDetail) {
         Optional<BookingDetail> getBaseOptional = bookingDetailRepository.findById(bookingDetail);
         if(getBaseOptional.isEmpty()){
-            throw new NotFoundException("not found");
+            return response.Error("not found");
         }
         return response.templateSukses(getBaseOptional);
     }
@@ -65,27 +65,27 @@ public class BookingDetailServiceImpl implements BookingDetailService {
         try {
             log.info("save booking Detail");
             if(bookingDetail.getCustomerName() == null){
-                throw new RuntimeException(Config.NAME_REQUIRED);
+                return response.Error(Config.NAME_REQUIRED);
             }
             if(bookingDetail.getIdentityNumber() == null){
-                throw new RuntimeException(Config.IDENTITY_NUMBER_REQUIRED);
+                return response.Error(Config.IDENTITY_NUMBER_REQUIRED);
             }
             if(bookingDetail.getBooking() == null){
-                throw new RuntimeException(Config.BOOKING_REQUIRED);
+                return response.Error(Config.BOOKING_REQUIRED);
             }
             if(bookingDetail.getPrice() == null){
-                throw new RuntimeException(Config.PRICE_REQUIRED);
+                return response.Error(Config.PRICE_REQUIRED);
             }
             if(bookingDetail.getFlight() == null){
-                throw new RuntimeException(Config.FLIGHT_REQUIRED);
+                return response.Error(Config.FLIGHT_REQUIRED);
             }
             Optional<Booking> chekDataDBBooking = bookingRepository.findById(bookingDetail.getBooking().getId());
             if (chekDataDBBooking.isEmpty()) {
-                throw new NotFoundException(Config.BOOKING_NOT_FOUND);
+                return response.Error(Config.BOOKING_NOT_FOUND);
             }
             Optional<Flight> chekDataDBFlight = flightRepository.findById(bookingDetail.getFlight().getId());
             if (chekDataDBFlight.isEmpty()) {
-                throw new NotFoundException(Config.FLIGHT_NOT_FOUND);
+                return response.Error(Config.FLIGHT_NOT_FOUND);
             }
             return response.templateSaveSukses(bookingDetailRepository.save(bookingDetail));
         }catch (Exception e){
@@ -99,19 +99,19 @@ public class BookingDetailServiceImpl implements BookingDetailService {
         try {
             log.info("Update booking Detail");
             if (bookingDetail.getId() == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             Optional<BookingDetail> chekDataDBbookingDetail = bookingDetailRepository.findById(bookingDetail.getId());
             if (chekDataDBbookingDetail.isEmpty()) {
-                throw new NotFoundException(Config.BOOKING_DETAIL_NOT_FOUND);
+                return response.Error(Config.BOOKING_DETAIL_NOT_FOUND);
             }
             Optional<Flight> chekDataDBFlight = flightRepository.findById(bookingDetail.getFlight().getId());
             if (chekDataDBFlight.isEmpty()) {
-                throw new NotFoundException(Config.FLIGHT_NOT_FOUND);
+                return response.Error(Config.FLIGHT_NOT_FOUND);
             }
             Optional<Booking> chekDataDBBooking = bookingRepository.findById(bookingDetail.getBooking().getId());
             if (chekDataDBBooking.isEmpty()) {
-                throw new NotFoundException(Config.BOOKING_NOT_FOUND);
+                return response.Error(Config.BOOKING_NOT_FOUND);
             }
             chekDataDBbookingDetail.get().setFlight(bookingDetail.getFlight());
             chekDataDBbookingDetail.get().setCustomerName(bookingDetail.getCustomerName());
@@ -133,11 +133,11 @@ public class BookingDetailServiceImpl implements BookingDetailService {
         try {
             log.info("Delete booking Detail");
             if (bookingDetail.getId() == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             Optional<BookingDetail> chekDataDBbookingDetail = bookingDetailRepository.findById(bookingDetail.getId());
             if (chekDataDBbookingDetail.isEmpty()) {
-                throw new NotFoundException(Config.BOOKING_DETAIL_NOT_FOUND);
+                return response.Error(Config.BOOKING_DETAIL_NOT_FOUND);
             }
 
             chekDataDBbookingDetail.get().setDeleted_date(new Date());

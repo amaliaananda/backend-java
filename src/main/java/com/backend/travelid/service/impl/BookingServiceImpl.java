@@ -51,11 +51,11 @@ public class BookingServiceImpl implements BookingService {
         try {
             log.info("get booking by user");
             if (customerId == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(customerId);
             if (chekDataDBCustomer.isEmpty()) {
-                throw new RuntimeException(Config.USER_NOT_FOUND);
+                return response.Error(Config.USER_NOT_FOUND);
             }
             chekDataDBCustomer.get().setId(customerId);
             Optional<Booking> getBaseOptional = bookingRepository.getByCustomer(chekDataDBCustomer);
@@ -83,14 +83,14 @@ public class BookingServiceImpl implements BookingService {
         try {
             log.info("save booking");
             if(booking.getCustomer() == null){
-                throw new RuntimeException(Config.CUSTOMER_REQUIRED);
+                return response.Error(Config.CUSTOMER_REQUIRED);
             }
             if(booking.getTotalPrice() == null){
-                throw new RuntimeException(Config.TOTAL_PRICE_REQUIRED);
+                return response.Error(Config.TOTAL_PRICE_REQUIRED);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(booking.getCustomer().getId());
             if (chekDataDBCustomer.isEmpty()) {
-                throw new RuntimeException(Config.CUSTOMER_NOT_FOUND);
+                return response.Error(Config.CUSTOMER_NOT_FOUND);
             }
             booking.setPaid("false");
             // Kirim notifikasi booking berhasil
@@ -107,15 +107,15 @@ public class BookingServiceImpl implements BookingService {
         try {
             log.info("Update booking");
             if (booking.getId() == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             Optional<Booking> chekDataDBbooking = bookingRepository.findById(booking.getId());
             if (chekDataDBbooking.isEmpty()) {
-                throw new RuntimeException(Config.BOOKING_NOT_FOUND);
+                return response.Error(Config.BOOKING_NOT_FOUND);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(booking.getCustomer().getId());
             if (chekDataDBCustomer.isEmpty()) {
-                throw new RuntimeException(Config.CUSTOMER_NOT_FOUND);
+                return response.Error(Config.CUSTOMER_NOT_FOUND);
             }
             chekDataDBbooking.get().setCustomer(booking.getCustomer());
             chekDataDBbooking.get().setTotalPrice(booking.getTotalPrice());
@@ -142,11 +142,11 @@ public class BookingServiceImpl implements BookingService {
         try {
             log.info("Delete booking");
             if (booking.getId() == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             Optional<Booking> chekDataDBbooking = bookingRepository.findById(booking.getId());
             if (chekDataDBbooking.isEmpty()) {
-                throw new RuntimeException(Config.BOOKING_NOT_FOUND);
+                return response.Error(Config.BOOKING_NOT_FOUND);
             }
 
             chekDataDBbooking.get().setDeleted_date(new Date());
@@ -166,14 +166,14 @@ public class BookingServiceImpl implements BookingService {
 
             // Validasi input
             if (bookingRequestDTO.getCustomer() == null) {
-                throw new RuntimeException(Config.CUSTOMER_REQUIRED);
+                return response.Error(Config.CUSTOMER_REQUIRED);
             }
             if (bookingRequestDTO.getListBookingDetail() == null) {
-                throw new RuntimeException(Config.LIST_BOOKING_DETAIL_REQUIRED);
+                return response.Error(Config.LIST_BOOKING_DETAIL_REQUIRED);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(bookingRequestDTO.getCustomer().getId());
             if (chekDataDBCustomer.isEmpty()) {
-                throw new RuntimeException(Config.CUSTOMER_NOT_FOUND);
+                return response.Error(Config.CUSTOMER_NOT_FOUND);
             }
 
             // Buat booking
@@ -189,7 +189,7 @@ public class BookingServiceImpl implements BookingService {
             for (BookingDetailDTO bookingDetailDTO : bookingRequestDTO.getListBookingDetail()) {
                 Optional<Flight> chekDataDBFlight = flightRepository.findById(bookingDetailDTO.getFlight().getId());
                 if (chekDataDBFlight.isEmpty()) {
-                    throw new RuntimeException(Config.FLIGHT_NOT_FOUND);
+                    return response.Error(Config.FLIGHT_NOT_FOUND);
                 }
                 Flight flight = chekDataDBFlight.get();
 
@@ -282,11 +282,11 @@ public class BookingServiceImpl implements BookingService {
             log.info("process Payment");
             // Validasi input
             if (paymentRequestDTO.getBooking() == null) {
-                throw new RuntimeException(Config.BOOKING_REQUIRED);
+                return response.Error(Config.BOOKING_REQUIRED);
             }
             Optional<Booking> chekDataDBBooking = bookingRepository.findById(paymentRequestDTO.getBooking().getId());
             if (chekDataDBBooking.isEmpty()) {
-                throw new RuntimeException(Config.BOOKING_NOT_FOUND);
+                return response.Error(Config.BOOKING_NOT_FOUND);
             }
             if (paymentRequestDTO.getBankPembayaran() == null) {
                 throw new RuntimeException("Bank pembayaran is required");
