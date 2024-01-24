@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingDetailDTO {
-    private FlightDTO flight;
     private String customerName;
     private String identityNumber;
     private String seatNumber;
