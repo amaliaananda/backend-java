@@ -35,6 +35,10 @@ public class Config {
 
     public  static  String LIST_BOOKING_DETAIL_REQUIRED = "List Booking Detail is Required.";
 
+    public  static  String LIST_OUTBOUND_BOOKING_DETAIL_REQUIRED = "List OUTBOUND Booking Detail is Required.";
+
+    public  static  String LIST_RETURN_BOOKING_DETAIL_REQUIRED = "List RETURN Booking Detail is Required.";
+
     public  static  String AIRLINE_REQUIRED = "Airline is Required.";
 
     public  static  String AIRLINE_NOT_FOUND = "Airline NOT FOUND.";

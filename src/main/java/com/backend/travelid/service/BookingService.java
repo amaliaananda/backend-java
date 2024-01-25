@@ -1,6 +1,7 @@
 package com.backend.travelid.service;
 
 import com.backend.travelid.dto.BookingRequestDTO;
+import com.backend.travelid.dto.BookingRoundtripRequestDTO;
 import com.backend.travelid.dto.PaymentRequestDTO;
 import com.backend.travelid.entity.Booking;
 import com.backend.travelid.entity.Customer;
@@ -18,4 +19,5 @@ public interface BookingService {
     Map deleteBooking(Booking booking);
     Map processPayment(PaymentRequestDTO paymentRequestDTO);
     Map saveBookingWithDetails(BookingRequestDTO bookingRequestDTO);
+    Map saveRoundtripBookingWithDetails(BookingRoundtripRequestDTO bookingRoundtripRequestDTO);
 }

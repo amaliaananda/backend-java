@@ -118,25 +118,43 @@ public class FlightServiceImpl implements FlightService {
             if (chekDataDBFlight.isEmpty()) {
                 return response.Error(Config.FLIGHT_NOT_FOUND);
             }
-            Optional<Airlines> chekDataDBAirline = airlinesRepository.findByAirline(flight.getAirlines().getAirline());
-            if (chekDataDBAirline.isEmpty()) {
-                return response.Error(Config.AIRLINE_NOT_FOUND);
+            if (flight.getAirlines().getAirline() != null) {
+                Optional<Airlines> chekDataDBAirline = airlinesRepository.findByAirline(flight.getAirlines().getAirline());
+                if (chekDataDBAirline.isEmpty()) {
+                    return response.Error(Config.AIRLINE_NOT_FOUND);
+                }
             }
-            chekDataDBFlight.get().setAirlines(flight.getAirlines());
-            chekDataDBFlight.get().setPassengerClass(flight.getPassengerClass());
-            chekDataDBFlight.get().setPrice(flight.getPrice());
-            chekDataDBFlight.get().setOriginAirport(flight.getOriginAirport());
-            chekDataDBFlight.get().setDestinationAirport(flight.getDestinationAirport());
-            chekDataDBFlight.get().setFlightNumber(flight.getFlightNumber());
-            chekDataDBFlight.get().setOriginCity(flight.getOriginCity());
-            chekDataDBFlight.get().setDestinationCity(flight.getDestinationCity());
-            chekDataDBFlight.get().setGate(flight.getGate());
-            chekDataDBFlight.get().setFlightTime(flight.getFlightTime());
-            chekDataDBFlight.get().setArrivedTime(flight.getArrivedTime());
-            chekDataDBFlight.get().setDuration(flight.getDuration());
-            chekDataDBFlight.get().setTransit(flight.getTransit());
-            chekDataDBFlight.get().setLuggage(flight.getLuggage());
-            chekDataDBFlight.get().setFreeMeal(flight.getFreeMeal());
+            if (flight.getAirlines() != null) {
+                chekDataDBFlight.get().setAirlines(flight.getAirlines());
+            }if (flight.getPassengerClass() != null) {
+                chekDataDBFlight.get().setPassengerClass(flight.getPassengerClass());
+            }if (flight.getPrice() != null) {
+                chekDataDBFlight.get().setPrice(flight.getPrice());
+            }if (flight.getOriginAirport() != null) {
+                chekDataDBFlight.get().setOriginAirport(flight.getOriginAirport());
+            }if (flight.getDestinationAirport() != null) {
+                chekDataDBFlight.get().setDestinationAirport(flight.getDestinationAirport());
+            }if (flight.getFlightNumber() != null) {
+                chekDataDBFlight.get().setFlightNumber(flight.getFlightNumber());
+            }if (flight.getOriginCity() != null) {
+                chekDataDBFlight.get().setOriginCity(flight.getOriginCity());
+            }if (flight.getDestinationCity() != null) {
+                chekDataDBFlight.get().setDestinationCity(flight.getDestinationCity());
+            }if (flight.getGate() != null) {
+                chekDataDBFlight.get().setGate(flight.getGate());
+            }if (flight.getFlightTime() != null) {
+                chekDataDBFlight.get().setFlightTime(flight.getFlightTime());
+            }if (flight.getArrivedTime() != null) {
+                chekDataDBFlight.get().setArrivedTime(flight.getArrivedTime());
+            }if (flight.getDuration() != null) {
+                chekDataDBFlight.get().setDuration(flight.getDuration());
+            }if (flight.getTransit() != null) {
+                chekDataDBFlight.get().setTransit(flight.getTransit());
+            }if (flight.getLuggage() != null) {
+                chekDataDBFlight.get().setLuggage(flight.getLuggage());
+            }if (flight.getFreeMeal() != null) {
+                chekDataDBFlight.get().setFreeMeal(flight.getFreeMeal());
+            }
             chekDataDBFlight.get().setUpdated_date(new Date());
 
             return response.sukses(flightRepository.save(chekDataDBFlight.get()));
