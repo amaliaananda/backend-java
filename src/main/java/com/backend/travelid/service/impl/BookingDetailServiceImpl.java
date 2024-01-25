@@ -98,27 +98,30 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     public Map updateBookingDetail(BookingDetail bookingDetail) {
         try {
             log.info("Update booking Detail");
-            if (bookingDetail.getId() == null) {
+            if (bookingDetail.getId() == null)
                 return response.Error(Config.ID_REQUIRED);
-            }
+
             Optional<BookingDetail> chekDataDBbookingDetail = bookingDetailRepository.findById(bookingDetail.getId());
-            if (chekDataDBbookingDetail.isEmpty()) {
+            if (chekDataDBbookingDetail.isEmpty())
                 return response.Error(Config.BOOKING_DETAIL_NOT_FOUND);
+
+            if (bookingDetail.getFlight() != null) {
+                Optional<Flight> chekDataDBFlight = flightRepository.findById(bookingDetail.getFlight().getId());
+                if (chekDataDBFlight.isEmpty())
+                    return response.Error(Config.FLIGHT_NOT_FOUND);
+                chekDataDBbookingDetail.get().setFlight(bookingDetail.getFlight());
             }
-            Optional<Flight> chekDataDBFlight = flightRepository.findById(bookingDetail.getFlight().getId());
-            if (chekDataDBFlight.isEmpty()) {
-                return response.Error(Config.FLIGHT_NOT_FOUND);
+            if (bookingDetail.getFlight() != null) {
+                Optional<Booking> chekDataDBBooking = bookingRepository.findById(bookingDetail.getBooking().getId());
+                if (chekDataDBBooking.isEmpty())
+                    return response.Error(Config.BOOKING_NOT_FOUND);
+                chekDataDBbookingDetail.get().setBooking(bookingDetail.getBooking());
             }
-            Optional<Booking> chekDataDBBooking = bookingRepository.findById(bookingDetail.getBooking().getId());
-            if (chekDataDBBooking.isEmpty()) {
-                return response.Error(Config.BOOKING_NOT_FOUND);
-            }
-            chekDataDBbookingDetail.get().setFlight(bookingDetail.getFlight());
-            chekDataDBbookingDetail.get().setCustomerName(bookingDetail.getCustomerName());
-            chekDataDBbookingDetail.get().setIdentityNumber(bookingDetail.getIdentityNumber());
-            chekDataDBbookingDetail.get().setSeatNumber(bookingDetail.getSeatNumber());
-            chekDataDBbookingDetail.get().setPrice(bookingDetail.getPrice());
-            chekDataDBbookingDetail.get().setLuggage(bookingDetail.getLuggage());
+            if (bookingDetail.getCustomerName() != null)chekDataDBbookingDetail.get().setCustomerName(bookingDetail.getCustomerName());
+            if (bookingDetail.getIdentityNumber() != null)chekDataDBbookingDetail.get().setIdentityNumber(bookingDetail.getIdentityNumber());
+            if (bookingDetail.getSeatNumber() != null)chekDataDBbookingDetail.get().setSeatNumber(bookingDetail.getSeatNumber());
+            if (bookingDetail.getPrice() != null)chekDataDBbookingDetail.get().setPrice(bookingDetail.getPrice());
+            if (bookingDetail.getLuggage() != null)chekDataDBbookingDetail.get().setLuggage(bookingDetail.getLuggage());
             chekDataDBbookingDetail.get().setUpdated_date(new Date());
 
             return response.sukses(bookingDetailRepository.save(chekDataDBbookingDetail.get()));
@@ -132,13 +135,12 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     public Map deleteBookingDetail(BookingDetail bookingDetail) {
         try {
             log.info("Delete booking Detail");
-            if (bookingDetail.getId() == null) {
+            if (bookingDetail.getId() == null)
                 return response.Error(Config.ID_REQUIRED);
-            }
+
             Optional<BookingDetail> chekDataDBbookingDetail = bookingDetailRepository.findById(bookingDetail.getId());
-            if (chekDataDBbookingDetail.isEmpty()) {
+            if (chekDataDBbookingDetail.isEmpty())
                 return response.Error(Config.BOOKING_DETAIL_NOT_FOUND);
-            }
 
             chekDataDBbookingDetail.get().setDeleted_date(new Date());
             bookingDetailRepository.save(chekDataDBbookingDetail.get());
