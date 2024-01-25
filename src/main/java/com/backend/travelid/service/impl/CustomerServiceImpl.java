@@ -67,34 +67,28 @@ public class CustomerServiceImpl implements CustomerService {
     public Map updateCustomer(Customer customer) {
         try {
             log.info("Update Customer");
-            if (customer.getId() == null) {
+            if (customer.getId() == null)
                 return response.Error(Config.ID_REQUIRED);
-            }
+
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(customer.getId());
-            if (chekDataDBCustomer.isEmpty()) {
+            if (chekDataDBCustomer.isEmpty())
                 return response.Error(Config.CUSTOMER_NOT_FOUND);
-            }
+
             String email = chekDataDBCustomer.get().getEmail();
             Optional<User> chekDataDBUser = userRepository.findByEmail(email);
-            if (chekDataDBUser.isEmpty()) {
+            if (chekDataDBUser.isEmpty())
                 return response.Error(Config.USER_NOT_FOUND);
-            }
 
-            if (!customer.getName().isEmpty()) {
+            if (!customer.getName().isEmpty())
                 chekDataDBCustomer.get().setName(customer.getName());
-            }
-            if (!customer.getDateOfBirth().isEmpty()) {
+            if (!customer.getDateOfBirth().isEmpty())
                 chekDataDBCustomer.get().setDateOfBirth(customer.getDateOfBirth());
-            }
-            if (!customer.getGender().isEmpty()) {
+            if (!customer.getGender().isEmpty())
                 chekDataDBCustomer.get().setGender(customer.getGender());
-            }
-            if (!customer.getPhoneNumber().isEmpty()) {
+            if (!customer.getPhoneNumber().isEmpty())
                 chekDataDBCustomer.get().setPhoneNumber(customer.getPhoneNumber());
-            }
-            if (!customer.getProfilePicture().isEmpty()) {
+            if (!customer.getProfilePicture().isEmpty())
                 chekDataDBCustomer.get().setProfilePicture(customer.getProfilePicture());
-            }
             chekDataDBCustomer.get().setUpdated_date(new Date());
 
             chekDataDBUser.get().setFullname(customer.getName());

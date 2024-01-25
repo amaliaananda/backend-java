@@ -104,28 +104,26 @@ public class BookingServiceImpl implements BookingService {
     public Map updateBooking(Booking booking) {
         try {
             log.info("Update booking");
-            if (booking.getId() == null) {
-                return response.Error(Config.ID_REQUIRED);
-            }
+            if (booking.getId() == null) return response.Error(Config.ID_REQUIRED);
+
             Optional<Booking> chekDataDBbooking = bookingRepository.findById(booking.getId());
-            if (chekDataDBbooking.isEmpty()) {
-                return response.Error(Config.BOOKING_NOT_FOUND);
+            if (chekDataDBbooking.isEmpty()) return response.Error(Config.BOOKING_NOT_FOUND);
+
+            if (booking.getCustomer()!= null) {
+                Optional<Customer> chekDataDBCustomer = customerRepository.findById(booking.getCustomer().getId());
+                if (chekDataDBCustomer.isEmpty()) return response.Error(Config.CUSTOMER_NOT_FOUND);
+                chekDataDBbooking.get().setCustomer(booking.getCustomer());
             }
-            Optional<Customer> chekDataDBCustomer = customerRepository.findById(booking.getCustomer().getId());
-            if (chekDataDBCustomer.isEmpty()) {
-                return response.Error(Config.CUSTOMER_NOT_FOUND);
-            }
-            chekDataDBbooking.get().setCustomer(booking.getCustomer());
-            chekDataDBbooking.get().setTotalPrice(booking.getTotalPrice());
-            chekDataDBbooking.get().setPaid(booking.getPaid());
-            chekDataDBbooking.get().setAddOnSelectingSeat(booking.getAddOnSelectingSeat());
-            chekDataDBbooking.get().setAddOnLuggagePrice(booking.getAddOnLuggagePrice());
-            chekDataDBbooking.get().setAddOnLuggage(booking.getAddOnLuggage());
-            chekDataDBbooking.get().setBankPembayaran(booking.getBankPembayaran());
-            chekDataDBbooking.get().setNamaRekening(booking.getNamaRekening());
-            chekDataDBbooking.get().setMasaBerlaku(booking.getMasaBerlaku());
-            chekDataDBbooking.get().setCvvCvn(booking.getCvvCvn());
-            chekDataDBbooking.get().setNomorRekening(booking.getNomorRekening());
+            if (booking.getTotalPrice()!= null) chekDataDBbooking.get().setTotalPrice(booking.getTotalPrice());
+            if (booking.getPaid()!= null) chekDataDBbooking.get().setPaid(booking.getPaid());
+            if (booking.getAddOnSelectingSeat()!= null) chekDataDBbooking.get().setAddOnSelectingSeat(booking.getAddOnSelectingSeat());
+            if (booking.getAddOnLuggagePrice()!= null) chekDataDBbooking.get().setAddOnLuggagePrice(booking.getAddOnLuggagePrice());
+            if (booking.getAddOnLuggage()!= null) chekDataDBbooking.get().setAddOnLuggage(booking.getAddOnLuggage());
+            if (booking.getBankPembayaran()!= null) chekDataDBbooking.get().setBankPembayaran(booking.getBankPembayaran());
+            if (booking.getNamaRekening()!= null) chekDataDBbooking.get().setNamaRekening(booking.getNamaRekening());
+            if (booking.getMasaBerlaku()!= null) chekDataDBbooking.get().setMasaBerlaku(booking.getMasaBerlaku());
+            if (booking.getCvvCvn()!= null) chekDataDBbooking.get().setCvvCvn(booking.getCvvCvn());
+            if (booking.getNomorRekening()!= null) chekDataDBbooking.get().setNomorRekening(booking.getNomorRekening());
             chekDataDBbooking.get().setUpdated_date(new Date());
 
             return response.sukses(bookingRepository.save(chekDataDBbooking.get()));
@@ -139,13 +137,10 @@ public class BookingServiceImpl implements BookingService {
     public Map deleteBooking(Booking booking) {
         try {
             log.info("Delete booking");
-            if (booking.getId() == null) {
-                return response.Error(Config.ID_REQUIRED);
-            }
+            if (booking.getId() == null) return response.Error(Config.ID_REQUIRED);
+
             Optional<Booking> chekDataDBbooking = bookingRepository.findById(booking.getId());
-            if (chekDataDBbooking.isEmpty()) {
-                return response.Error(Config.BOOKING_NOT_FOUND);
-            }
+            if (chekDataDBbooking.isEmpty()) return response.Error(Config.BOOKING_NOT_FOUND);
 
             chekDataDBbooking.get().setDeleted_date(new Date());
             bookingRepository.save(chekDataDBbooking.get());
@@ -162,95 +157,84 @@ public class BookingServiceImpl implements BookingService {
             log.info("save roundtrip booking with details");
 
             // Validasi input
-            if (bookingRoundtripRequestDTO.getCustomer() == null) {
+            if (bookingRoundtripRequestDTO.getCustomer() == null)
                 return response.Error(Config.CUSTOMER_REQUIRED);
-            }
-            if (bookingRoundtripRequestDTO.getListOutboundBookingDetail() == null) {
+
+            if (bookingRoundtripRequestDTO.getListOutboundBookingDetail() == null)
                 return response.Error(Config.LIST_OUTBOUND_BOOKING_DETAIL_REQUIRED);
-            }
-            if (bookingRoundtripRequestDTO.getListReturnBookingDetail() == null) {
+
+            if (bookingRoundtripRequestDTO.getListReturnBookingDetail() == null)
                 return response.Error(Config.LIST_RETURN_BOOKING_DETAIL_REQUIRED);
-            }
+
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(bookingRoundtripRequestDTO.getCustomer().getId());
-            if (chekDataDBCustomer.isEmpty()) {
+            if (chekDataDBCustomer.isEmpty())
                 return response.Error(Config.CUSTOMER_NOT_FOUND);
-            }
+
             Optional<Flight> chekDataDBOutboundFlight = flightRepository.findById(bookingRoundtripRequestDTO.getOutboundFlight().getId());
-            if (chekDataDBOutboundFlight.isEmpty()) {
+            if (chekDataDBOutboundFlight.isEmpty())
                 return response.Error(Config.FLIGHT_NOT_FOUND);
-            }
+
             Optional<Flight> chekDataDBReturnFlight = flightRepository.findById(bookingRoundtripRequestDTO.getReturnFlight().getId());
-            if (chekDataDBReturnFlight.isEmpty()) {
+            if (chekDataDBReturnFlight.isEmpty())
                 return response.Error(Config.FLIGHT_NOT_FOUND);
-            }
+
             Flight outboundFlight = chekDataDBOutboundFlight.get();
             Flight returnFlight = chekDataDBReturnFlight.get();
 
             // cek tanggal pulang tak boleh lebih dulu dari tanggal berangkat
-            if (outboundFlight.getFlightTime().after(returnFlight.getFlightTime())) {
+            if (outboundFlight.getFlightTime().after(returnFlight.getFlightTime()))
                 return response.Error("Return Date must be at least after Outbound Date.");
-            }
+
 
             // Buat outbound booking
-            Booking outboundBooking = new Booking();
-            outboundBooking.setCustomer(chekDataDBCustomer.get());
+            Booking booking = new Booking();
+            booking.setCustomer(chekDataDBCustomer.get());
 
-            outboundBooking.setPaid("false");
-            outboundBooking.setTotalPrice(0L);// Harga awal
-            outboundBooking.setAddOnSelectingSeat(0L);
+            booking.setPaid("false");
+            booking.setTotalPrice(0L);// Harga awal
+            booking.setAddOnSelectingSeat(0L);
 
-            // Proses tiap booking detail
+            // Proses tiap outbound booking detail
             for (BookingDetailDTO outboundBookingDetailDTO : bookingRoundtripRequestDTO.getListOutboundBookingDetail()) {
                 BookingDetail bookingDetail = createBookingDetailRT(outboundFlight, outboundBookingDetailDTO);
-                bookingDetail.setBooking(outboundBooking);
-                outboundBooking.getBookingDetail().add(bookingDetail);
+                bookingDetail.setBooking(booking);
+                booking.getBookingDetail().add(bookingDetail);
 
                 // Tambahan biaya untuk pemilihan kursi
                 if (outboundBookingDetailDTO.getSeatNumber() != null) {
                     // Hitung total harga
-                    outboundBooking.setTotalPrice(outboundBooking.getTotalPrice() + outboundBookingDetailDTO.getTotalSeatPrice());
-                    outboundBooking.setAddOnSelectingSeat(outboundBooking.getAddOnSelectingSeat() +
+                    booking.setTotalPrice(booking.getTotalPrice() + outboundBookingDetailDTO.getTotalSeatPrice());
+                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() +
                             (outboundBookingDetailDTO.getTotalSeatPrice() - outboundFlight.getPrice()));
                 } else {
                     // Hitung total harga
-                    outboundBooking.setTotalPrice(outboundBooking.getTotalPrice() + calculateTotalPriceRT(outboundFlight, outboundBookingDetailDTO));
+                    booking.setTotalPrice(booking.getTotalPrice() + calculateTotalPriceRT(outboundFlight, outboundBookingDetailDTO));
                 }
             }
-
-            // Buat return booking
-            Booking returnBooking = new Booking();
-            returnBooking.setCustomer(chekDataDBCustomer.get());
-
-            returnBooking.setPaid("false");
-            returnBooking.setTotalPrice(0L);// Harga awal
-            returnBooking.setAddOnSelectingSeat(0L);
-
-            // Proses tiap booking detail
+            // Proses tiap return booking detail
             for (BookingDetailDTO returnBookingDetailDTO : bookingRoundtripRequestDTO.getListReturnBookingDetail()) {
                 BookingDetail returnBookingDetail = createBookingDetailRT(returnFlight, returnBookingDetailDTO);
-                returnBookingDetail.setBooking(returnBooking);
-                returnBooking.getBookingDetail().add(returnBookingDetail);
+                returnBookingDetail.setBooking(booking);
+                booking.getBookingDetail().add(returnBookingDetail);
 
                 // Tambahan biaya untuk pemilihan kursi
                 if (returnBookingDetailDTO.getSeatNumber() != null) {
                     // Hitung total harga
-                    returnBooking.setTotalPrice(returnBooking.getTotalPrice() + returnBookingDetailDTO.getTotalSeatPrice());
-                    returnBooking.setAddOnSelectingSeat(returnBooking.getAddOnSelectingSeat() +
+                    booking.setTotalPrice(booking.getTotalPrice() + returnBookingDetailDTO.getTotalSeatPrice());
+                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() +
                             (returnBookingDetailDTO.getTotalSeatPrice() - returnFlight.getPrice()));
                 } else {
                     // Hitung total harga
-                    returnBooking.setTotalPrice(returnBooking.getTotalPrice() + calculateTotalPriceRT(returnFlight, returnBookingDetailDTO));
+                    booking.setTotalPrice(booking.getTotalPrice() + calculateTotalPriceRT(returnFlight, returnBookingDetailDTO));
                 }
             }
-            // Simpan outbound booking
-            Booking savedOutboundBooking = bookingRepository.save(outboundBooking);
-            // Simpan return booking
-            Booking savedReturnBooking = bookingRepository.save(returnBooking);
+            // Simpan booking
+            Booking savedBooking = bookingRepository.save(booking);
 
             // Kirim notifikasi booking berhasil
             notificationService.sendNotification(chekDataDBCustomer.get(), "Booking Roundtrip berhasil! Segera lakukan pembayaran sebelum 2 jam dari waktu booking!" );
 
-            return response.templateSaveSukses(savedOutboundBooking, savedReturnBooking);
+            return response.templateSaveSukses(savedBooking);
         } catch (Exception e) {
             log.error("save roundtrip booking with details error: " + e.getMessage());
             throw new RuntimeException("save roundtrip booking with details =" + e.getMessage());
