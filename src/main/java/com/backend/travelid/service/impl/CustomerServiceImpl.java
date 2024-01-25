@@ -10,19 +10,8 @@ import com.backend.travelid.utils.Config;
 import com.backend.travelid.utils.TemplateResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.webjars.NotFoundException;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -79,15 +68,15 @@ public class CustomerServiceImpl implements CustomerService {
             if (chekDataDBUser.isEmpty())
                 return response.Error(Config.USER_NOT_FOUND);
 
-            if (!customer.getName().isEmpty())
+            if (customer.getName()!= null)
                 chekDataDBCustomer.get().setName(customer.getName());
-            if (!customer.getDateOfBirth().isEmpty())
+            if (customer.getDateOfBirth()!= null)
                 chekDataDBCustomer.get().setDateOfBirth(customer.getDateOfBirth());
-            if (!customer.getGender().isEmpty())
+            if (customer.getGender()!= null)
                 chekDataDBCustomer.get().setGender(customer.getGender());
-            if (!customer.getPhoneNumber().isEmpty())
+            if (customer.getPhoneNumber()!= null)
                 chekDataDBCustomer.get().setPhoneNumber(customer.getPhoneNumber());
-            if (!customer.getProfilePicture().isEmpty())
+            if (customer.getProfilePicture()!= null)
                 chekDataDBCustomer.get().setProfilePicture(customer.getProfilePicture());
             chekDataDBCustomer.get().setUpdated_date(new Date());
 
