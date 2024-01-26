@@ -58,7 +58,7 @@ public class BookingController {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
-    @PostMapping(value = {"/saveRoundtripBookingWithDetails","/saveRoundtripBookingWithDetails/"})
+    @PostMapping(value = {"/saveRoundtripWithDetails","/saveRoundtripWithDetails/"})
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Map> saveRoundtripBookingWithDetails(@RequestBody BookingRoundtripRequestDTO bookingRoundtripRequestDTO) {
         try {
