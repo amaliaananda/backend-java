@@ -185,7 +185,6 @@ public class BookingServiceImpl implements BookingService {
             if (outboundFlight.getFlightTime().after(returnFlight.getFlightTime()))
                 return response.Error("Return Date must be at least after Outbound Date.");
 
-
             // Buat outbound booking
             Booking booking = new Booking();
             booking.setCustomer(chekDataDBCustomer.get());
