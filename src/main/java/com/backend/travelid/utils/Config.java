@@ -93,6 +93,10 @@ public class Config {
 
     public  static  String FLIGHT_NOT_FOUND = "FLIGHT not found.";
 
+    public  static  String SEAT_REQUIRED = "SEAT is Required.";
+
+    public  static  String SEAT_NOT_FOUND = "SEAT not found.";
+
     public  static  String TICKET_REQUIRED = "TICKET is Required.";
 
     public  static  String TICKET_NOT_FOUND = "TICKET not found.";
@@ -116,6 +120,8 @@ public class Config {
     public  static  String EMAIL_NOT_VALID = "email not valid.";
 
     public  static  String PASSWORD_NOT_VALID = "password not valid.";
+
+    public  static  String SEAT_ALREADY_BOOKED = "seat already booked.";
 
     public  static  String SUCCESS = "Success.";
 

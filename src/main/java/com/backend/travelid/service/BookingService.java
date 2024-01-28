@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface BookingService {
     List<Booking> getAllBookings();
-    Map getByCustomerId(Long customerId);
+    List<Booking> getByCustomerId(Long customerId);
     public Map getByID(Long booking);
     Map saveBooking(Booking booking);
     Map updateBooking(Booking booking);

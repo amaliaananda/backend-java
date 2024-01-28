@@ -110,7 +110,12 @@ public class BookingController {
     @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Map> getBookingsByCustomerId(@RequestParam Long customerId) {
         try {
-            return new ResponseEntity<Map>(bookingService.getByCustomerId(customerId), HttpStatus.OK);
+            List<Booking> list =bookingService.getByCustomerId(customerId);
+            Map map = new HashMap();
+            map.put("data",list);
+            map.put("message", "sukses");
+            map.put("status", 200);
+            return new ResponseEntity<Map>(map, new HttpHeaders(), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
@@ -120,7 +125,6 @@ public class BookingController {
     public ResponseEntity<Map> list(
             @RequestParam() Integer page,
             @RequestParam(required = true) Integer size,
-            @RequestParam(required = false) String customerName,
             @RequestParam(required = false) String paid,
             @RequestParam(required = false) String orderby,
             @RequestParam(required = false) String ordertype) {
@@ -130,9 +134,6 @@ public class BookingController {
             Specification<Booking> spec =
                     ((root, query, criteriaBuilder) -> {
                         List<Predicate> predicates = new ArrayList<>();
-                        if (customerName != null && !customerName.isEmpty()) {
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("customerName")), "%" + customerName.toLowerCase() + "%"));
-                        }
                         if (paid != null && !paid.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("paid")), "%" + paid.toLowerCase() + "%"));
                         }

@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpecificationExecutor<Booking> {
 
-    Optional<Booking> getByCustomer(Optional<Customer> customer);
+    List <Booking> getByCustomer(Optional<Customer> customer);
 
     @Query("SELECT b FROM Booking b WHERE b.paid = :paid AND b.notificationSent = false")
     List<Booking> findUnpaidBookings(@Param("paid") String paid);
