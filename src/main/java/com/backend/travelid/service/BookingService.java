@@ -20,4 +20,6 @@ public interface BookingService {
     Map processPayment(PaymentRequestDTO paymentRequestDTO);
     Map saveBookingWithDetails(BookingRequestDTO bookingRequestDTO);
     Map saveRoundtripBookingWithDetails(BookingRoundtripRequestDTO bookingRoundtripRequestDTO);
+    List<Booking> findByYearAndMonth(int year, int month);
+    List<Booking> findByYear(int year);
 }

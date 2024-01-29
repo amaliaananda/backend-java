@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -443,5 +444,21 @@ public class BookingServiceImpl implements BookingService {
             throw new RuntimeException("process Payment =" + e.getMessage());
         }
     }
+    @Override
+    public List<Booking> findByYearAndMonth(int year, int month) {
+        LocalDateTime startDateTime = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime endDateTime = startDateTime.plusMonths(1).minusSeconds(1);
+        Date startDate = Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        return bookingRepository.findByCreated_dateBetween(startDate, endDate);
+    }
 
+    @Override
+    public List<Booking> findByYear(int year) {
+        LocalDateTime startDateTime = LocalDateTime.of(year, 1, 1, 0, 0);
+        LocalDateTime endDateTime = LocalDateTime.of(year, 12, 31, 23, 59, 59);
+        Date startDate = Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        return bookingRepository.findByCreated_dateBetween(startDate, endDate);
+    }
 }
