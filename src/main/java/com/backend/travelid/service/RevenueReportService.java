@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface RevenueReportService {
-    RevenueReportModel generateMonthlyRevenueReport(int year, int month, String passengerClass);
-    RevenueReportModel generateAnnualRevenueReport(int year, String passengerClass);
+    RevenueReportModel generateMonthlyRevenueReport(int year, int month, String passengerClass, String airline);
+    RevenueReportModel generateAnnualRevenueReport(int year, String passengerClass, String airline);
 }
 

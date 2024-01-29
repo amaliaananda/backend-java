@@ -461,4 +461,22 @@ public class BookingServiceImpl implements BookingService {
         Date endDate = Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant());
         return bookingRepository.findByCreatedDateBetween(startDate, endDate);
     }
+    @Override
+    public List<Map<String, Object>> getIncomeByMonthAndYear(int year) {
+        List<Object[]> results = bookingRepository.findIncomeByMonthAndYear(year);
+        List<Map<String, Object>> incomeData = new ArrayList<>();
+
+        for (Object[] result : results) {
+            Map<String, Object> data = new HashMap<>();
+            int month = (int) result[0];
+            long income = (long) result[1];
+
+            // Masukkan data ke map
+            data.put("month", month);
+            data.put("income", income);
+
+            incomeData.add(data);
+        }
+        return incomeData;
+    }
 }

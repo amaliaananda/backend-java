@@ -120,6 +120,20 @@ public class BookingController {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
     }
+    @GetMapping(value = {"/incomeByMonthAndYear/{year}", "/incomeByMonthAndYear/{year}/"})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map> getIncomeByMonthAndYear(@PathVariable int year) {
+        try {
+            List<Map<String, Object>> incomeData = bookingService.getIncomeByMonthAndYear(year);
+            Map map = new HashMap();
+            map.put("data",incomeData);
+            map.put("message", "sukses");
+            map.put("status", 200);
+            return new ResponseEntity<Map>(map, new HttpHeaders(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+        }
+    }
     @GetMapping(value = {"/listBookings", "/listBookings/"})
     @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Map> list(

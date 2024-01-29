@@ -32,9 +32,10 @@ public class RevenueReportController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> generateMonthlyRevenueReport(@RequestParam(required = true) int year,
                                                             @RequestParam(required = true) int month,
-                                                            @RequestParam(required = false) String passengerClass) {
+                                                            @RequestParam(required = false) String passengerClass,
+                                                            @RequestParam(required = false) String airline) {
         try {
-            RevenueReportModel monthlyReport = revenueReportService.generateMonthlyRevenueReport(year, month, passengerClass);
+            RevenueReportModel monthlyReport = revenueReportService.generateMonthlyRevenueReport(year, month, passengerClass, airline);
             Map map = new HashMap();
             map.put("data",monthlyReport);
             map.put("message", "sukses");
@@ -48,9 +49,10 @@ public class RevenueReportController {
     @GetMapping(value={"/annual", "/annual/"})
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> generateAnnualRevenueReport(@RequestParam(required = true) int year,
-                                                           @RequestParam(required = false) String passengerClass) {
+                                                           @RequestParam(required = false) String passengerClass,
+                                                           @RequestParam(required = false) String airline){
         try {
-            RevenueReportModel annualReport = revenueReportService.generateAnnualRevenueReport(year, passengerClass);
+            RevenueReportModel annualReport = revenueReportService.generateAnnualRevenueReport(year, passengerClass, airline);
             Map map = new HashMap();
             map.put("data",annualReport);
             map.put("message", "sukses");

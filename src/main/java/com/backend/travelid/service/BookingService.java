@@ -22,4 +22,5 @@ public interface BookingService {
     Map saveRoundtripBookingWithDetails(BookingRoundtripRequestDTO bookingRoundtripRequestDTO);
     List<Booking> findByYearAndMonth(int year, int month);
     List<Booking> findByYear(int year);
+    List<Map<String, Object>> getIncomeByMonthAndYear(int year);
 }

@@ -13,4 +13,6 @@ public interface BookingDetailService {
     Map saveBookingDetail(BookingDetail bookingDetail);
     Map updateBookingDetail(BookingDetail bookingDetail);
     Map deleteBookingDetail(BookingDetail bookingDetail);
+    List<BookingDetail> findByYearAndMonth(int year, int month);
+    List<BookingDetail> findByYear(int year);
 }

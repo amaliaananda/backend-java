@@ -14,10 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -130,7 +129,6 @@ public class BookingDetailServiceImpl implements BookingDetailService {
             throw new RuntimeException("Update booking Detail ="+e.getMessage());
         }
     }
-
     @Override
     public Map deleteBookingDetail(BookingDetail bookingDetail) {
         try {
@@ -149,5 +147,21 @@ public class BookingDetailServiceImpl implements BookingDetailService {
             log.error("Delete booking Detail error: "+e.getMessage());
             throw new RuntimeException("Delete booking Detail ="+e.getMessage());
         }
+    }
+    @Override
+    public List<BookingDetail> findByYearAndMonth(int year, int month) {
+        LocalDateTime startDateTime = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime endDateTime = startDateTime.plusMonths(1).minusSeconds(1);
+        Date startDate = Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        return bookingDetailRepository.findByCreatedDateBetween(startDate, endDate);
+    }
+    @Override
+    public List<BookingDetail> findByYear(int year) {
+        LocalDateTime startDateTime = LocalDateTime.of(year, 1, 1, 0, 0);
+        LocalDateTime endDateTime = LocalDateTime.of(year, 12, 31, 23, 59, 59);
+        Date startDate = Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        return bookingDetailRepository.findByCreatedDateBetween(startDate, endDate);
     }
 }

@@ -25,5 +25,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
     @Query("SELECT b FROM Booking b WHERE b.paid = :paid AND b.notificationSent = false")
     List<Booking> findUnpaidBookings(@Param("paid") String paid);
 
+    @Query("SELECT MONTH(b.created_date) AS month, SUM(b.totalPrice) AS income " +
+            "FROM Booking b " +
+            "WHERE YEAR(b.created_date) = :year " +
+            "GROUP BY MONTH(b.created_date)")
+    List<Object[]> findIncomeByMonthAndYear(@Param("year") int year);
+
 }
 

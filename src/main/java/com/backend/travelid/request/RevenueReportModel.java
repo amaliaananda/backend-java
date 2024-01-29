@@ -11,7 +11,9 @@ public class RevenueReportModel {
     private int year;
     private int month;
     private String passengerClass;
+    private String airline;
     private int numberOfBookings;
+    private int numberOfBookingDetails;
     private long totalRevenue;
 }
 
