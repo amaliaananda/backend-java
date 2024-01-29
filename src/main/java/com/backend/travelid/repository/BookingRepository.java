@@ -19,7 +19,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
 
     List <Booking> getByCustomer(Optional<Customer> customer);
 
-    List<Booking> findByCreated_dateBetween(Date startDate, Date endDate);
+    @Query("SELECT b FROM Booking b WHERE b.created_date BETWEEN :startDate AND :endDate")
+    List<Booking> findByCreatedDateBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
     @Query("SELECT b FROM Booking b WHERE b.paid = :paid AND b.notificationSent = false")
     List<Booking> findUnpaidBookings(@Param("paid") String paid);
 

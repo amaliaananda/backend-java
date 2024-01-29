@@ -48,6 +48,7 @@ public class RevenueReportServiceImpl implements RevenueReportService {
     public RevenueReportModel generateAnnualRevenueReport(int year, String passengerClass) {
         try {
             log.info("generate Annual Revenue Report");
+            int month = 13;
             // Retrieve booking data for the specified year
             List<Booking> bookings = bookingService.findByYear(year);
 
@@ -63,7 +64,7 @@ public class RevenueReportServiceImpl implements RevenueReportService {
                     .mapToLong(Booking::getTotalPrice)
                     .sum();
             // Return annual revenue report
-            return new RevenueReportModel (year, passengerClass, bookings.size(), totalRevenue);
+            return new RevenueReportModel (year, month, passengerClass, bookings.size(), totalRevenue);
         } catch (Exception e) {
             log.error("generate Annual Revenue Report error: " + e.getMessage());
             throw new RuntimeException("generate Annual Revenue Report =" + e.getMessage());

@@ -13,8 +13,5 @@ public class RevenueReportModel {
     private String passengerClass;
     private int numberOfBookings;
     private long totalRevenue;
-
-    public RevenueReportModel(int year, String passengerClass, int size, long totalRevenue) {
-    }
 }
 

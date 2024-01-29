@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/seat")
+@RequestMapping("/revenueReport")
 public class RevenueReportController {
 
     @Autowired
@@ -28,9 +29,10 @@ public class RevenueReportController {
     public TemplateResponse response;
 
     @GetMapping(value={"/monthly", "/monthly/"})
-    public ResponseEntity<Map> generateMonthlyRevenueReport(@RequestParam("year") int year,
-                                                          @RequestParam("month") int month,
-                                                          @RequestParam(value = "class", required = false) String passengerClass) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map> generateMonthlyRevenueReport(@RequestParam(required = true) int year,
+                                                            @RequestParam(required = true) int month,
+                                                            @RequestParam(required = false) String passengerClass) {
         try {
             RevenueReportModel monthlyReport = revenueReportService.generateMonthlyRevenueReport(year, month, passengerClass);
             Map map = new HashMap();
@@ -44,8 +46,9 @@ public class RevenueReportController {
     }
 
     @GetMapping(value={"/annual", "/annual/"})
-    public ResponseEntity<Map> generateAnnualRevenueReport(@RequestParam("year") int year,
-                                                         @RequestParam(value = "class", required = false) String passengerClass) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map> generateAnnualRevenueReport(@RequestParam(required = true) int year,
+                                                           @RequestParam(required = false) String passengerClass) {
         try {
             RevenueReportModel annualReport = revenueReportService.generateAnnualRevenueReport(year, passengerClass);
             Map map = new HashMap();
