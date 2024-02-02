@@ -412,6 +412,8 @@ public class BookingServiceImpl implements BookingService {
                 return response.Error(Config.BOOKING_NOT_FOUND);
             if (chekDataDBBooking.get().isNotificationSent())
                 return response.Error("this booking has expired, please rebook the flight");
+            if ("true".equals(chekDataDBBooking.get().getPaid()))
+                return response.Error("this booking already paid");
             if (paymentRequestDTO.getBankPembayaran() == null)
                 throw new RuntimeException("Bank pembayaran is required");
             if (paymentRequestDTO.getNomorRekening() == null)
