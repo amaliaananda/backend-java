@@ -17,6 +17,9 @@ import java.util.Optional;
 public interface BookingDetailRepository extends JpaRepository<BookingDetail, Long>, JpaSpecificationExecutor<BookingDetail> {
 
     List<BookingDetail> findByCustomerName(String customerName);
+    @Query("SELECT bd FROM BookingDetail bd JOIN bd.booking b WHERE bd.created_date BETWEEN :startDate AND :endDate AND b.paid = 'true'")
+    List<BookingDetail> findByCreatedDateBetweenAndPaidTrue(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
     @Query("SELECT bd FROM BookingDetail bd WHERE bd.created_date BETWEEN :startDate AND :endDate")
     List<BookingDetail> findByCreatedDateBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

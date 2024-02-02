@@ -28,7 +28,6 @@ public class Oauth2AccessTokenConverter extends DefaultAccessTokenConverter {
                 if (user != null) {
                     return (Collection<GrantedAuthority>) user.getAuthorities();
                 }
-
                 return auth.getAuthorities();
             }
         };

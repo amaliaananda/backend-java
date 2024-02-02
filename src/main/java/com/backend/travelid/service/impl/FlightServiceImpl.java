@@ -98,7 +98,7 @@ public class FlightServiceImpl implements FlightService {
             }
             if ("economy".equals(flight.getPassengerClass())) flight.setLuggage("20 kg");
             else if ("business".equals(flight.getPassengerClass())) flight.setLuggage("30 kg");
-            else throw new RuntimeException(Config.PASSWORD_NOT_VALID);
+            else throw new RuntimeException(Config.PASSENGER_CLASS_NOT_FOUND);
 
             return response.templateSaveSukses(flightRepository.save(flight));
         }catch (Exception e){

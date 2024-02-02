@@ -188,7 +188,7 @@ public class UserServiceImpl implements UserService {
             }
         } catch (HttpStatusCodeException e) {
             e.printStackTrace();
-            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new RuntimeException("invalid login:"+e);
             }
             throw new RuntimeException(e);

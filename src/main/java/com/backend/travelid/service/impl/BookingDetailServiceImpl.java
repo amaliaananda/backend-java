@@ -154,7 +154,7 @@ public class BookingDetailServiceImpl implements BookingDetailService {
         LocalDateTime endDateTime = startDateTime.plusMonths(1).minusSeconds(1);
         Date startDate = Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant());
-        return bookingDetailRepository.findByCreatedDateBetween(startDate, endDate);
+        return bookingDetailRepository.findByCreatedDateBetweenAndPaidTrue(startDate, endDate);
     }
     @Override
     public List<BookingDetail> findByYear(int year) {
@@ -162,6 +162,6 @@ public class BookingDetailServiceImpl implements BookingDetailService {
         LocalDateTime endDateTime = LocalDateTime.of(year, 12, 31, 23, 59, 59);
         Date startDate = Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant());
-        return bookingDetailRepository.findByCreatedDateBetween(startDate, endDate);
+        return bookingDetailRepository.findByCreatedDateBetweenAndPaidTrue(startDate, endDate);
     }
 }

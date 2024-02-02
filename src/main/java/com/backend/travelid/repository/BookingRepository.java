@@ -19,15 +19,18 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
 
     List <Booking> getByCustomer(Optional<Customer> customer);
 
-    @Query("SELECT b FROM Booking b WHERE b.created_date BETWEEN :startDate AND :endDate")
+    @Query("SELECT b FROM Booking b WHERE b.created_date BETWEEN :startDate AND :endDate AND b.paid = 'true'")
     List<Booking> findByCreatedDateBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     @Query("SELECT b FROM Booking b WHERE b.paid = :paid AND b.notificationSent = false")
     List<Booking> findUnpaidBookings(@Param("paid") String paid);
 
+    @Query("SELECT b FROM Booking b WHERE b.paid = :paid")
+    List<Booking> findPaidBookings(@Param("paid") String paid);
+
     @Query("SELECT MONTH(b.created_date) AS month, SUM(b.totalPrice) AS income " +
             "FROM Booking b " +
-            "WHERE YEAR(b.created_date) = :year " +
+            "WHERE YEAR(b.created_date) = :year AND b.paid = 'true' " +
             "GROUP BY MONTH(b.created_date)")
     List<Object[]> findIncomeByMonthAndYear(@Param("year") int year);
 
