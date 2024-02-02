@@ -42,7 +42,7 @@ public class SeatServiceImpl implements SeatService {
     public Map getByID(Long idSeat) {
         Optional<Seat> getBaseOptional = seatRepository.findById(idSeat);
         if(getBaseOptional.isEmpty()){
-            return response.Error(Config.SEAT_NOT_FOUND);
+            throw new InternalError(Config.SEAT_NOT_FOUND);
         }
         return response.templateSukses(getBaseOptional);
     }
@@ -50,15 +50,15 @@ public class SeatServiceImpl implements SeatService {
     public List<Seat> getByFlight(Long flightId) {
         try {
             if (flightId == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                throw new InternalError(Config.ID_REQUIRED);
             }
             Optional<Flight> chekDataDBFlight = flightRepository.findById(flightId);
             if(chekDataDBFlight.isEmpty()){
-                throw new RuntimeException(Config.FLIGHT_NOT_FOUND);
+                throw new InternalError(Config.FLIGHT_NOT_FOUND);
             }
             List<Seat> getBaseOptional = seatRepository.getByFlight(chekDataDBFlight);
             if(getBaseOptional.isEmpty()){
-                throw new RuntimeException(Config.BOOKING_NOT_FOUND);
+                throw new InternalError(Config.BOOKING_NOT_FOUND);
             }
             return getBaseOptional;
         }catch (Exception e){

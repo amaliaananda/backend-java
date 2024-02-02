@@ -44,22 +44,22 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public List<Notification> getByCustomerId(Long customerId) {
             if (customerId == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                throw new InternalError(Config.ID_REQUIRED);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(customerId);
             if (chekDataDBCustomer.isEmpty()) {
-                throw new RuntimeException(Config.USER_NOT_FOUND);
+                throw new InternalError(Config.CUSTOMER_NOT_FOUND);
             }
             return notificationRepository.getByCustomerId(customerId);
     }
     @Override
     public List<Notification> getByCustomerEmail(String email) {
         if (email == null) {
-            throw new RuntimeException(Config.EMAIL_REQUIRED);
+            throw new InternalError(Config.EMAIL_REQUIRED);
         }
         Optional<Customer> chekDataDBCustomer = customerRepository.findByEmail(email);
         if (chekDataDBCustomer.isEmpty()) {
-            throw new RuntimeException(Config.USER_NOT_FOUND);
+            throw new InternalError(Config.CUSTOMER_NOT_FOUND);
         }
         return notificationRepository.getByCustomerEmail(email);
     }

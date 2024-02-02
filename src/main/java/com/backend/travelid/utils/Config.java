@@ -105,6 +105,8 @@ public class Config {
 
     public  static  String BOOKING_NOT_FOUND = "BOOKING not found.";
 
+    public  static  String THIS_CUSTOMER_NOT_DOING_BOOKING_YET = "THIS CUSTOMER NOT DOING BOOKING YET.";
+
     public  static  String BOOKING_DETAIL_REQUIRED = "BOOKING DETAIL is Required.";
 
     public  static  String BOOKING_DETAIL_NOT_FOUND = "BOOKING DETAIL not found.";

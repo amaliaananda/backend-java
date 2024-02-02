@@ -61,12 +61,12 @@ public class CustomerServiceImpl implements CustomerService {
 
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(customer.getId());
             if (chekDataDBCustomer.isEmpty())
-                return response.Error(Config.CUSTOMER_NOT_FOUND);
+                throw new InternalError(Config.CUSTOMER_NOT_FOUND);
 
             String email = chekDataDBCustomer.get().getEmail();
             Optional<User> chekDataDBUser = userRepository.findByEmail(email);
             if (chekDataDBUser.isEmpty())
-                return response.Error(Config.USER_NOT_FOUND);
+                throw new InternalError(Config.USER_NOT_FOUND);
 
             if (customer.getName()!= null)
                 chekDataDBCustomer.get().setName(customer.getName());
@@ -100,7 +100,7 @@ public class CustomerServiceImpl implements CustomerService {
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(IdCustomer);
             if (chekDataDBCustomer.isEmpty()) {
-                return response.Error(Config.CUSTOMER_NOT_FOUND);
+                throw new InternalError(Config.CUSTOMER_NOT_FOUND);
             }
 
             // Update data customer
@@ -127,11 +127,11 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             log.info("Delete Customer");
             if (customer.getId() == null) {
-                return response.Error(Config.ID_REQUIRED);
+                throw new InternalError(Config.ID_REQUIRED);
             }
             Optional<Customer> chekDataDBUser = customerRepository.findById(customer.getId());
             if (chekDataDBUser.isEmpty()) {
-                return response.Error(Config.USER_NOT_FOUND);
+                throw new InternalError(Config.CUSTOMER_NOT_FOUND);
             }
 
             chekDataDBUser.get().setDeleted_date(new Date());
@@ -147,7 +147,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Map getByID(Long user) {
         Optional<Customer> getBaseOptional = customerRepository.findById(user);
         if(getBaseOptional.isEmpty()){
-            return response.Error(Config.CUSTOMER_NOT_FOUND);
+            throw new InternalError(Config.CUSTOMER_NOT_FOUND);
         }
         return response.templateSukses(getBaseOptional);
     }

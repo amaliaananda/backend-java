@@ -67,6 +67,18 @@ public class UserServiceImpl implements UserService {
     public Map registerManual(RegisterUserModel objModel) {
         Map map = new HashMap();
         try {
+            if (objModel.getUsername() == null || objModel.getUsername().isEmpty()) {
+                throw new RuntimeException("username required");
+            }
+            if (objModel.getPassword() == null || objModel.getPassword().isEmpty()) {
+                throw new RuntimeException("password required");
+            }
+            if (objModel.getFullname() == null || objModel.getFullname().isEmpty()) {
+                throw new RuntimeException("Fullname required");
+            }
+            if (objModel.getPhoneNumber() == null || objModel.getPhoneNumber().isEmpty()) {
+                throw new RuntimeException("Phone Number required");
+            }
             String[] roleNames = {"ROLE_USER", "ROLE_READ", "ROLE_WRITE"}; // admin
             User user = new User();
 
@@ -138,6 +150,12 @@ public class UserServiceImpl implements UserService {
          * bussines logic for login here
          * **/
         try {
+            if (loginModel.getUsername() == null || loginModel.getUsername().isEmpty()) {
+                throw new InternalError("username required");
+            }
+            if (loginModel.getPassword() == null || loginModel.getPassword().isEmpty()) {
+                throw new InternalError("password required");
+            }
             Map<String, Object> map = new HashMap<>();
 
             User checkUser = repoUser.findOneByUsername(loginModel.getUsername());
@@ -149,10 +167,10 @@ public class UserServiceImpl implements UserService {
                 }
             }
             if (checkUser == null) {
-                return response.notFound("user not found");
+                throw new InternalError("user not found");
             }
             if (!(encoder.matches(loginModel.getPassword(), checkUser.getPassword()))) {
-                return response.internalServer("wrong password");
+                throw new InternalError("wrong password");
             }
             String url = baseUrl + "/oauth/token?username=" + loginModel.getUsername() +
                     "&password=" + loginModel.getPassword() +
@@ -170,10 +188,6 @@ public class UserServiceImpl implements UserService {
                 for (Role role : user.getRoles()) {
                     roles.add(role.getName());
                 }
-                //save token
-//                checkUser.setAccessToken(response.getBody().get("access_token").toString());
-//                checkUser.setRefreshToken(response.getBody().get("refresh_token").toString());
-//                userRepository.save(checkUser);
 
                 map.put("access_token", responses.getBody().get("access_token"));
                 map.put("token_type", responses.getBody().get("token_type"));
@@ -194,7 +208,6 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException(e);
         } catch (Exception e) {
             e.printStackTrace();
-
             throw new RuntimeException(e);
         }
     }

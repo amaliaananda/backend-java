@@ -59,15 +59,15 @@ public class BookingServiceImpl implements BookingService {
         try {
             log.info("get booking by user");
             if (customerId == null) {
-                throw new RuntimeException(Config.ID_REQUIRED);
+                throw new InternalError(Config.ID_REQUIRED);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(customerId);
             if (chekDataDBCustomer.isEmpty()) {
-                throw new RuntimeException(Config.USER_NOT_FOUND);
+                throw new InternalError(Config.CUSTOMER_NOT_FOUND);
             }
             List<Booking> getBaseOptional = bookingRepository.getByCustomer(chekDataDBCustomer);
             if(getBaseOptional.isEmpty()){
-                throw new RuntimeException(Config.BOOKING_NOT_FOUND);
+                throw new InternalError(Config.THIS_CUSTOMER_NOT_DOING_BOOKING_YET);
             }
             return getBaseOptional;
         }catch (Exception e){
@@ -90,14 +90,14 @@ public class BookingServiceImpl implements BookingService {
         try {
             log.info("save booking");
             if(booking.getCustomer() == null){
-                return response.Error(Config.CUSTOMER_REQUIRED);
+                throw new InternalError(Config.CUSTOMER_REQUIRED);
             }
             if(booking.getTotalPrice() == null){
-                return response.Error(Config.TOTAL_PRICE_REQUIRED);
+                throw new InternalError(Config.TOTAL_PRICE_REQUIRED);
             }
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(booking.getCustomer().getId());
             if (chekDataDBCustomer.isEmpty()) {
-                return response.Error(Config.CUSTOMER_NOT_FOUND);
+                throw new InternalError(Config.CUSTOMER_NOT_FOUND);
             }
             booking.setPaid("false");
             // Kirim notifikasi booking berhasil
@@ -113,14 +113,14 @@ public class BookingServiceImpl implements BookingService {
     public Map updateBooking(Booking booking) {
         try {
             log.info("Update booking");
-            if (booking.getId() == null) return response.Error(Config.ID_REQUIRED);
+            if (booking.getId() == null) throw new InternalError(Config.ID_REQUIRED);
 
             Optional<Booking> chekDataDBbooking = bookingRepository.findById(booking.getId());
-            if (chekDataDBbooking.isEmpty()) return response.Error(Config.BOOKING_NOT_FOUND);
+            if (chekDataDBbooking.isEmpty()) throw new InternalError(Config.BOOKING_NOT_FOUND);
 
             if (booking.getCustomer()!= null) {
                 Optional<Customer> chekDataDBCustomer = customerRepository.findById(booking.getCustomer().getId());
-                if (chekDataDBCustomer.isEmpty()) return response.Error(Config.CUSTOMER_NOT_FOUND);
+                if (chekDataDBCustomer.isEmpty()) throw new InternalError(Config.CUSTOMER_NOT_FOUND);
                 chekDataDBbooking.get().setCustomer(booking.getCustomer());
             }
             if (booking.getTotalPrice()!= null) chekDataDBbooking.get().setTotalPrice(booking.getTotalPrice());
@@ -146,10 +146,10 @@ public class BookingServiceImpl implements BookingService {
     public Map deleteBooking(Booking booking) {
         try {
             log.info("Delete booking");
-            if (booking.getId() == null) return response.Error(Config.ID_REQUIRED);
+            if (booking.getId() == null) throw new InternalError(Config.ID_REQUIRED);
 
             Optional<Booking> chekDataDBbooking = bookingRepository.findById(booking.getId());
-            if (chekDataDBbooking.isEmpty()) return response.Error(Config.BOOKING_NOT_FOUND);
+            if (chekDataDBbooking.isEmpty()) throw new InternalError(Config.BOOKING_NOT_FOUND);
 
             chekDataDBbooking.get().setDeleted_date(new Date());
             bookingRepository.save(chekDataDBbooking.get());
@@ -167,25 +167,25 @@ public class BookingServiceImpl implements BookingService {
 
             // Validasi input
             if (bookingRoundtripRequestDTO.getCustomer() == null)
-                return response.Error(Config.CUSTOMER_REQUIRED);
+                throw new InternalError(Config.CUSTOMER_REQUIRED);
 
             if (bookingRoundtripRequestDTO.getListOutboundBookingDetail() == null)
-                return response.Error(Config.LIST_OUTBOUND_BOOKING_DETAIL_REQUIRED);
+                throw new InternalError(Config.LIST_OUTBOUND_BOOKING_DETAIL_REQUIRED);
 
             if (bookingRoundtripRequestDTO.getListReturnBookingDetail() == null)
-                return response.Error(Config.LIST_RETURN_BOOKING_DETAIL_REQUIRED);
+                throw new InternalError(Config.LIST_RETURN_BOOKING_DETAIL_REQUIRED);
 
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(bookingRoundtripRequestDTO.getCustomer().getId());
             if (chekDataDBCustomer.isEmpty())
-                return response.Error(Config.CUSTOMER_NOT_FOUND);
+                throw new InternalError(Config.CUSTOMER_NOT_FOUND);
 
             Optional<Flight> chekDataDBOutboundFlight = flightRepository.findById(bookingRoundtripRequestDTO.getOutboundFlight().getId());
             if (chekDataDBOutboundFlight.isEmpty())
-                return response.Error(Config.FLIGHT_NOT_FOUND);
+                throw new InternalError(Config.FLIGHT_NOT_FOUND);
 
             Optional<Flight> chekDataDBReturnFlight = flightRepository.findById(bookingRoundtripRequestDTO.getReturnFlight().getId());
             if (chekDataDBReturnFlight.isEmpty())
-                return response.Error(Config.FLIGHT_NOT_FOUND);
+                throw new InternalError(Config.FLIGHT_NOT_FOUND);
 
             Flight outboundFlight = chekDataDBOutboundFlight.get();
             Flight returnFlight = chekDataDBReturnFlight.get();
@@ -211,7 +211,7 @@ public class BookingServiceImpl implements BookingService {
                 if (outboundBookingDetailDTO.getSeatNumber() != null) {
                     Optional<Seat> chekDataDBSeat = seatRepository.getByFlightAndSeatBooked(outboundFlight, outboundBookingDetailDTO.getSeatNumber());
                     if (!chekDataDBSeat.isEmpty())
-                        return response.Error(Config.SEAT_ALREADY_BOOKED);
+                        throw new InternalError(Config.SEAT_ALREADY_BOOKED);
                     // simpan data seat booked
                     seatService.saveSeat(outboundFlight, outboundBookingDetailDTO.getSeatNumber());
                     // Hitung total harga
@@ -230,7 +230,7 @@ public class BookingServiceImpl implements BookingService {
                 if (returnBookingDetailDTO.getSeatNumber() != null) {
                     Optional<Seat> chekDataDBSeat = seatRepository.getByFlightAndSeatBooked(returnFlight, returnBookingDetailDTO.getSeatNumber());
                     if (!chekDataDBSeat.isEmpty())
-                        return response.Error(Config.SEAT_ALREADY_BOOKED);
+                        throw new InternalError(Config.SEAT_ALREADY_BOOKED);
                     // simpan data seat booked
                     seatService.saveSeat(returnFlight, returnBookingDetailDTO.getSeatNumber());
                     // Hitung total harga
@@ -260,15 +260,15 @@ public class BookingServiceImpl implements BookingService {
             log.info("save booking with details");
             // Validasi input
             if (bookingRequestDTO.getCustomer() == null)
-                return response.Error(Config.CUSTOMER_REQUIRED);
+                throw new InternalError(Config.CUSTOMER_REQUIRED);
             if (bookingRequestDTO.getListBookingDetail() == null)
-                return response.Error(Config.LIST_BOOKING_DETAIL_REQUIRED);
+                throw new InternalError(Config.LIST_BOOKING_DETAIL_REQUIRED);
             Optional<Customer> chekDataDBCustomer = customerRepository.findById(bookingRequestDTO.getCustomer().getId());
             if (chekDataDBCustomer.isEmpty())
-                return response.Error(Config.CUSTOMER_NOT_FOUND);
+                throw new InternalError(Config.CUSTOMER_NOT_FOUND);
             Optional<Flight> chekDataDBFlight = flightRepository.findById(bookingRequestDTO.getFlight().getId());
             if (chekDataDBFlight.isEmpty())
-                return response.Error(Config.FLIGHT_NOT_FOUND);
+                throw new InternalError(Config.FLIGHT_NOT_FOUND);
 
             Flight flight = chekDataDBFlight.get();
             // Buat booking
@@ -289,7 +289,7 @@ public class BookingServiceImpl implements BookingService {
                 if (bookingDetailDTO.getSeatNumber() != null) {
                     Optional<Seat> chekDataDBSeat = seatRepository.getByFlightAndSeatBooked(flight, bookingDetailDTO.getSeatNumber());
                     if (!chekDataDBSeat.isEmpty())
-                        return response.Error(Config.SEAT_ALREADY_BOOKED);
+                        throw new InternalError(Config.SEAT_ALREADY_BOOKED);
                     // simpan data seat booked
                     seatService.saveSeat(flight, bookingDetailDTO.getSeatNumber());
                     // Hitung total harga
@@ -316,7 +316,7 @@ public class BookingServiceImpl implements BookingService {
     private BookingDetail createBookingDetail(BookingRequestDTO bookingRequestDTO, BookingDetailDTO bookingDetailDTO) {
         BookingDetail bookingDetail = new BookingDetail();
         bookingDetail.setFlight(flightRepository.findById(bookingRequestDTO.getFlight().getId())
-                .orElseThrow(() -> new RuntimeException(Config.FLIGHT_NOT_FOUND)));
+                .orElseThrow(() -> new InternalError(Config.FLIGHT_NOT_FOUND)));
 
         bookingDetail.setCustomerName(bookingDetailDTO.getCustomerName());
         bookingDetail.setIdentityNumber(bookingDetailDTO.getIdentityNumber());
@@ -339,7 +339,7 @@ public class BookingServiceImpl implements BookingService {
             // jika "infant", maka menggunakan nilai default
             bookingDetail.setSeatNumber(null);
             bookingDetail.setLuggage("10 kg");
-        } else throw new RuntimeException(Config.PASSENGER_CLASS_NOT_FOUND);
+        } else throw new InternalError(Config.PASSENGER_CLASS_NOT_FOUND);
         return bookingDetail;
     }
 
@@ -347,7 +347,7 @@ public class BookingServiceImpl implements BookingService {
         Long idFlight = bookingRequestDTO.getFlight().getId();
         Optional<Flight> chekDataDBFlight = flightRepository.findById(idFlight);
         if (chekDataDBFlight.isEmpty())
-            throw new RuntimeException(Config.FLIGHT_NOT_FOUND);
+            throw new InternalError(Config.FLIGHT_NOT_FOUND);
         Flight flight = chekDataDBFlight.get();
         // Implementasi perhitungan harga sesuai kategori
         // Contoh: 10% dari harga untuk kategori infant
@@ -360,7 +360,7 @@ public class BookingServiceImpl implements BookingService {
     private BookingDetail createBookingDetailRT(Flight flight, BookingDetailDTO bookingDetailDTO) {
         BookingDetail bookingDetail = new BookingDetail();
         bookingDetail.setFlight(flightRepository.findById(flight.getId())
-                .orElseThrow(() -> new RuntimeException(Config.FLIGHT_NOT_FOUND)));
+                .orElseThrow(() -> new InternalError(Config.FLIGHT_NOT_FOUND)));
 
         bookingDetail.setCustomerName(bookingDetailDTO.getCustomerName());
         bookingDetail.setIdentityNumber(bookingDetailDTO.getIdentityNumber());
@@ -383,7 +383,7 @@ public class BookingServiceImpl implements BookingService {
             // jika "infant", maka menggunakan nilai default
             bookingDetail.setSeatNumber(null);
             bookingDetail.setLuggage("10 kg");
-        } else throw new RuntimeException(Config.PASSENGER_CLASS_NOT_FOUND);
+        } else throw new InternalError(Config.PASSENGER_CLASS_NOT_FOUND);
         return bookingDetail;
     }
 
@@ -391,7 +391,7 @@ public class BookingServiceImpl implements BookingService {
         Long idFlight = flights.getId();
         Optional<Flight> chekDataDBFlight = flightRepository.findById(idFlight);
         if (chekDataDBFlight.isEmpty())
-            throw new RuntimeException(Config.FLIGHT_NOT_FOUND);
+            throw new InternalError(Config.FLIGHT_NOT_FOUND);
         Flight flight = chekDataDBFlight.get();
         // Implementasi perhitungan harga sesuai kategori
         // Contoh: 10% dari harga untuk kategori infant
@@ -406,10 +406,10 @@ public class BookingServiceImpl implements BookingService {
             log.info("process Payment");
             // Validasi input
             if (paymentRequestDTO.getBooking() == null)
-                return response.Error(Config.BOOKING_REQUIRED);
+                throw new InternalError(Config.BOOKING_REQUIRED);
             Optional<Booking> chekDataDBBooking = bookingRepository.findById(paymentRequestDTO.getBooking().getId());
             if (chekDataDBBooking.isEmpty())
-                return response.Error(Config.BOOKING_NOT_FOUND);
+                throw new InternalError(Config.BOOKING_NOT_FOUND);
             if (chekDataDBBooking.get().isNotificationSent())
                 return response.Error("this booking has expired, please rebook the flight");
             if ("true".equals(chekDataDBBooking.get().getPaid()))
