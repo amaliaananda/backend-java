@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "flight")
-@Where(clause = "deleted_date is null")
+@Where(clause = "deleted_date is null AND flight_time > current_timestamp")
 public class Flight extends AbstractDate implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,14 +47,14 @@ public class Flight extends AbstractDate implements Serializable {
     @Column(name = "gate", nullable = false)
     private String gate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "flight_time")
+    @Column(name = "flight_time", nullable = false)
     private Date flightTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", timezone = "Asia/Jakarta")
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "arrived_time")
+    @Column(name = "arrived_time", nullable = false)
     private Date arrivedTime;
 
     @Column(name = "duration", nullable = false)
