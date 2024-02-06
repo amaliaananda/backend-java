@@ -202,6 +202,12 @@ public class BookingServiceImpl implements BookingService {
             booking.setTotalPrice(0L);// Harga awal
             booking.setAddOnSelectingSeat(0L);
 
+            if ("business".equals(outboundFlight.getPassengerClass()) && "business".equals(returnFlight.getPassengerClass())) booking.setServiceFee(40000L);
+            else if ("economy".equals(outboundFlight.getPassengerClass()) && "economy".equals(returnFlight.getPassengerClass())) booking.setServiceFee(25000L);
+            else if ("business".equals(outboundFlight.getPassengerClass()) && "economy".equals(returnFlight.getPassengerClass())) booking.setServiceFee(35000L);
+            else if ("economy".equals(outboundFlight.getPassengerClass()) && "business".equals(returnFlight.getPassengerClass())) booking.setServiceFee(35000L);
+            booking.setTotalPrice(booking.getTotalPrice() + booking.getServiceFee());
+
             // Proses tiap outbound booking detail
             for (BookingDetailDTO outboundBookingDetailDTO : bookingRoundtripRequestDTO.getListOutboundBookingDetail()) {
                 BookingDetail bookingDetail = createBookingDetailRT(outboundFlight, outboundBookingDetailDTO);
@@ -279,6 +285,9 @@ public class BookingServiceImpl implements BookingService {
             booking.setPaid("false");
             booking.setTotalPrice(0L);// Harga awal
             booking.setAddOnSelectingSeat(0L);
+            if ("business".equals(flight.getPassengerClass())) booking.setServiceFee(25000L);
+            else if ("economy".equals(flight.getPassengerClass())) booking.setServiceFee(15000L);
+            booking.setTotalPrice(booking.getTotalPrice() + booking.getServiceFee());
 
             // Proses tiap booking detail
             for (BookingDetailDTO bookingDetailDTO : bookingRequestDTO.getListBookingDetail()) {

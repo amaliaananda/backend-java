@@ -39,6 +39,9 @@ public class Booking extends AbstractDate implements Serializable {
     @Column(name = "AddOnLuggagePrice")
     private Long AddOnLuggagePrice;
 
+    @Column(name = "serviceFee")
+    private Long serviceFee;
+
     @Column(name = "AddOnLuggage")
     private String AddOnLuggage;
 
