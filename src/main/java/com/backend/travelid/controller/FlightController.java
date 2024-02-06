@@ -144,11 +144,8 @@ public class FlightController {
                             LocalDateTime startDateTime = LocalDateTime.parse(startDateStr, formatter);
                             LocalDateTime endDateTime = LocalDateTime.parse(endDateStr, formatter);
 
-                            ZonedDateTime startZonedDateTime = startDateTime.atZone(ZoneId.systemDefault());
-                            ZonedDateTime endZonedDateTime = endDateTime.atZone(ZoneId.systemDefault());
-
-                            Date startDate = Date.from(startZonedDateTime.toInstant());
-                            Date endDate = Date.from(endZonedDateTime.toInstant());
+                            Date startDate = Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                            Date endDate = Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
                             predicates.add(criteriaBuilder.between(root.get("flightTime"), startDate, endDate));
                         }
