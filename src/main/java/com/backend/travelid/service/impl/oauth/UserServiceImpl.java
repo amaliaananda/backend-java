@@ -68,16 +68,16 @@ public class UserServiceImpl implements UserService {
         Map map = new HashMap();
         try {
             if (objModel.getUsername() == null || objModel.getUsername().isEmpty()) {
-                throw new RuntimeException("username required");
+                return response.isRequired("username required");
             }
             if (objModel.getPassword() == null || objModel.getPassword().isEmpty()) {
-                throw new RuntimeException("password required");
+                return response.isRequired("password required");
             }
             if (objModel.getFullname() == null || objModel.getFullname().isEmpty()) {
-                throw new RuntimeException("Fullname required");
+                return response.isRequired("Fullname required");
             }
             if (objModel.getPhoneNumber() == null || objModel.getPhoneNumber().isEmpty()) {
-                throw new RuntimeException("Phone Number required");
+                return response.isRequired("Phone Number required");
             }
             String[] roleNames = {"ROLE_USER", "ROLE_READ", "ROLE_WRITE"}; // admin
             User user = new User();
@@ -151,10 +151,10 @@ public class UserServiceImpl implements UserService {
          * **/
         try {
             if (loginModel.getUsername() == null || loginModel.getUsername().isEmpty()) {
-                throw new InternalError("username required");
+                return response.isRequired("username required");
             }
             if (loginModel.getPassword() == null || loginModel.getPassword().isEmpty()) {
-                throw new InternalError("password required");
+                return response.isRequired("password required");
             }
             Map<String, Object> map = new HashMap<>();
 
@@ -167,10 +167,10 @@ public class UserServiceImpl implements UserService {
                 }
             }
             if (checkUser == null) {
-                throw new InternalError("user not found");
+                return response.Error("user not found");
             }
             if (!(encoder.matches(loginModel.getPassword(), checkUser.getPassword()))) {
-                throw new InternalError("wrong password");
+                return response.Error("wrong password");
             }
             String url = baseUrl + "/oauth/token?username=" + loginModel.getUsername() +
                     "&password=" + loginModel.getPassword() +

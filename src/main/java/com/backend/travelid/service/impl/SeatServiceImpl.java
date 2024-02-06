@@ -42,7 +42,7 @@ public class SeatServiceImpl implements SeatService {
     public Map getByID(Long idSeat) {
         Optional<Seat> getBaseOptional = seatRepository.findById(idSeat);
         if(getBaseOptional.isEmpty()){
-            throw new InternalError(Config.SEAT_NOT_FOUND);
+            return response.Error(Config.SEAT_NOT_FOUND);
         }
         return response.templateSukses(getBaseOptional);
     }

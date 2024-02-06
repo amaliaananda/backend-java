@@ -16,8 +16,6 @@ import java.util.Optional;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long>, JpaSpecificationExecutor<Notification> {
 
-    Optional<Notification> getByCustomer(Optional<Customer> customer);
-
     @Query("SELECT n FROM Notification n JOIN n.customer c WHERE c.id = :idCust")
     public List<Notification> getByCustomerId(@Param("idCust") Long idCust);
 

@@ -44,7 +44,7 @@ public class FlightServiceImpl implements FlightService {
     public Map getByID(Long flight) {
         Optional<Flight> getBaseOptional = flightRepository.findById(flight);
         if(getBaseOptional.isEmpty()){
-            throw new InternalError(Config.FLIGHT_NOT_FOUND);
+            return response.Error(Config.FLIGHT_NOT_FOUND);
         }
         return response.templateSukses(getBaseOptional);
     }
@@ -54,54 +54,54 @@ public class FlightServiceImpl implements FlightService {
         try {
             log.info("save flight");
             if(flight.getPassengerClass() == null){
-                throw new InternalError(Config.PASSENGER_CLASS_REQUIRED);
+                return response.Error(Config.PASSENGER_CLASS_REQUIRED);
             }
             if(flight.getPrice() == null){
-                throw new InternalError(Config.PRICE_REQUIRED);
+                return response.Error(Config.PRICE_REQUIRED);
             }
             if(flight.getAirlines() == null){
-                throw new InternalError(Config.AIRLINE_REQUIRED);
+                return response.Error(Config.AIRLINE_REQUIRED);
             }
             if(flight.getOriginAirport() == null){
-                throw new InternalError(Config.ORIGIN_AIRPORT_REQUIRED);
+                return response.Error(Config.ORIGIN_AIRPORT_REQUIRED);
             }
             if(flight.getDestinationAirport() == null){
-                throw new InternalError(Config.DESTINATION_AIRPORT_REQUIRED);
+                return response.Error(Config.DESTINATION_AIRPORT_REQUIRED);
             }
             if(flight.getFlightNumber() == null){
-                throw new InternalError(Config.FLIGHT_NUMBER_REQUIRED);
+                return response.Error(Config.FLIGHT_NUMBER_REQUIRED);
             }
             if(flight.getOriginCity() == null){
-                throw new InternalError(Config.ORIGIN_CITY_REQUIRED);
+                return response.Error(Config.ORIGIN_CITY_REQUIRED);
             }
             if(flight.getDestinationCity() == null){
-                throw new InternalError(Config.DESTINATION_CITY_REQUIRED);
+                return response.Error(Config.DESTINATION_CITY_REQUIRED);
             }
             if(flight.getFlightTime() == null){
-                throw new InternalError(Config.FLIGHT_TIME_REQUIRED);
+                return response.Error(Config.FLIGHT_TIME_REQUIRED);
             }
             if(flight.getArrivedTime() == null){
-                throw new InternalError(Config.ARRIVED_TIME_REQUIRED);
+                return response.Error(Config.ARRIVED_TIME_REQUIRED);
             }
             if(flight.getDuration() == null){
-                throw new InternalError(Config.DURATION_REQUIRED);
+                return response.Error(Config.DURATION_REQUIRED);
             }
             if(flight.getTransit() == null){
-                throw new InternalError(Config.TRANSIT_REQUIRED);
+                return response.Error(Config.TRANSIT_REQUIRED);
             }
             if(flight.getFreeMeal() == null){
-                throw new InternalError(Config.FREEMEAL_REQUIRED);
+                return response.Error(Config.FREEMEAL_REQUIRED);
             }
             Optional<Airlines> chekDataDBAirline = airlinesRepository.findById(flight.getAirlines().getId());
             if (chekDataDBAirline.isEmpty()) {
-                throw new InternalError(Config.AIRLINE_NOT_FOUND);
+                return response.Error(Config.AIRLINE_NOT_FOUND);
             }
             if ("economy".equals(flight.getPassengerClass())) flight.setLuggage("20 kg");
             else if ("business".equals(flight.getPassengerClass())) flight.setLuggage("30 kg");
-            else throw new InternalError(Config.PASSENGER_CLASS_NOT_FOUND);
+            else return response.Error(Config.PASSENGER_CLASS_NOT_FOUND);
 
             if ("langsung".equals(flight.getTransit()) || "1 transit".equals(flight.getTransit()) || "2 transit".equals(flight.getTransit()));
-            else throw new InternalError("Transit not found");
+            else return response.Error("Transit not found");
 
             return response.templateSaveSukses(flightRepository.save(flight));
         }catch (Exception e){
@@ -115,23 +115,23 @@ public class FlightServiceImpl implements FlightService {
         try {
             log.info("Update flight");
             if (flight.getId() == null) {
-                throw new InternalError(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             Optional<Flight> chekDataDBFlight = flightRepository.findById(flight.getId());
             if (chekDataDBFlight.isEmpty()) {
-                throw new InternalError(Config.FLIGHT_NOT_FOUND);
+                return response.Error(Config.FLIGHT_NOT_FOUND);
             }
             if (flight.getAirlines().getAirline() != null) {
                 Optional<Airlines> chekDataDBAirline = airlinesRepository.findByAirline(flight.getAirlines().getAirline());
                 if (chekDataDBAirline.isEmpty()) {
-                    throw new InternalError(Config.AIRLINE_NOT_FOUND);
+                    return response.Error(Config.AIRLINE_NOT_FOUND);
                 }
             }
             if (flight.getAirlines() != null) {
                 chekDataDBFlight.get().setAirlines(flight.getAirlines());
             }if (flight.getPassengerClass() != null) {
                 if ("economy".equals(flight.getPassengerClass()) || "business".equals(flight.getPassengerClass()));
-                else throw new InternalError(Config.PASSENGER_CLASS_NOT_FOUND);
+                else return response.Error(Config.PASSENGER_CLASS_NOT_FOUND);
                 chekDataDBFlight.get().setPassengerClass(flight.getPassengerClass());
             }if (flight.getPrice() != null) {
                 chekDataDBFlight.get().setPrice(flight.getPrice());
@@ -155,7 +155,7 @@ public class FlightServiceImpl implements FlightService {
                 chekDataDBFlight.get().setDuration(flight.getDuration());
             }if (flight.getTransit() != null) {
                 if ("langsung".equals(flight.getTransit()) || "1 transit".equals(flight.getTransit()) || "2 transit".equals(flight.getTransit()));
-                else throw new InternalError("Transit not found");
+                else return response.Error("Transit not found");
                 chekDataDBFlight.get().setTransit(flight.getTransit());
             }if (flight.getLuggage() != null) {
                 chekDataDBFlight.get().setLuggage(flight.getLuggage());
@@ -176,11 +176,11 @@ public class FlightServiceImpl implements FlightService {
         try {
             log.info("Delete flight");
             if (flight.getId() == null) {
-                throw new InternalError(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
             }
             Optional<Flight> chekDataDBFlight = flightRepository.findById(flight.getId());
             if (chekDataDBFlight.isEmpty()) {
-                throw new InternalError(Config.FLIGHT_NOT_FOUND);
+                return response.Error(Config.FLIGHT_NOT_FOUND);
             }
 
             chekDataDBFlight.get().setDeleted_date(new Date());

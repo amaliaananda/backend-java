@@ -54,7 +54,7 @@ public class BookingDetailServiceImpl implements BookingDetailService {
     public Map getByID(Long bookingDetail) {
         Optional<BookingDetail> getBaseOptional = bookingDetailRepository.findById(bookingDetail);
         if(getBaseOptional.isEmpty()){
-            throw new InternalError("not found");
+            return response.Error("booking detail not found");
         }
         return response.templateSukses(getBaseOptional);
     }
@@ -134,11 +134,11 @@ public class BookingDetailServiceImpl implements BookingDetailService {
         try {
             log.info("Delete booking Detail");
             if (bookingDetail.getId() == null)
-                throw new InternalError(Config.ID_REQUIRED);
+                return response.Error(Config.ID_REQUIRED);
 
             Optional<BookingDetail> chekDataDBbookingDetail = bookingDetailRepository.findById(bookingDetail.getId());
             if (chekDataDBbookingDetail.isEmpty())
-                throw new InternalError(Config.BOOKING_DETAIL_NOT_FOUND);
+                return response.Error(Config.BOOKING_DETAIL_NOT_FOUND);
 
             chekDataDBbookingDetail.get().setDeleted_date(new Date());
             bookingDetailRepository.save(chekDataDBbookingDetail.get());

@@ -110,7 +110,7 @@ public class BookingController {
     @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Map> getBookingsByCustomerId(@RequestParam Long customerId) {
         try {
-            List<Booking> list =bookingService.getByCustomerId(customerId);
+            Map list =bookingService.getByCustomerId(customerId);
             Map map = new HashMap();
             map.put("data",list);
             map.put("message", "sukses");
