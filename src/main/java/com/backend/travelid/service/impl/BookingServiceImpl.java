@@ -359,13 +359,17 @@ public class BookingServiceImpl implements BookingService {
         if (chekDataDBFlight.isEmpty())
             throw new InternalError(Config.FLIGHT_NOT_FOUND);
         Flight flight = chekDataDBFlight.get();
+        long harga = 0L;
+        if ("true".equals(flight.getIsDiscount())) harga = flight.getDiscountPrice();
+        else if ("false".equals(flight.getIsDiscount())) harga = flight.getPrice();
+        else throw new InternalError("wrong is discount");
         // Implementasi perhitungan harga sesuai kategori
         // Contoh: 10% dari harga untuk kategori infant
         if ("infant".equals(bookingDetailDTO.getCategory()))
-            return (long) (0.1 * flight.getPrice());
+            return (long) (0.1 * harga);
 
         // Kategori lainnya
-        return flight.getPrice();
+        return harga;
     }
     private BookingDetail createBookingDetailRT(Flight flight, BookingDetailDTO bookingDetailDTO) {
         BookingDetail bookingDetail = new BookingDetail();
@@ -403,13 +407,17 @@ public class BookingServiceImpl implements BookingService {
         if (chekDataDBFlight.isEmpty())
             throw new InternalError(Config.FLIGHT_NOT_FOUND);
         Flight flight = chekDataDBFlight.get();
+        long harga = 0L;
+        if ("true".equals(flight.getIsDiscount())) harga = flight.getDiscountPrice();
+        else if ("false".equals(flight.getIsDiscount())) harga = flight.getPrice();
+        else throw new InternalError("wrong is discount");
         // Implementasi perhitungan harga sesuai kategori
         // Contoh: 10% dari harga untuk kategori infant
         if ("infant".equals(bookingDetailDTO.getCategory()))
-            return (long) (0.1 * flight.getPrice());
+            return (long) (0.1 * harga);
 
         // Kategori lainnya
-        return flight.getPrice();
+        return harga;
     }
     public Map processPayment(PaymentRequestDTO paymentRequestDTO) {
         try {
