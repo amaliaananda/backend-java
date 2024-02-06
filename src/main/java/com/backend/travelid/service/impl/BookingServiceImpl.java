@@ -125,6 +125,7 @@ public class BookingServiceImpl implements BookingService {
             }
             if (booking.getTotalPrice()!= null) chekDataDBbooking.get().setTotalPrice(booking.getTotalPrice());
             if (booking.getPaid()!= null) chekDataDBbooking.get().setPaid(booking.getPaid());
+            if (booking.getServiceFee()!= null) chekDataDBbooking.get().setServiceFee(booking.getServiceFee());
             if (booking.getAddOnSelectingSeat()!= null) chekDataDBbooking.get().setAddOnSelectingSeat(booking.getAddOnSelectingSeat());
             if (booking.getAddOnLuggagePrice()!= null) chekDataDBbooking.get().setAddOnLuggagePrice(booking.getAddOnLuggagePrice());
             if (booking.getAddOnLuggage()!= null) chekDataDBbooking.get().setAddOnLuggage(booking.getAddOnLuggage());
