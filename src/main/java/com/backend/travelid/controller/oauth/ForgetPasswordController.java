@@ -12,6 +12,8 @@ import com.backend.travelid.utils.SimpleStringUtils;
 import com.backend.travelid.utils.TemplateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -116,6 +118,9 @@ public class ForgetPasswordController {
         if (model.getNewPassword() == null) return templateCRUD.notFound("New Password is required");
         if (model.getConfirmNewPassword() == null) return templateCRUD.notFound("Confirm New Password is required");
         if (!model.getNewPassword().equals(model.getConfirmNewPassword())) return templateCRUD.Error("new password & confirm new password not match");
+        if (!config.isValidPassword(model.getNewPassword())){
+            return templateCRUD.Error("password not valid");
+        }
         User user = userRepository.findOneByOTP(model.getOtp());
         String success;
         if (user == null) return templateCRUD.notFound("Token not valid");
