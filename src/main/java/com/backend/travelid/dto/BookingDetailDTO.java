@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class BookingDetailDTO {
     private FlightDTO flight;
     private String customerName;
-    private String identityNumber;
+    private String phoneNumber;
     private String seatNumber;
     private Long totalSeatPrice;
     private String category; // adult, child, infant

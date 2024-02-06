@@ -329,7 +329,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new RuntimeException(Config.FLIGHT_NOT_FOUND)));
 
         bookingDetail.setCustomerName(bookingDetailDTO.getCustomerName());
-        bookingDetail.setIdentityNumber(bookingDetailDTO.getIdentityNumber());
+        bookingDetail.setPhoneNumber(bookingDetailDTO.getPhoneNumber());
 
         if (bookingDetailDTO.getSeatNumber() != null)
             bookingDetail.setPrice(bookingDetailDTO.getTotalSeatPrice());
@@ -377,7 +377,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new InternalError(Config.FLIGHT_NOT_FOUND)));
 
         bookingDetail.setCustomerName(bookingDetailDTO.getCustomerName());
-        bookingDetail.setIdentityNumber(bookingDetailDTO.getIdentityNumber());
+        bookingDetail.setPhoneNumber(bookingDetailDTO.getPhoneNumber());
 
         if (bookingDetailDTO.getSeatNumber() != null)
             bookingDetail.setPrice(bookingDetailDTO.getTotalSeatPrice());

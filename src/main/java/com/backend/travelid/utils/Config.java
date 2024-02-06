@@ -33,6 +33,8 @@ public class Config {
 
     public  static  String IDENTITY_NUMBER_REQUIRED = "Identity Number is Required.";
 
+    public  static  String PHONE_NUMBER_REQUIRED = "Phone Number is Required.";
+
     public  static  String LIST_BOOKING_DETAIL_REQUIRED = "List Booking Detail is Required.";
 
     public  static  String LIST_OUTBOUND_BOOKING_DETAIL_REQUIRED = "List OUTBOUND Booking Detail is Required.";

@@ -66,8 +66,8 @@ public class BookingDetailServiceImpl implements BookingDetailService {
             if(bookingDetail.getCustomerName() == null){
                 return response.Error(Config.NAME_REQUIRED);
             }
-            if(bookingDetail.getIdentityNumber() == null){
-                return response.Error(Config.IDENTITY_NUMBER_REQUIRED);
+            if(bookingDetail.getPhoneNumber() == null){
+                return response.Error(Config.PHONE_NUMBER_REQUIRED);
             }
             if(bookingDetail.getBooking() == null){
                 return response.Error(Config.BOOKING_REQUIRED);
@@ -117,7 +117,7 @@ public class BookingDetailServiceImpl implements BookingDetailService {
                 chekDataDBbookingDetail.get().setBooking(bookingDetail.getBooking());
             }
             if (bookingDetail.getCustomerName() != null)chekDataDBbookingDetail.get().setCustomerName(bookingDetail.getCustomerName());
-            if (bookingDetail.getIdentityNumber() != null)chekDataDBbookingDetail.get().setIdentityNumber(bookingDetail.getIdentityNumber());
+            if (bookingDetail.getPhoneNumber() != null)chekDataDBbookingDetail.get().setPhoneNumber(bookingDetail.getPhoneNumber());
             if (bookingDetail.getSeatNumber() != null)chekDataDBbookingDetail.get().setSeatNumber(bookingDetail.getSeatNumber());
             if (bookingDetail.getPrice() != null)chekDataDBbookingDetail.get().setPrice(bookingDetail.getPrice());
             if (bookingDetail.getLuggage() != null)chekDataDBbookingDetail.get().setLuggage(bookingDetail.getLuggage());

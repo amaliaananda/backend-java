@@ -33,8 +33,8 @@ public class BookingDetail extends AbstractDate implements Serializable {
     @Column(name = "customer_name", nullable = false)
     private String customerName;
 
-    @Column(name = "identity_number", nullable = false)
-    private String identityNumber;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @Column(name = "seat_number")
     private String seatNumber;
