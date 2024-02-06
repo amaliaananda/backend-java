@@ -223,8 +223,8 @@ public class BookingServiceImpl implements BookingService {
                     seatService.saveSeat(outboundFlight, outboundBookingDetailDTO.getSeatNumber());
                     // Hitung total harga
                     booking.setTotalPrice(booking.getTotalPrice() + outboundBookingDetailDTO.getTotalSeatPrice());
-                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() +
-                            (outboundBookingDetailDTO.getTotalSeatPrice() - outboundFlight.getPrice()));
+                    long seatFeeOutbound = outboundBookingDetailDTO.getTotalSeatPrice() - outboundFlight.getPrice();
+                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() + seatFeeOutbound);
                 } else
                     // Hitung total harga
                     booking.setTotalPrice(booking.getTotalPrice() + calculateTotalPriceRT(outboundFlight, outboundBookingDetailDTO));
@@ -242,8 +242,8 @@ public class BookingServiceImpl implements BookingService {
                     seatService.saveSeat(returnFlight, returnBookingDetailDTO.getSeatNumber());
                     // Hitung total harga
                     booking.setTotalPrice(booking.getTotalPrice() + returnBookingDetailDTO.getTotalSeatPrice());
-                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() +
-                            (returnBookingDetailDTO.getTotalSeatPrice() - returnFlight.getPrice()));
+                    long seatFeeReturn = returnBookingDetailDTO.getTotalSeatPrice() - returnFlight.getPrice();
+                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() + seatFeeReturn);
                 } else
                     // Hitung total harga
                     booking.setTotalPrice(booking.getTotalPrice() + calculateTotalPriceRT(returnFlight, returnBookingDetailDTO));
@@ -304,8 +304,8 @@ public class BookingServiceImpl implements BookingService {
                     seatService.saveSeat(flight, bookingDetailDTO.getSeatNumber());
                     // Hitung total harga
                     booking.setTotalPrice(booking.getTotalPrice() + bookingDetailDTO.getTotalSeatPrice());
-                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() +
-                            (bookingDetailDTO.getTotalSeatPrice() - flight.getPrice()));
+                    long seatFee = bookingDetailDTO.getTotalSeatPrice() - flight.getPrice();
+                    booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() + seatFee);
                 } else
                     // Hitung total harga
                     booking.setTotalPrice(booking.getTotalPrice() + calculateTotalPrice(bookingRequestDTO,bookingDetailDTO));
