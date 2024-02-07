@@ -10,7 +10,8 @@ public interface FlightService {
     List<Flight> getFlightsByAirline(String airline);
     List<Flight> getFlightsByPassengerClass(String passengerClass);
     Map getByID(Long booking);
-    Map saveFlight(Flight flight, Long airlineId);
+    Map saveFlight(Flight flight);
+    Map saveFlightV2(Flight flight, Long airlineId);
     Map updateFlight(Flight flight);
     Map deleteFlight(Flight flight);
 }

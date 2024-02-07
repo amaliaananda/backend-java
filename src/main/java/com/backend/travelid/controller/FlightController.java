@@ -47,11 +47,21 @@ public class FlightController {
     @Autowired
     public TemplateResponse response;
 
-    @PostMapping(value ={"/save/{airlineId}","/save/{airlineId}/"})
+    @PostMapping(value ={"/saveV2/{airlineId}","/saveV2/{airlineId}/"})
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> saveFlight(@RequestBody Flight flight, @PathVariable("airlineId") Long airlineId) {
         try {
-            return new ResponseEntity<Map>(flightService.saveFlight(flight, airlineId), HttpStatus.OK);
+            return new ResponseEntity<Map>(flightService.saveFlightV2(flight, airlineId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+        }
+    }
+
+    @PostMapping(value ={"/save","/save/"})
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map> saveFlight(@RequestBody Flight flight) {
+        try {
+            return new ResponseEntity<Map>(flightService.saveFlight(flight), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }

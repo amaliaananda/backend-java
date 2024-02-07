@@ -50,7 +50,67 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Map saveFlight(Flight flight, Long airlineId) {
+    public Map saveFlight(Flight flight) {
+        try {
+            log.info("save flight");
+            if(flight.getPassengerClass() == null){
+                return response.Error(Config.PASSENGER_CLASS_REQUIRED);
+            }
+            if(flight.getPrice() == null){
+                return response.Error(Config.PRICE_REQUIRED);
+            }
+            if(flight.getAirlines() == null){
+                return response.Error(Config.AIRLINE_REQUIRED);
+            }
+            if(flight.getOriginAirport() == null){
+                return response.Error(Config.ORIGIN_AIRPORT_REQUIRED);
+            }
+            if(flight.getDestinationAirport() == null){
+                return response.Error(Config.DESTINATION_AIRPORT_REQUIRED);
+            }
+            if(flight.getFlightNumber() == null){
+                return response.Error(Config.FLIGHT_NUMBER_REQUIRED);
+            }
+            if(flight.getOriginCity() == null){
+                return response.Error(Config.ORIGIN_CITY_REQUIRED);
+            }
+            if(flight.getDestinationCity() == null){
+                return response.Error(Config.DESTINATION_CITY_REQUIRED);
+            }
+            if(flight.getFlightTime() == null){
+                return response.Error(Config.FLIGHT_TIME_REQUIRED);
+            }
+            if(flight.getArrivedTime() == null){
+                return response.Error(Config.ARRIVED_TIME_REQUIRED);
+            }
+            if(flight.getDuration() == null){
+                return response.Error(Config.DURATION_REQUIRED);
+            }
+            if(flight.getTransit() == null){
+                return response.Error(Config.TRANSIT_REQUIRED);
+            }
+            if(flight.getFreeMeal() == null){
+                return response.Error(Config.FREEMEAL_REQUIRED);
+            }
+            Optional<Airlines> chekDataDBAirline = airlinesRepository.findById(flight.getAirlines().getId());
+            if (chekDataDBAirline.isEmpty()) {
+                return response.Error(Config.AIRLINE_NOT_FOUND);
+            }
+            if ("economy".equals(flight.getPassengerClass())) flight.setLuggage("20 kg");
+            else if ("business".equals(flight.getPassengerClass())) flight.setLuggage("30 kg");
+            else return response.Error(Config.PASSENGER_CLASS_NOT_FOUND);
+
+            if ("langsung".equals(flight.getTransit()) || "1 transit".equals(flight.getTransit()) || "2 transit".equals(flight.getTransit()));
+            else return response.Error("Transit not found");
+
+            return response.templateSaveSukses(flightRepository.save(flight));
+        }catch (Exception e){
+            log.error("save flight error: "+e.getMessage());
+            throw new RuntimeException("save flight ="+e.getMessage());
+        }
+    }
+    @Override
+    public Map saveFlightV2(Flight flight, Long airlineId) {
         try {
             log.info("save flight");
             if(flight.getPassengerClass() == null){
