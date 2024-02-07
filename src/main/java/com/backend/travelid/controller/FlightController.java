@@ -1,5 +1,6 @@
 package com.backend.travelid.controller;
 
+import com.backend.travelid.entity.Airlines;
 import com.backend.travelid.entity.Flight;
 import com.backend.travelid.repository.FlightRepository;
 import com.backend.travelid.service.FlightService;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -124,7 +127,9 @@ public class FlightController {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("destinationAirport")), "%" + destinationAirport.toLowerCase() + "%"));
                         }
                         if (airlines != null && !airlines.isEmpty()) {
-                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("airlines")), "%" + airlines.toLowerCase() + "%"));
+                            Join<Flight, Airlines> airlineJoin = root.join("airlines", JoinType.INNER); // Join dengan tabel airline
+
+                            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(airlineJoin.get("airline")), "%" + airlines.toLowerCase() + "%"));
                         }
                         if (originCity != null && !originCity.isEmpty()) {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("originCity")), "%" + originCity.toLowerCase() + "%"));
