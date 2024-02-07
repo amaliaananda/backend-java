@@ -50,7 +50,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Map saveFlight(Flight flight) {
+    public Map saveFlight(Flight flight, Long airlineId) {
         try {
             log.info("save flight");
             if(flight.getPassengerClass() == null){
@@ -59,7 +59,7 @@ public class FlightServiceImpl implements FlightService {
             if(flight.getPrice() == null){
                 return response.Error(Config.PRICE_REQUIRED);
             }
-            if(flight.getAirlines() == null){
+            if (airlineId == null) {
                 return response.Error(Config.AIRLINE_REQUIRED);
             }
             if(flight.getOriginAirport() == null){
@@ -92,7 +92,7 @@ public class FlightServiceImpl implements FlightService {
             if(flight.getFreeMeal() == null){
                 return response.Error(Config.FREEMEAL_REQUIRED);
             }
-            Optional<Airlines> chekDataDBAirline = airlinesRepository.findById(flight.getAirlines().getId());
+            Optional<Airlines> chekDataDBAirline = airlinesRepository.findById(airlineId);
             if (chekDataDBAirline.isEmpty()) {
                 return response.Error(Config.AIRLINE_NOT_FOUND);
             }
@@ -102,6 +102,7 @@ public class FlightServiceImpl implements FlightService {
 
             if ("langsung".equals(flight.getTransit()) || "1 transit".equals(flight.getTransit()) || "2 transit".equals(flight.getTransit()));
             else return response.Error("Transit not found");
+            flight.setAirlines(chekDataDBAirline.get());
 
             return response.templateSaveSukses(flightRepository.save(flight));
         }catch (Exception e){
