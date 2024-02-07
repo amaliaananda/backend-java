@@ -182,15 +182,14 @@ public class FlightServiceImpl implements FlightService {
             if (chekDataDBFlight.isEmpty()) {
                 return response.Error(Config.FLIGHT_NOT_FOUND);
             }
-            if (flight.getAirlines().getAirline() != null) {
-                Optional<Airlines> chekDataDBAirline = airlinesRepository.findByAirline(flight.getAirlines().getAirline());
+            if (flight.getAirlines() != null) {
+                Optional<Airlines> chekDataDBAirline = airlinesRepository.findById(flight.getAirlines().getId());
                 if (chekDataDBAirline.isEmpty()) {
                     return response.Error(Config.AIRLINE_NOT_FOUND);
                 }
+                chekDataDBFlight.get().setAirlines(chekDataDBAirline.get());
             }
-            if (flight.getAirlines() != null) {
-                chekDataDBFlight.get().setAirlines(flight.getAirlines());
-            }if (flight.getPassengerClass() != null) {
+            if (flight.getPassengerClass() != null) {
                 if ("economy".equals(flight.getPassengerClass()) || "business".equals(flight.getPassengerClass()));
                 else return response.Error(Config.PASSENGER_CLASS_NOT_FOUND);
                 chekDataDBFlight.get().setPassengerClass(flight.getPassengerClass());
