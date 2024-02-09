@@ -110,12 +110,7 @@ public class BookingController {
     @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Map> getBookingsByCustomerId(@RequestParam Long customerId) {
         try {
-            Map list =bookingService.getByCustomerId(customerId);
-            Map map = new HashMap();
-            map.put("data",list);
-            map.put("message", "sukses");
-            map.put("status", 200);
-            return new ResponseEntity<Map>(map, new HttpHeaders(), HttpStatus.OK);
+            return new ResponseEntity<Map>(bookingService.getByCustomerId(customerId), new HttpHeaders(), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
         }
