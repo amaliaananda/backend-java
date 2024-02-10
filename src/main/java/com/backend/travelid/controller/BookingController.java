@@ -7,6 +7,7 @@ import com.backend.travelid.entity.Booking;
 import com.backend.travelid.entity.Customer;
 import com.backend.travelid.repository.BookingRepository;
 import com.backend.travelid.service.BookingService;
+import com.backend.travelid.utils.Config;
 import com.backend.travelid.utils.SimpleStringUtils;
 import com.backend.travelid.utils.TemplateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
+    Config config = new Config();
+
     SimpleStringUtils simpleStringUtils = new SimpleStringUtils();
 
     @Autowired
@@ -44,6 +47,10 @@ public class BookingController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<Map> addBooking(@RequestBody Booking booking){
         try {
+            if (!booking.getEmail().isEmpty())
+                if (!config.isValidEmail(booking.getEmail().toLowerCase())){
+                    return new ResponseEntity<Map>(response.Error("email not valid"), HttpStatus.NOT_FOUND);
+                }
             return new ResponseEntity<Map>(bookingService.saveBooking(booking), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
@@ -53,6 +60,10 @@ public class BookingController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Map> saveBookingWithDetails(@RequestBody BookingRequestDTO bookingRequestDTO) {
         try {
+            if (!bookingRequestDTO.getEmail().isEmpty())
+                if (!config.isValidEmail(bookingRequestDTO.getEmail().toLowerCase())){
+                return new ResponseEntity<Map>(response.Error("email not valid"), HttpStatus.NOT_FOUND);
+                }
             return new ResponseEntity<Map>(bookingService.saveBookingWithDetails(bookingRequestDTO), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
@@ -62,6 +73,10 @@ public class BookingController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Map> saveRoundtripBookingWithDetails(@RequestBody BookingRoundtripRequestDTO bookingRoundtripRequestDTO) {
         try {
+            if (!bookingRoundtripRequestDTO.getEmail().isEmpty())
+                if (!config.isValidEmail(bookingRoundtripRequestDTO.getEmail().toLowerCase())){
+                    return new ResponseEntity<Map>(response.Error("email not valid"), HttpStatus.NOT_FOUND);
+                }
             return new ResponseEntity<Map>(bookingService.saveRoundtripBookingWithDetails(bookingRoundtripRequestDTO), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
@@ -80,6 +95,10 @@ public class BookingController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map> updateBooking(@RequestBody Booking booking) {
         try {
+            if (!booking.getEmail().isEmpty())
+                if (!config.isValidEmail(booking.getEmail().toLowerCase())){
+                    return new ResponseEntity<Map>(response.Error("email not valid"), HttpStatus.NOT_FOUND);
+                }
             return new ResponseEntity<Map>(bookingService.updateBooking(booking), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500

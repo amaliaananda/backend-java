@@ -19,5 +19,7 @@ public class BookingRequestDTO {
     private String nomorRekening;
     private String masaBerlaku;
     private String cvvCvn;
+    private String email;
+    private String phoneNumber;
     private List<BookingDetailDTO> listBookingDetail;
 }

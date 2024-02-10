@@ -124,6 +124,8 @@ public class BookingServiceImpl implements BookingService {
                 chekDataDBbooking.get().setCustomer(booking.getCustomer());
             }
             if (booking.getTotalPrice()!= null) chekDataDBbooking.get().setTotalPrice(booking.getTotalPrice());
+            if (booking.getPhoneNumber()!= null) chekDataDBbooking.get().setPhoneNumber(booking.getPhoneNumber());
+            if (booking.getEmail()!= null) chekDataDBbooking.get().setEmail(booking.getEmail());
             if (booking.getPaid()!= null) chekDataDBbooking.get().setPaid(booking.getPaid());
             if (booking.getServiceFee()!= null) chekDataDBbooking.get().setServiceFee(booking.getServiceFee());
             if (booking.getAddOnSelectingSeat()!= null) chekDataDBbooking.get().setAddOnSelectingSeat(booking.getAddOnSelectingSeat());
@@ -198,7 +200,8 @@ public class BookingServiceImpl implements BookingService {
             // Buat outbound booking
             Booking booking = new Booking();
             booking.setCustomer(chekDataDBCustomer.get());
-
+            booking.setPhoneNumber(bookingRoundtripRequestDTO.getPhoneNumber());
+            booking.setEmail(bookingRoundtripRequestDTO.getEmail());
             booking.setPaid("false");
             booking.setTotalPrice(0L);// Harga awal
             booking.setAddOnSelectingSeat(0L);
@@ -281,8 +284,8 @@ public class BookingServiceImpl implements BookingService {
             // Buat booking
             Booking booking = new Booking();
             booking.setCustomer(chekDataDBCustomer.get());
-            booking.setAddOnLuggage(bookingRequestDTO.getAddOnLuggage());
-
+            booking.setPhoneNumber(bookingRequestDTO.getPhoneNumber());
+            booking.setEmail(bookingRequestDTO.getEmail());
             booking.setPaid("false");
             booking.setTotalPrice(0L);// Harga awal
             booking.setAddOnSelectingSeat(0L);

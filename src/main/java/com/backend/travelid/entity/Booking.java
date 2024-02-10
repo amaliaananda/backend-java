@@ -27,6 +27,12 @@ public class Booking extends AbstractDate implements Serializable {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "phoneNumber")
+    private String phoneNumber;
+
     @Column(name = "total_price", nullable = false)
     private Long totalPrice;
 

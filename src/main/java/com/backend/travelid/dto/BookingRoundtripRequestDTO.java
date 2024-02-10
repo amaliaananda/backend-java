@@ -16,6 +16,8 @@ public class BookingRoundtripRequestDTO {
     private String bankPembayaran;
     private String namaRekening;
     private String nomorRekening;
+    private String email;
+    private String phoneNumber;
     private String masaBerlaku;
     private String cvvCvn;
     private List<BookingDetailDTO> listOutboundBookingDetail;
