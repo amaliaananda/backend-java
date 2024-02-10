@@ -100,7 +100,7 @@ public class FlightServiceImpl implements FlightService {
             else if ("business".equals(flight.getPassengerClass())) flight.setLuggage("30 kg");
             else return response.Error(Config.PASSENGER_CLASS_NOT_FOUND);
 
-            if ("langsung".equals(flight.getTransit()) || "1 transit".equals(flight.getTransit()) || "2 transit".equals(flight.getTransit()));
+            if ("langsung".equals(flight.getTransit()) || "1_transit".equals(flight.getTransit()) || "2_transit".equals(flight.getTransit()));
             else return response.Error("Transit not found");
 
             return response.templateSaveSukses(flightRepository.save(flight));
@@ -160,7 +160,7 @@ public class FlightServiceImpl implements FlightService {
             else if ("business".equals(flight.getPassengerClass())) flight.setLuggage("30 kg");
             else return response.Error(Config.PASSENGER_CLASS_NOT_FOUND);
 
-            if ("langsung".equals(flight.getTransit()) || "1 transit".equals(flight.getTransit()) || "2 transit".equals(flight.getTransit()));
+            if ("langsung".equals(flight.getTransit()) || "1_transit".equals(flight.getTransit()) || "2_transit".equals(flight.getTransit()));
             else return response.Error("Transit not found");
             flight.setAirlines(chekDataDBAirline.get());
 
@@ -214,7 +214,7 @@ public class FlightServiceImpl implements FlightService {
             }if (flight.getDuration() != null) {
                 chekDataDBFlight.get().setDuration(flight.getDuration());
             }if (flight.getTransit() != null) {
-                if ("langsung".equals(flight.getTransit()) || "1 transit".equals(flight.getTransit()) || "2 transit".equals(flight.getTransit()));
+                if ("langsung".equals(flight.getTransit()) || "1_transit".equals(flight.getTransit()) || "2_transit".equals(flight.getTransit()));
                 else return response.Error("Transit not found");
                 chekDataDBFlight.get().setTransit(flight.getTransit());
             }if (flight.getLuggage() != null) {
