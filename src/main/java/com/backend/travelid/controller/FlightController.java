@@ -154,7 +154,7 @@ public class FlightController {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("transit")), "%" + transit.toLowerCase() + "%"));
                         }
                         if (startDateStr != null && endDateStr != null && !startDateStr.isEmpty() && !endDateStr.isEmpty()) {
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
                             LocalDateTime startDateTime = LocalDateTime.parse(startDateStr, formatter);
                             LocalDateTime endDateTime = LocalDateTime.parse(endDateStr, formatter);
