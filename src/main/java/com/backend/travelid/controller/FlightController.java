@@ -154,13 +154,16 @@ public class FlightController {
                             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("transit")), "%" + transit.toLowerCase() + "%"));
                         }
                         if (startDateStr != null && endDateStr != null && !startDateStr.isEmpty() && !endDateStr.isEmpty()) {
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
                             LocalDateTime startDateTime = LocalDateTime.parse(startDateStr, formatter);
                             LocalDateTime endDateTime = LocalDateTime.parse(endDateStr, formatter);
 
-                            Date startDate = Date.from(startDateTime.atZone(ZoneId.systemDefault()).toInstant());
-                            Date endDate = Date.from(endDateTime.atZone(ZoneId.systemDefault()).toInstant());
+                            ZoneId zoneId = ZoneId.of("Asia/Jakarta"); // Atur zona waktu yang sesuai
+                            ZonedDateTime startZonedDateTime = startDateTime.atZone(zoneId);
+                            ZonedDateTime endZonedDateTime = endDateTime.atZone(zoneId);
+
+                            Date startDate = Date.from(startZonedDateTime.toInstant());
+                            Date endDate = Date.from(endZonedDateTime.toInstant());
 
                             predicates.add(criteriaBuilder.between(root.get("flightTime"), startDate, endDate));
                         }
