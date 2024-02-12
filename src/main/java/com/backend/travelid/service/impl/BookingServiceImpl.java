@@ -226,7 +226,11 @@ public class BookingServiceImpl implements BookingService {
                     seatService.saveSeat(outboundFlight, outboundBookingDetailDTO.getSeatNumber());
                     // Hitung total harga
                     booking.setTotalPrice(booking.getTotalPrice() + outboundBookingDetailDTO.getTotalSeatPrice());
-                    long seatFeeOutbound = outboundBookingDetailDTO.getTotalSeatPrice() - outboundFlight.getPrice();
+                    Long seatFeeOutbound = 0L;
+                    if (outboundBookingDetailDTO.getTotalSeatPrice() >= outboundFlight.getPrice()) {
+                        seatFeeOutbound = outboundBookingDetailDTO.getTotalSeatPrice() - outboundFlight.getPrice();
+                    } else if (outboundBookingDetailDTO.getTotalSeatPrice() < outboundFlight.getPrice())
+                        return response.Error("total seat price harus lebih besar atau sama dengan harga flight");
                     booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() + seatFeeOutbound);
                 } else
                     // Hitung total harga
@@ -245,7 +249,11 @@ public class BookingServiceImpl implements BookingService {
                     seatService.saveSeat(returnFlight, returnBookingDetailDTO.getSeatNumber());
                     // Hitung total harga
                     booking.setTotalPrice(booking.getTotalPrice() + returnBookingDetailDTO.getTotalSeatPrice());
-                    long seatFeeReturn = returnBookingDetailDTO.getTotalSeatPrice() - returnFlight.getPrice();
+                    Long seatFeeReturn = 0L;
+                    if (returnBookingDetailDTO.getTotalSeatPrice() >= returnFlight.getPrice()) {
+                        seatFeeReturn = returnBookingDetailDTO.getTotalSeatPrice() - returnFlight.getPrice();
+                    } else if (returnBookingDetailDTO.getTotalSeatPrice() < returnFlight.getPrice())
+                        return response.Error("total seat price harus lebih besar atau sama dengan harga flight");
                     booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() + seatFeeReturn);
                 } else
                     // Hitung total harga
@@ -307,7 +315,11 @@ public class BookingServiceImpl implements BookingService {
                     seatService.saveSeat(flight, bookingDetailDTO.getSeatNumber());
                     // Hitung total harga
                     booking.setTotalPrice(booking.getTotalPrice() + bookingDetailDTO.getTotalSeatPrice());
-                    long seatFee = bookingDetailDTO.getTotalSeatPrice() - flight.getPrice();
+                    Long seatFee = 0L;
+                    if (bookingDetailDTO.getTotalSeatPrice() >= flight.getPrice()) {
+                        seatFee = bookingDetailDTO.getTotalSeatPrice() - flight.getPrice();
+                    } else if (bookingDetailDTO.getTotalSeatPrice() < flight.getPrice())
+                        return response.Error("total seat price harus lebih besar atau sama dengan harga flight");
                     booking.setAddOnSelectingSeat(booking.getAddOnSelectingSeat() + seatFee);
                 } else
                     // Hitung total harga
