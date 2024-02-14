@@ -36,35 +36,35 @@ public class BookingDetailController {
     @Autowired
     public TemplateResponse response;
 
-    @PostMapping(value = {"/save","/save/"})
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ResponseEntity<Map> addBookingDetail(@RequestBody BookingDetail bookingDetail){
-        try {
-            return new ResponseEntity<Map>(bookingDetailService.saveBookingDetail(bookingDetail), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
-        }
-    }
-
-    @PutMapping(value = {"/update","/update/"})
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map> updateBookingDetail(@RequestBody BookingDetail bookingDetail) {
-        try {
-            return new ResponseEntity<Map>(bookingDetailService.updateBookingDetail(bookingDetail), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
-        }
-    }
-
-    @DeleteMapping(value = {"/delete","/delete/"})
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map> deleteBookingDetail(@RequestBody BookingDetail bookingDetail) {
-        try {
-            return new ResponseEntity<Map>(bookingDetailService.deleteBookingDetail(bookingDetail), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
-        }
-    }
+//    @PostMapping(value = {"/save","/save/"})
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+//    public ResponseEntity<Map> addBookingDetail(@RequestBody BookingDetail bookingDetail){
+//        try {
+//            return new ResponseEntity<Map>(bookingDetailService.saveBookingDetail(bookingDetail), HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+//        }
+//    }
+//
+//    @PutMapping(value = {"/update","/update/"})
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<Map> updateBookingDetail(@RequestBody BookingDetail bookingDetail) {
+//        try {
+//            return new ResponseEntity<Map>(bookingDetailService.updateBookingDetail(bookingDetail), HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+//        }
+//    }
+//
+//    @DeleteMapping(value = {"/delete","/delete/"})
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<Map> deleteBookingDetail(@RequestBody BookingDetail bookingDetail) {
+//        try {
+//            return new ResponseEntity<Map>(bookingDetailService.deleteBookingDetail(bookingDetail), HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<Map>(response.Error(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR); // 500
+//        }
+//    }
 
     @GetMapping(value={"/{id}", "/{id}/"})
     @PreAuthorize("hasRole('READ')")
